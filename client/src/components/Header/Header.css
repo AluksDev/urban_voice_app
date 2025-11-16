@@ -3,9 +3,10 @@ header {
   justify-content: space-between;
   align-items: center;
   height: 20vh;
+  color: #f5f7fa;
 }
 
-header > div {
+header > * {
   height: 100%;
   padding: 0 2rem;
 }

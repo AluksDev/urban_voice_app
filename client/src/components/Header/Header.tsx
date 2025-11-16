@@ -13,11 +13,11 @@ const Header = () => {
             <h2>Welcome, User</h2>
           </div>
         </div>
-        <div className="navContainer">
+        <nav className="navContainer">
           <span>Dashboard</span>
           <span>My Reports</span>
           <span>Map</span>
-        </div>
+        </nav>
         <div>
           <div className="profile-container">
             <span>Nombre Apellido</span>

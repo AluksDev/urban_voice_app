@@ -1,0 +1,58 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 20vh;
+}
+
+header > div {
+  height: 100%;
+  padding: 0 2rem;
+}
+
+.logoContainer {
+  height: 75%;
+}
+.logoContainer img {
+  max-height: 100%;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+}
+
+.profile-container span {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  align-items: center;
+}
+
+.profile-container img {
+  border-radius: 50%;
+  max-height: 100%;
+}
+
+.new-report-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.new-report-container button {
+  background-color: #00b65c;
+  outline: none;
+  border: none;
+  padding: 0.75rem 4rem;
+  border-radius: 10px;
+}

@@ -1,0 +1,10 @@
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-container,
+.right-container {
+  flex: 1;
+}

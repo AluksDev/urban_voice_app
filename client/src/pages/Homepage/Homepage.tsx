@@ -2,13 +2,18 @@ import React from "react";
 import MessagesBoard from "../../components/MessagesBoard/MessagesBoard";
 import RecentReports from "../../components/RecentReports/RecentReports";
 import Stats from "../../components/Stats/Stats";
+import "./Homepage.css";
 
 const Homepage = () => {
   return (
     <main>
-      <MessagesBoard />
-      <RecentReports />
-      <Stats />
+      <div className="left-container">
+        <MessagesBoard />
+      </div>
+      <div className="right-container">
+        <RecentReports />
+        <Stats />
+      </div>
     </main>
   );
 };

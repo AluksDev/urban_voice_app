@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.signup = async (req, res) => {
-    // logic will go here
+    console.log("Req.body: ", req.body);
     res.json({ message: "Signup route works" });
 };
 

@@ -1,7 +1,12 @@
 import React from "react";
 import "./Header.css";
 
-const Header = () => {
+interface HeaderProps {
+  isLoggedIn: boolean;
+  onOpenModal: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ isLoggedIn, onOpenModal }) => {
   return (
     <>
       <header>
@@ -26,7 +31,11 @@ const Header = () => {
             </span>
           </div>
           <div className="new-report-container">
-            <button>New report</button>
+            {isLoggedIn ? (
+              <button>New report</button>
+            ) : (
+              <button onClick={onOpenModal}>Log In // Sign Up</button>
+            )}
           </div>
         </div>
       </header>

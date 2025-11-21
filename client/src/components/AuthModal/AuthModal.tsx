@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "./AuthModal.css";
 
 const AuthModal = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordRep, setPasswordRep] = useState("");
+  const [fullName, setFullName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [passwordRep, setPasswordRep] = useState<string>("");
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,12 +1,12 @@
 import React from "react";
 import "./Header.css";
 
-interface HeaderProps {
+type HeaderProps = {
   isLoggedIn: boolean;
   onOpenModal: () => void;
-}
+};
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, onOpenModal }) => {
+const Header = ({ isLoggedIn, onOpenModal }: HeaderProps) => {
   return (
     <>
       <header>

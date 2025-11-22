@@ -22,19 +22,26 @@ const AuthModal = () => {
 
     // Validation
     if (trimmedFullName.length < 2) {
-      alert("Full Name must be at least 2 characters");
+      setToasterMessage("Full Name must be at least 2 characters");
+      setToasterType("error");
       return;
     }
+
     if (!trimmedEmail.includes("@") || !trimmedEmail.includes(".")) {
-      alert("Please enter a valid email address");
+      setToasterMessage("Please enter a valid email address");
+      setToasterType("error");
       return;
     }
+
     if (trimmedPassword.length < 8) {
-      alert("Password must be at least 8 characters");
+      setToasterMessage("Password must be at least 8 characters");
+      setToasterType("error");
       return;
     }
+
     if (trimmedPassword !== trimmedPasswordRep) {
-      alert("Passwords do not match");
+      setToasterMessage("Passwords do not match");
+      setToasterType("error");
       return;
     }
 

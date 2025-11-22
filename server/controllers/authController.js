@@ -29,7 +29,26 @@ exports.signup = async (req, res) => {
     //Hash password antes de guardar en la base de datos
     const saltRounds = 10;
     const hashedPsw = await bcrypt.hash(trimmedPsw, saltRounds);
-    res.json({ message: "Signup route works" });
+    let [rows] = await req.db.query("SELECT * FROM users WHERE email = ?", [trimmedEmail]);
+    if (rows.length > 0) {
+        return res.status(400).json({
+            success: false,
+            message: "User already registered"
+        });
+    }
+    let [result] = await req.db.query("INSERT INTO users (fullname, email, hashed_psw, created_at) VALUES (?, ?, ?, NOW())", [trimmedName, trimmedEmail, hashedPsw]);
+    if (result.affectedRows === 1) {
+        return res.status(201).json({
+            success: true,
+            message: "User registered",
+            userId: result.insertId
+        });
+    } else {
+        return res.status(500).json({
+            success: false,
+            message: "Could not register user"
+        });
+    }
 };
 
 exports.login = async (req, res) => {

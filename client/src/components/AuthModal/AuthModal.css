@@ -11,10 +11,12 @@
 }
 
 .inner-modal {
+  position: relative;
   border: 1px solid white;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 3rem 2rem;
 }
 
 form {

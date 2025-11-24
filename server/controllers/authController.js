@@ -3,8 +3,9 @@ const jwt = require('jsonwebtoken');
 var validator = require('validator');
 
 exports.signup = async (req, res) => {
-    let { fullName, email, password } = req.body;
-    let trimmedName = validator.trim(fullName);
+    let { name, surname, email, password } = req.body;
+    let trimmedName = validator.trim(name);
+    let trimmedSurname = validator.trim(surname);
     let trimmedEmail = validator.trim(email);
     let trimmedPsw = validator.trim(password);
     //Validación inputs
@@ -14,10 +15,16 @@ exports.signup = async (req, res) => {
             message: "Invalid email format"
         });
     }
-    if (!validator.isLength(trimmedName, { min: 2, max: 100 }) || !validator.isAlpha(fullName, 'en-US', { ignore: ' ' })) {
+    if (!validator.isLength(trimmedName, { min: 2, max: 100 }) || !validator.isAlpha(name, 'en-US', { ignore: ' ' })) {
         return res.status(400).json({
             success: false,
             message: "Invalid name format"
+        });
+    }
+    if (!validator.isLength(trimmedSurname, { min: 2, max: 100 }) || !validator.isAlpha(surname, 'en-US', { ignore: ' ' })) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid surname format"
         });
     }
     if (!validator.isLength(trimmedPsw, { min: 8, max: 100 })) {
@@ -36,7 +43,7 @@ exports.signup = async (req, res) => {
             message: "User already registered"
         });
     }
-    let [result] = await req.db.query("INSERT INTO users (fullname, email, hashed_psw, created_at) VALUES (?, ?, ?, NOW())", [trimmedName, trimmedEmail, hashedPsw]);
+    let [result] = await req.db.query("INSERT INTO users (name, surname, email, hashed_psw, created_at) VALUES (?, ?, ?, ?, NOW())", [trimmedName, trimmedSurname, trimmedEmail, hashedPsw]);
     if (result.affectedRows === 1) {
         return res.status(201).json({
             success: true,

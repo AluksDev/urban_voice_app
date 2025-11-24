@@ -3,7 +3,8 @@ import "./AuthModal.css";
 import Toaster from "../Toaster/Toaster";
 
 const AuthModal = () => {
-  const [fullName, setFullName] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [surname, setSurname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordRep, setPasswordRep] = useState<string>("");
@@ -15,14 +16,21 @@ const AuthModal = () => {
     e.preventDefault();
 
     // Trim inputs
-    const trimmedFullName = fullName.trim();
+    const trimmedName = name.trim();
+    const trimmedSurname = surname.trim();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
     const trimmedPasswordRep = passwordRep.trim();
 
     // Validation
-    if (trimmedFullName.length < 2) {
-      setToasterMessage("Full Name must be at least 2 characters");
+    if (trimmedName.length < 2) {
+      setToasterMessage("Name must be at least 2 characters");
+      setToasterType("error");
+      return;
+    }
+
+    if (trimmedSurname.length < 2) {
+      setToasterMessage("Surname must be at least 2 characters");
       setToasterType("error");
       return;
     }
@@ -47,7 +55,8 @@ const AuthModal = () => {
 
     // Prepare data to send
     const data = {
-      fullName: trimmedFullName,
+      name: trimmedName,
+      surname: trimmedSurname,
       email: trimmedEmail,
       password: trimmedPassword,
     };
@@ -66,7 +75,8 @@ const AuthModal = () => {
       }
 
       // Reset form
-      setFullName("");
+      setName("");
+      setSurname("");
       setEmail("");
       setPassword("");
       setPasswordRep("");
@@ -118,9 +128,17 @@ const AuthModal = () => {
           <form onSubmit={handleSignUp}>
             <input
               type="text"
-              placeholder="Full Name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              minLength={2}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Surname(s)"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
               minLength={2}
               required
             />

@@ -1,53 +1,65 @@
 import React, { useEffect, useState } from "react";
 import "./AuthModal.css";
 import Toaster from "../Toaster/Toaster";
+import { useAuth } from "../../context/AuthContext";
 
-const AuthModal = () => {
-  const [name, setName] = useState<string>("");
-  const [surname, setSurname] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [passwordRep, setPasswordRep] = useState<string>("");
+type AuthModalProps = {
+  onLogInSuccessful: () => void;
+};
+
+const AuthModal = ({ onLogInSuccessful }: AuthModalProps) => {
+  const [signupName, setSignupName] = useState<string>("");
+  const [signupSurname, setSignupSurname] = useState<string>("");
+  const [signupEmail, setSignupEmail] = useState<string>("");
+  const [signupPassword, setSignupPassword] = useState<string>("");
+  const [signupPasswordRep, setSignupPasswordRep] = useState<string>("");
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");
-  const [toasterLeaving, setToasterLeaving] = useState(false);
+  const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
+  const [loginEmail, setLoginEmail] = useState<string>("");
+  const [loginPassword, setLoginPassword] = useState<string>("");
+
+  const auth = useAuth();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Trim inputs
-    const trimmedName = name.trim();
-    const trimmedSurname = surname.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
-    const trimmedPasswordRep = passwordRep.trim();
+    const trimmedSignupName = signupName.trim();
+    const trimmedSignupSurname = signupSurname.trim();
+    const trimmedSignupEmail = signupEmail.trim();
+    const trimmedSignupPassword = signupPassword.trim();
+    const trimmedSignupPasswordRep = signupPasswordRep.trim();
 
     // Validation
-    if (trimmedName.length < 2) {
+    if (trimmedSignupName.length < 2) {
       setToasterMessage("Name must be at least 2 characters");
       setToasterType("error");
       return;
     }
 
-    if (trimmedSurname.length < 2) {
+    if (trimmedSignupSurname.length < 2) {
       setToasterMessage("Surname must be at least 2 characters");
       setToasterType("error");
       return;
     }
 
-    if (!trimmedEmail.includes("@") || !trimmedEmail.includes(".")) {
+    if (
+      !trimmedSignupEmail.includes("@") ||
+      !trimmedSignupEmail.includes(".")
+    ) {
       setToasterMessage("Please enter a valid email address");
       setToasterType("error");
       return;
     }
 
-    if (trimmedPassword.length < 8) {
+    if (trimmedSignupPassword.length < 8) {
       setToasterMessage("Password must be at least 8 characters");
       setToasterType("error");
       return;
     }
 
-    if (trimmedPassword !== trimmedPasswordRep) {
+    if (trimmedSignupPassword !== trimmedSignupPasswordRep) {
       setToasterMessage("Passwords do not match");
       setToasterType("error");
       return;
@@ -55,10 +67,10 @@ const AuthModal = () => {
 
     // Prepare data to send
     const data = {
-      name: trimmedName,
-      surname: trimmedSurname,
-      email: trimmedEmail,
-      password: trimmedPassword,
+      name: trimmedSignupName,
+      surname: trimmedSignupSurname,
+      email: trimmedSignupEmail,
+      password: trimmedSignupPassword,
     };
 
     try {
@@ -75,13 +87,59 @@ const AuthModal = () => {
       }
 
       // Reset form
-      setName("");
-      setSurname("");
-      setEmail("");
-      setPassword("");
-      setPasswordRep("");
+      setSignupName("");
+      setSignupSurname("");
+      setSignupEmail("");
+      setSignupPassword("");
+      setSignupPasswordRep("");
     } catch (err) {
       console.log("Error signing up: ", err);
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedLoginEmail = loginEmail.trim();
+    const trimmedLoginPsw = loginPassword.trim();
+
+    if (!trimmedLoginEmail.includes("@")) {
+      setToasterMessage("Please enter a valid email");
+      setToasterType("error");
+      return;
+    }
+
+    if (trimmedLoginPsw.length < 8) {
+      setToasterMessage("Password must be at least 8 characters");
+      setToasterType("error");
+      return;
+    }
+
+    // Prepare data to send
+    const loginData = {
+      email: trimmedLoginEmail,
+      password: trimmedLoginPsw,
+    };
+
+    try {
+      const res = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData),
+      });
+
+      const result = await res.json();
+      if (result.success == false) {
+        setToasterMessage(result.message);
+        setToasterType("error");
+      } else {
+        onLogInSuccessful();
+        auth.login(result.user, result.token);
+      }
+      // Reset form
+      setLoginEmail("");
+      setLoginPassword("");
+    } catch (err) {
+      console.log("Error loggin in: ", err);
     }
   };
 
@@ -116,12 +174,27 @@ const AuthModal = () => {
 
         <div className="login-container">
           <h2>Log In</h2>
-          <form action="">
-            <input type="text" name="" id="" />
-            <input type="password" name="" id="" />
-            <button>Log In</button>
+
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              minLength={8}
+              required
+            />
+
+            <button type="submit">Log In</button>
           </form>
-          <a>Forgot your password?</a>
         </div>
         <div className="signup-container">
           <h2>Sign Up</h2>
@@ -129,39 +202,39 @@ const AuthModal = () => {
             <input
               type="text"
               placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={signupName}
+              onChange={(e) => setSignupName(e.target.value)}
               minLength={2}
               required
             />
             <input
               type="text"
               placeholder="Surname(s)"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
+              value={signupSurname}
+              onChange={(e) => setSignupSurname(e.target.value)}
               minLength={2}
               required
             />
             <input
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={signupEmail}
+              onChange={(e) => setSignupEmail(e.target.value)}
               required
             />
             <input
               type="password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={signupPassword}
+              onChange={(e) => setSignupPassword(e.target.value)}
               minLength={8}
               required
             />
             <input
               type="password"
               placeholder="Repeat Password"
-              value={passwordRep}
-              onChange={(e) => setPasswordRep(e.target.value)}
+              value={signupPasswordRep}
+              onChange={(e) => setSignupPasswordRep(e.target.value)}
               minLength={8}
               required
             />

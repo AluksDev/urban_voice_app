@@ -115,7 +115,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign(
             tokenPayload,
             tokenSecret,
-            { expiresIn: "7d" }
+            { expiresIn: "1d" }
         );
 
         return res.status(200).json({
@@ -127,11 +127,27 @@ exports.login = async (req, res) => {
                 name: userName,
                 surname: userSurname,
                 email: userEmail,
-                role: userRole
+                role: userRole,
             }
         });
     } catch (err) {
         console.error('Login error:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+exports.verify = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ success: false, valid: false, message: 'Not authenticated' });
+        }
+
+        const user = req.user;
+
+        // Keep verify response minimal for MVP — server still enforces token expiry.
+        return res.status(200).json({ success: true, user });
+    } catch (err) {
+        console.error('Verify error:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
     }
 };

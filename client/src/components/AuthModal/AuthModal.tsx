@@ -4,7 +4,7 @@ import Toaster from "../Toaster/Toaster";
 import { useAuth } from "../../context/AuthContext";
 
 type AuthModalProps = {
-  onLogInSuccessful: () => void;
+  onLogInSuccessful: (message: string) => void;
 };
 
 const AuthModal = ({ onLogInSuccessful }: AuthModalProps) => {
@@ -84,6 +84,12 @@ const AuthModal = ({ onLogInSuccessful }: AuthModalProps) => {
       if (result.success == false) {
         setToasterMessage(result.message);
         setToasterType("error");
+      } else {
+        // Successful signup — auto-login the user
+        if (result.user && result.token) {
+          auth.login(result.user, result.token);
+        }
+        onLogInSuccessful("User registered");
       }
 
       // Reset form
@@ -132,7 +138,7 @@ const AuthModal = ({ onLogInSuccessful }: AuthModalProps) => {
         setToasterMessage(result.message);
         setToasterType("error");
       } else {
-        onLogInSuccessful();
+        onLogInSuccessful("Log in successful");
         auth.login(result.user, result.token);
       }
       // Reset form

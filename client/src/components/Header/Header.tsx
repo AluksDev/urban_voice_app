@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import "./Header.css";
 import { useAuth } from "../../context/AuthContext";
 
@@ -24,20 +25,41 @@ const Header = ({ onOpenModal }: HeaderProps) => {
           </div>
         </div>
         <nav className="navContainer">
-          <span>Dashboard</span>
-          {auth.isLoggedIn && <span>My Reports</span>}
-          {auth.isLoggedIn && <span>Map</span>}
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "activeClass" : "")}
+          >
+            Dashboard
+          </NavLink>
+          {auth.isLoggedIn && (
+            <NavLink
+              to="/reports"
+              className={({ isActive }) => (isActive ? "activeClass" : "")}
+            >
+              My Reports
+            </NavLink>
+          )}
+          {auth.isLoggedIn && (
+            <NavLink
+              to="/map"
+              className={({ isActive }) => (isActive ? "activeClass" : "")}
+            >
+              Map
+            </NavLink>
+          )}
         </nav>
         <div>
           {auth.isLoggedIn && (
-            <div className="profile-container">
-              <span>
-                {auth.user?.name} {auth.user?.surname}
-              </span>
-              <span>
-                <img src="images/profile-icon.jpg" alt="Profile Image" />
-              </span>
-            </div>
+            <NavLink to={`users/${auth.user?.id}`}>
+              <div className="profile-container">
+                <span>
+                  {auth.user?.name} {auth.user?.surname}
+                </span>
+                <span>
+                  <img src="images/profile-icon.jpg" alt="Profile Image" />
+                </span>
+              </div>
+            </NavLink>
           )}
           <div className="new-report-container">
             {auth.isLoggedIn ? (

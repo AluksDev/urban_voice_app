@@ -48,10 +48,23 @@ exports.signup = async (req, res) => {
         }
         let [result] = await req.db.query("INSERT INTO users (name, surname, email, hashed_psw, created_at) VALUES (?, ?, ?, ?, NOW())", [trimmedName, trimmedSurname, trimmedEmail, hashedPsw]);
         if (result.affectedRows === 1) {
+            // Build user object for response
+            const newUserId = result.insertId;
+            const userObj = { id: newUserId, name: trimmedName, surname: trimmedSurname, email: trimmedEmail, role: 'user' };
+
+            const tokenSecret = process.env.JWT_SECRET;
+            if (!tokenSecret) {
+                console.error('JWT_SECRET not set');
+                return res.status(500).json({ success: false, message: 'Server configuration error' });
+            }
+
+            const token = jwt.sign({ id: userObj.id, email: userObj.email, role: userObj.role }, tokenSecret, { expiresIn: '1d' });
+
             return res.status(201).json({
                 success: true,
                 message: "User registered",
-                userId: result.insertId
+                user: userObj,
+                token: token
             });
         } else {
             return res.status(500).json({

@@ -9,11 +9,13 @@ import UserProfile from "./pages/UserProfile/UserProfile";
 import AuthModal from "./components/AuthModal/AuthModal";
 import Toaster from "./components/Toaster/Toaster";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoutes from "./components/ProtectedRoutes/ProtectedRoutes";
 
 function App() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showToaster, setShowToaster] = useState<boolean>(false);
   const [toasterMessage, setToasterMessage] = useState<string>("");
+  const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,17 +53,65 @@ function App() {
           {showToaster && (
             <Toaster
               message={toasterMessage}
-              type={"success"}
+              type={toasterType}
               isLeaving={toasterLeaving}
             />
           )}
           <Header onOpenModal={() => setShowModal(true)} />
           <Routes>
             <Route path="/" element={<Homepage />} />
-            <Route path="/reports" element={<MyReports />} />
-            <Route path="/map" element={<Map />} />
-            <Route path="/users/:id" element={<UserProfile />} />
-            {/* 404 route */}
+
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoutes
+                  onAuthRequired={() => {
+                    setToasterType("error");
+                    setToasterMessage(
+                      "You must be logged in to access this page"
+                    );
+                    setShowToaster(true);
+                  }}
+                >
+                  <MyReports />
+                </ProtectedRoutes>
+              }
+            />
+
+            <Route
+              path="/map"
+              element={
+                <ProtectedRoutes
+                  onAuthRequired={() => {
+                    setToasterType("error");
+                    setToasterMessage(
+                      "You must be logged in to access this page"
+                    );
+                    setShowToaster(true);
+                  }}
+                >
+                  <Map />
+                </ProtectedRoutes>
+              }
+            />
+
+            <Route
+              path="/users/:id"
+              element={
+                <ProtectedRoutes
+                  onAuthRequired={() => {
+                    setToasterType("error");
+                    setToasterMessage(
+                      "You must be logged in to access this page"
+                    );
+                    setShowToaster(true);
+                  }}
+                >
+                  <UserProfile />
+                </ProtectedRoutes>
+              }
+            />
+
             <Route path="*" element={<div>Not found</div>} />
           </Routes>
         </AuthProvider>

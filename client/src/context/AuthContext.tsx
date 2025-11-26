@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // token verification happens on mount; we expose an "initializing" flag so consumers can wait
   const [initializing, setInitializing] = useState(true);
 
   // Login updates all auth state
@@ -62,6 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const storedToken = localStorage.getItem("auth_token");
         if (!storedToken) {
+          // no token — nothing to verify
           if (!cancelled) setInitializing(false);
           return;
         }

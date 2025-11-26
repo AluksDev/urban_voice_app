@@ -118,6 +118,7 @@ exports.login = async (req, res) => {
         const userSurname = user.surname;
         const userEmail = user.email;
         const userRole = user.role;
+        const userPicture = user.photo_url;
 
         const tokenSecret = process.env.JWT_SECRET;
         const tokenPayload = {
@@ -141,6 +142,7 @@ exports.login = async (req, res) => {
                 surname: userSurname,
                 email: userEmail,
                 role: userRole,
+                picture_url: userPicture
             }
         });
     } catch (err) {

@@ -10,6 +10,7 @@ import AuthModal from "./components/AuthModal/AuthModal";
 import Toaster from "./components/Toaster/Toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoutes from "./components/ProtectedRoutes/ProtectedRoutes";
+import NewReport from "./components/NewReport/NewReport";
 
 function App() {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -17,6 +18,7 @@ function App() {
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
+  const [showNewReport, setShowNewReport] = useState<boolean>(false);
 
   useEffect(() => {
     if (showToaster) {
@@ -48,8 +50,12 @@ function App() {
                 setShowToaster(true);
                 setToasterMessage(message);
               }}
+              closeModal={() => setShowModal(false)}
             />
           ) : null}
+          {showNewReport && (
+            <NewReport closeModal={() => setShowNewReport(false)} />
+          )}
           {showToaster && (
             <Toaster
               message={toasterMessage}
@@ -57,7 +63,10 @@ function App() {
               isLeaving={toasterLeaving}
             />
           )}
-          <Header onOpenModal={() => setShowModal(true)} />
+          <Header
+            openNewReport={() => setShowNewReport(true)}
+            onOpenModal={() => setShowModal(true)}
+          />
           <Routes>
             <Route path="/" element={<Homepage />} />
 

@@ -5,9 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 
 type AuthModalProps = {
   onLogInSuccessful: (message: string) => void;
+  closeModal: () => void;
 };
 
-const AuthModal = ({ onLogInSuccessful }: AuthModalProps) => {
+const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [signupName, setSignupName] = useState<string>("");
   const [signupSurname, setSignupSurname] = useState<string>("");
   const [signupEmail, setSignupEmail] = useState<string>("");
@@ -177,7 +178,9 @@ const AuthModal = ({ onLogInSuccessful }: AuthModalProps) => {
             isLeaving={toasterLeaving}
           />
         )}
-
+        <div className="close-icon-container" onClick={closeModal}>
+          <img src="/images/close-icon.svg" alt="" />
+        </div>
         <div className="login-container">
           <h2>Log In</h2>
 

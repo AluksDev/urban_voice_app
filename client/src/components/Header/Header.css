@@ -44,13 +44,13 @@ header > * {
   max-height: 100%;
 }
 
-.new-report-container {
+.new-report-button-container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.new-report-container button {
+.new-report-button-container button {
   background-color: #00b65c;
   outline: none;
   border: none;

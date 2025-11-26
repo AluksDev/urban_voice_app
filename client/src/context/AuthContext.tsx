@@ -7,6 +7,7 @@ type User = {
   surname: string;
   email: string;
   role: string;
+  picture_url: string;
 } | null;
 
 // Define the context type

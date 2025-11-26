@@ -5,9 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 
 type HeaderProps = {
   onOpenModal: () => void;
+  openNewReport: () => void;
 };
 
-const Header = ({ onOpenModal }: HeaderProps) => {
+const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
   const auth = useAuth();
   return (
     <>
@@ -61,9 +62,9 @@ const Header = ({ onOpenModal }: HeaderProps) => {
               </div>
             </NavLink>
           )}
-          <div className="new-report-container">
+          <div className="new-report-button-container">
             {auth.isLoggedIn ? (
-              <button>New report</button>
+              <button onClick={openNewReport}>New report</button>
             ) : (
               <button onClick={onOpenModal}>Log In // Sign Up</button>
             )}

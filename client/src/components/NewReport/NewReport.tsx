@@ -1,6 +1,13 @@
 import React, { useRef, useState, type ChangeEvent, useEffect } from "react";
 import "./NewReport.css";
 import Toaster from "../Toaster/Toaster";
+import { MapContainer, TileLayer, Marker, Tooltip, Popup } from "react-leaflet";
+
+interface Location {
+  lat: number | null;
+  lon: number | null;
+  address: string;
+}
 
 type NewReportProps = {
   closeModal: () => void;
@@ -13,6 +20,11 @@ const NewReport = ({ closeModal }: NewReportProps) => {
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
+  const [reportLocation, setReportLocation] = useState<Location>({
+    lat: null,
+    lon: null,
+    address: "",
+  });
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -34,6 +46,9 @@ const NewReport = ({ closeModal }: NewReportProps) => {
 
   const addReport = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedTitle = reportTitle.trim();
+    const trimmedCategory = reportCategory.trim();
+    const trimmedDescription = reportDescription.trim();
   };
 
   useEffect(() => {
@@ -121,7 +136,23 @@ const NewReport = ({ closeModal }: NewReportProps) => {
               />
             </div>
             <div className="right-side">
-              <p>Map placeholder</p>
+              <div id="map" className="map-container">
+                <MapContainer
+                  center={[51.505, -0.09]}
+                  zoom={13}
+                  scrollWheelZoom={false}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={[51.505, -0.09]}>
+                    <Popup>
+                      A pretty CSS3 popup. <br /> Easily customizable.
+                    </Popup>
+                  </Marker>
+                </MapContainer>
+              </div>
               <div className="actions">
                 <button type="button">Cancel</button>
                 <button type="submit">Submit</button>

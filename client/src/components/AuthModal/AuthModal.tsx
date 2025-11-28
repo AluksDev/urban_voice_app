@@ -100,7 +100,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       setSignupPassword("");
       setSignupPasswordRep("");
     } catch (err) {
-      console.log("Error signing up: ", err);
+      console.error("Error signing up: ", err);
     }
   };
 
@@ -146,7 +146,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       setLoginEmail("");
       setLoginPassword("");
     } catch (err) {
-      console.log("Error loggin in: ", err);
+      console.error("Error loggin in: ", err);
     }
   };
 

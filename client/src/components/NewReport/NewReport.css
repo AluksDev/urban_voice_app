@@ -60,12 +60,3 @@
   height: 300px;
   margin-bottom: 10px;
 }
-
-.map-container > div {
-  width: 500px;
-  height: 300px;
-}
-
-.new-report-container div:nth-child(1) {
-  margin: 0;
-}

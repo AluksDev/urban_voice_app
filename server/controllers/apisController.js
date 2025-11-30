@@ -6,7 +6,6 @@ exports.getCoordsFromAddress = async (req, res) => {
             throw new Error("Error in response");
         }
         const data = await apiRes.json();
-        console.log(data);
         return res.status(200).json({
             success: true,
             message: "Addresses fetched correctly",

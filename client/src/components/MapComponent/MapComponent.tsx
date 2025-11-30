@@ -5,21 +5,22 @@ interface ReportMapProps {
   center: [number, number];
   marker?: [number, number] | null;
   zoom?: number;
+  onMarkerChange?: (coords: [number, number]) => void;
 }
 
-function ChangeView({
-  center,
-  zoom,
-}: {
-  center: [number, number];
-  zoom: number;
-}) {
+function ChangeView({ center }: { center: [number, number] }) {
   const map = useMap();
-  map.setView(center, zoom);
+  const searchZoom = 16;
+  map.setView(center, searchZoom);
   return null;
 }
 
-const MapComponent = ({ center, marker, zoom = 13 }: ReportMapProps) => {
+const MapComponent = ({
+  center,
+  marker,
+  zoom = 13,
+  onMarkerChange,
+}: ReportMapProps) => {
   return (
     <MapContainer
       center={center}
@@ -27,7 +28,7 @@ const MapComponent = ({ center, marker, zoom = 13 }: ReportMapProps) => {
       scrollWheelZoom={true}
       style={{ width: "100%", height: "100%" }}
     >
-      <ChangeView center={center} zoom={zoom} />
+      <ChangeView center={center} />
 
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
@@ -35,7 +36,16 @@ const MapComponent = ({ center, marker, zoom = 13 }: ReportMapProps) => {
       />
 
       {marker && (
-        <Marker position={marker}>
+        <Marker
+          position={marker}
+          draggable={true}
+          eventHandlers={{
+            dragend: (e) => {
+              const { lat, lng } = e.target.getLatLng();
+              if (onMarkerChange) onMarkerChange([lat, lng]);
+            },
+          }}
+        >
           <Popup>Selected location</Popup>
         </Marker>
       )}

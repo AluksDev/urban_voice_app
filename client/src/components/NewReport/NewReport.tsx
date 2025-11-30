@@ -2,12 +2,7 @@ import React, { useRef, useState, type ChangeEvent, useEffect } from "react";
 import "./NewReport.css";
 import Toaster from "../Toaster/Toaster";
 import MapComponent from "../MapComponent/MapComponent";
-
-interface Location {
-  lat: number | null;
-  lon: number | null;
-  address: string;
-}
+import { map } from "leaflet";
 
 type NewReportProps = {
   closeModal: () => void;
@@ -23,18 +18,12 @@ const NewReport = ({ closeModal }: NewReportProps) => {
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
-  const [reportLocation, setReportLocation] = useState<Location>({
-    lat: null,
-    lon: null,
-    address: "",
-  });
   const [mapCoordinates, setMapCoordinates] = useState<[number, number]>([
     0, 0,
   ]);
   const [possibleAddresses, setPossibleAddresses] = useState<any[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const mapRef = useRef<any | null>(null);
 
   const handleFileRefClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -68,7 +57,6 @@ const NewReport = ({ closeModal }: NewReportProps) => {
         throw new Error("Error in fetching data");
       }
       setPossibleAddresses(data.locations);
-      console.log(data.locations);
     } catch (e) {
       console.error("Error in getting coords from address", e);
     }
@@ -79,6 +67,13 @@ const NewReport = ({ closeModal }: NewReportProps) => {
     const trimmedTitle = reportTitle.trim();
     const trimmedCategory = reportCategory.trim();
     const trimmedDescription = reportDescription.trim();
+    const dataToSend = {
+      title: trimmedTitle,
+      category: trimmedCategory,
+      decription: trimmedDescription,
+      image: reportFile ? reportFile : null,
+      location: mapCoordinates,
+    };
   };
 
   useEffect(() => {
@@ -145,10 +140,12 @@ const NewReport = ({ closeModal }: NewReportProps) => {
                 placeholder="Title"
                 value={reportTitle}
                 onChange={(e) => setReportTitle(e.target.value)}
+                required
               />
               <select
                 value={reportCategory}
                 onChange={(e) => setReportCategory(e.target.value)}
+                required
               >
                 <option disabled value="">
                   -- Select category --
@@ -168,6 +165,7 @@ const NewReport = ({ closeModal }: NewReportProps) => {
                 rows={5}
                 value={reportDescription}
                 onChange={(e) => setReportDescription(e.target.value)}
+                required
               ></textarea>
 
               <button type="button" onClick={handleFileRefClick}>
@@ -190,22 +188,39 @@ const NewReport = ({ closeModal }: NewReportProps) => {
               <input
                 type="text"
                 value={reportAddress}
-                onChange={(e) => setReportAddress(e.target.value)}
+                onChange={(e) => {
+                  setPossibleAddresses([]);
+                  setReportAddress(e.target.value);
+                }}
                 placeholder="Address"
               />
-              {possibleAddresses.length > 0 && (
-                <select>
-                  {possibleAddresses.map((location, i) => {
-                    return (
-                      <option key={i} value={i}>
-                        {location.display_name}
-                      </option>
-                    );
-                  })}
-                </select>
-              )}
+              <select
+                onChange={(e) => {
+                  const index: number = Number(e.target.value);
+                  const location = possibleAddresses[index];
+                  setMapCoordinates([
+                    Number(location.lat),
+                    Number(location.lon),
+                  ]);
+                }}
+              >
+                <option value="">Type address above...</option>
+                {possibleAddresses.length > 0 &&
+                  possibleAddresses.map((location, i) => (
+                    <option key={i} value={i}>
+                      {location.display_name}
+                    </option>
+                  ))}
+              </select>
+
               <div id="map" className="map-container">
-                <MapComponent center={[mapCoordinates[0], mapCoordinates[1]]} />
+                <MapComponent
+                  center={[mapCoordinates[0], mapCoordinates[1]]}
+                  marker={[mapCoordinates[0], mapCoordinates[1]]}
+                  onMarkerChange={(newCoords) => {
+                    setMapCoordinates(newCoords);
+                  }}
+                />
               </div>
               <div className="actions">
                 <button type="button">Cancel</button>

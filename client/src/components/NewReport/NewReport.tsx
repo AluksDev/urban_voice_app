@@ -2,12 +2,12 @@ import React, { useRef, useState, type ChangeEvent, useEffect } from "react";
 import "./NewReport.css";
 import Toaster from "../Toaster/Toaster";
 import MapComponent from "../MapComponent/MapComponent";
-import { map } from "leaflet";
 
 type NewReportProps = {
   closeModal: () => void;
+  onSuccessfulReport: (message: string) => void;
 };
-const NewReport = ({ closeModal }: NewReportProps) => {
+const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   const GRANADA_CENTER: [number, number] = [37.1773, -3.5986]; // Used for fallback on getting initial coords
 
   const [reportTitle, setReportTitle] = useState<string>("");
@@ -28,6 +28,7 @@ const NewReport = ({ closeModal }: NewReportProps) => {
   const handleFileRefClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
+  const apiUrl: string = import.meta.env.VITE_API_URL;
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] ?? null;
@@ -45,9 +46,7 @@ const NewReport = ({ closeModal }: NewReportProps) => {
     const addressToSend = reportAddress.trim();
     try {
       const res = await fetch(
-        `http://localhost:3001/api/address?q=${encodeURIComponent(
-          addressToSend
-        )}`
+        `${apiUrl}/api/address?q=${encodeURIComponent(addressToSend)}`
       );
       if (!res.ok) {
         throw new Error("Request failed");
@@ -64,16 +63,52 @@ const NewReport = ({ closeModal }: NewReportProps) => {
 
   const addReport = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (reportTitle == "" || reportCategory == "" || reportDescription == "") {
+      setToasterType("error");
+      setToasterMessage("All fields are required");
+      return;
+    }
     const trimmedTitle = reportTitle.trim();
     const trimmedCategory = reportCategory.trim();
     const trimmedDescription = reportDescription.trim();
-    const dataToSend = {
-      title: trimmedTitle,
-      category: trimmedCategory,
-      decription: trimmedDescription,
-      image: reportFile ? reportFile : null,
-      location: mapCoordinates,
-    };
+
+    const formData = new FormData();
+    formData.append("title", trimmedTitle);
+    formData.append("category", trimmedCategory);
+    formData.append("description", trimmedDescription);
+
+    if (reportFile) {
+      formData.append("image", reportFile);
+    }
+
+    formData.append("lat", String(mapCoordinates[0]));
+    formData.append("lon", String(mapCoordinates[1]));
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("Unauthorized user");
+      }
+      const res = await fetch(`${apiUrl}/reports/new`, {
+        headers: { Authorization: `Bearer ${token}` },
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error("Error in response");
+      }
+      const data = await res.json();
+      if (data.success == false) {
+        setToasterMessage(data.message);
+        setToasterType("error");
+      } else {
+        onSuccessfulReport(data.message);
+      }
+    } catch (e) {
+      console.error("Error in adding report", e);
+      setToasterType("error");
+      setToasterMessage("An error occurred");
+    }
   };
 
   useEffect(() => {

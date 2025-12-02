@@ -54,7 +54,14 @@ function App() {
             />
           ) : null}
           {showNewReport && (
-            <NewReport closeModal={() => setShowNewReport(false)} />
+            <NewReport
+              onSuccessfulReport={(message: string) => {
+                setShowNewReport(false);
+                setShowToaster(true);
+                setToasterMessage(message);
+              }}
+              closeModal={() => setShowNewReport(false)}
+            />
           )}
           {showToaster && (
             <Toaster

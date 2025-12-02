@@ -19,9 +19,8 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
   const [loginEmail, setLoginEmail] = useState<string>("");
   const [loginPassword, setLoginPassword] = useState<string>("");
-
+  const apiUrl: string = import.meta.env.VITE_API_URL;
   const auth = useAuth();
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -75,7 +74,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     };
 
     try {
-      const res = await fetch("http://localhost:3001/auth/signup", {
+      const res = await fetch(`${apiUrl}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -128,7 +127,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     };
 
     try {
-      const res = await fetch("http://localhost:3001/auth/login", {
+      const res = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),

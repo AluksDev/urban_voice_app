@@ -10,7 +10,7 @@ interface ReportMapProps {
 
 function ChangeView({ center }: { center: [number, number] }) {
   const map = useMap();
-  const searchZoom = 16;
+  const searchZoom = 18;
   map.setView(center, searchZoom);
   return null;
 }

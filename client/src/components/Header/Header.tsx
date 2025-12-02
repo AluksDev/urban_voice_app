@@ -21,7 +21,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
             {auth.isLoggedIn ? (
               <h2>Welcome, {auth.user?.name}</h2>
             ) : (
-              <h2>Welcome, User</h2>
+              <h2>Welcome</h2>
             )}
           </div>
         </div>

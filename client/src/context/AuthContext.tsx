@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // token verification happens on mount; we expose an "initializing" flag so consumers can wait
   const [initializing, setInitializing] = useState(true);
+  const apiUrl: string = import.meta.env.VITE_API_URL;
 
   // Login updates all auth state
   const login = (userData: User, token: string) => {
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         // call server verify endpoint
-        const res = await fetch("http://localhost:3001/auth/verify", {
+        const res = await fetch(`${apiUrl}/auth/verify`, {
           method: "GET",
           headers: { Authorization: `Bearer ${storedToken}` },
         });

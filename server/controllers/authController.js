@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-var validator = require('validator');
+const validator = require('validator');
 require('dotenv').config();
 
 exports.signup = async (req, res) => {
@@ -8,7 +8,7 @@ exports.signup = async (req, res) => {
         let { name, surname, email, password } = req.body;
         let trimmedName = validator.trim(name || '');
         let trimmedSurname = validator.trim(surname || '');
-        let trimmedEmail = validator.trim(email || '');
+        let trimmedEmail = validator.trim(email || '').toLowerCase();
         let trimmedPsw = validator.trim(password || '');
 
         //Validación inputs
@@ -81,7 +81,7 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         let { email, password } = req.body;
-        let trimmedLoginEmail = validator.trim(email || '');
+        let trimmedLoginEmail = validator.trim(email || '').toLowerCase();
         let trimmedLoginPsw = validator.trim(password || '');
 
         if (!validator.isEmail(trimmedLoginEmail)) {

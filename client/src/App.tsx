@@ -48,6 +48,7 @@ function App() {
               onLogInSuccessful={(message: string) => {
                 setShowModal(false);
                 setShowToaster(true);
+                setToasterType("success");
                 setToasterMessage(message);
               }}
               closeModal={() => setShowModal(false)}
@@ -58,6 +59,7 @@ function App() {
               onSuccessfulReport={(message: string) => {
                 setShowNewReport(false);
                 setShowToaster(true);
+                setToasterType("success");
                 setToasterMessage(message);
               }}
               closeModal={() => setShowNewReport(false)}

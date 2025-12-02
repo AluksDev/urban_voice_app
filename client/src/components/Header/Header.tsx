@@ -17,13 +17,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
           <div className="logoContainer">
             <img src="images/logo.png" alt="Logo" />
           </div>
-          <div>
-            {auth.isLoggedIn ? (
-              <h2>Welcome, {auth.user?.name}</h2>
-            ) : (
-              <h2>Welcome</h2>
-            )}
-          </div>
+          <div>{auth.isLoggedIn && <h2>Welcome, {auth.user?.name}</h2>}</div>
         </div>
         <nav className="navContainer">
           <NavLink
@@ -51,7 +45,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
         </nav>
         <div>
           {auth.isLoggedIn && (
-            <NavLink to={`users/${auth.user?.id}`}>
+            <NavLink className="profile-anchor" to={`users/${auth.user?.id}`}>
               <div className="profile-container">
                 <span>
                   {auth.user?.name} {auth.user?.surname}
@@ -66,7 +60,9 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
             {auth.isLoggedIn ? (
               <button onClick={openNewReport}>New report</button>
             ) : (
-              <button onClick={onOpenModal}>Log In // Sign Up</button>
+              <button className="logIn-button" onClick={onOpenModal}>
+                Log In // Sign Up
+              </button>
             )}
           </div>
         </div>

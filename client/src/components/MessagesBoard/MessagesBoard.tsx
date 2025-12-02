@@ -3,10 +3,10 @@ import "./MessagesBoard.css";
 
 const MessagesBoard = () => {
   return (
-    <section>
-      <h2>MessagesBoard Comp</h2>
+    <section className="messages-board-container">
+      <h3>Board</h3>
       <article>
-        <div>
+        <div className="message-details-container">
           <span>Admin</span>
           <span>//</span>
           <span>Date Here</span>
@@ -14,7 +14,7 @@ const MessagesBoard = () => {
         <p>Message Here</p>
       </article>
       <article>
-        <div>
+        <div className="message-details-container">
           <span>Admin</span>
           <span>//</span>
           <span>Date Here</span>
@@ -22,7 +22,7 @@ const MessagesBoard = () => {
         <p>Message Here</p>
       </article>
       <article>
-        <div>
+        <div className="message-details-container">
           <span>Admin</span>
           <span>//</span>
           <span>Date Here</span>

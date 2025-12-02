@@ -4,7 +4,10 @@ main {
   justify-content: center;
 }
 
-.left-container,
 .right-container {
+  width: 60%;
+}
+
+.left-container {
   flex: 1;
 }

@@ -19,6 +19,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
   const [loginEmail, setLoginEmail] = useState<string>("");
   const [loginPassword, setLoginPassword] = useState<string>("");
+  const [rightClass, setRightClass] = useState<boolean>(false);
   const apiUrl: string = import.meta.env.VITE_API_URL;
   const auth = useAuth();
   const handleSignUp = async (e: React.FormEvent) => {
@@ -149,6 +150,10 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     }
   };
 
+  const handleClassClick = () => {
+    setRightClass(!rightClass);
+  };
+
   useEffect(() => {
     if (toasterMessage === "") return;
 
@@ -168,8 +173,26 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   }, [toasterMessage]);
 
   return (
-    <div className="modal-container">
-      <div className="inner-modal">
+    <div className="modal-container" onClick={closeModal}>
+      <div className="inner-modal" onClick={(e) => e.stopPropagation()}>
+        <div className={`overlay-container ${rightClass ? "right" : ""}`}>
+          <div className={`overlay ${rightClass ? "right" : ""}`}>
+            <div className="overlay-panel-left">
+              <h3>Hello friend</h3>
+              <h4>Enter your personal details and start journey with us</h4>
+              <p>Do you already have an account?</p>
+              <button onClick={handleClassClick}>Log In</button>
+            </div>
+            <div className="overlay-panel-right">
+              <h3>Welcome Back!</h3>
+              <h4>
+                To keep connected with us please login with your personal info
+              </h4>
+              <p>Don't have an account?</p>
+              <button onClick={handleClassClick}>Sign Up</button>
+            </div>
+          </div>
+        </div>
         {toasterMessage != "" && (
           <Toaster
             message={toasterMessage}
@@ -177,7 +200,10 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
             isLeaving={toasterLeaving}
           />
         )}
-        <div className="close-icon-container" onClick={closeModal}>
+        <div className="close-icon-container-right" onClick={closeModal}>
+          <img src="/images/close-icon.svg" alt="" />
+        </div>
+        <div className="close-icon-container-left" onClick={closeModal}>
           <img src="/images/close-icon.svg" alt="" />
         </div>
         <div className="login-container">

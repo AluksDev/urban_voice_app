@@ -8,15 +8,26 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
 
 .inner-modal {
   position: relative;
-  border: 1px solid white;
+  border: 1px solid #00b65c;
+  border-radius: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 3rem 2rem;
+  background-color: #8097b0;
+  padding: 1.5rem 2rem;
+  gap: 2rem;
+}
+
+.login-container h2,
+.signup-container h2 {
+  text-align: center;
+  color: white;
+  margin: 1rem;
 }
 
 form {
@@ -24,4 +35,108 @@ form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow-x: hidden;
+  border-radius: 20px 0 0 20px;
+  z-index: 2000;
+  transition: all 0.5s ease-in-out;
+}
+.overlay {
+  height: 100%;
+  width: 200%;
+  position: relative;
+  left: -100%;
+  background: linear-gradient(to right, #001d21, #0a2e52);
+  transition: all 0.5s ease-in-out;
+}
+
+.overlay-container.right {
+  transform: translateX(100%);
+  border-radius: 0 20px 20px 0;
+}
+.overlay.right {
+  transform: translateX(50%);
+}
+
+.overlay-panel-left {
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-50%);
+  color: white;
+  padding: 0 1rem;
+  gap: 0.5rem;
+}
+
+.overlay-panel-right {
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-50%);
+  color: white;
+  padding: 0 1rem;
+  gap: 0.5rem;
+}
+
+.overlay-panel-right button,
+.overlay-panel-left button {
+  background-color: #ff5100;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin: 1rem 0;
+}
+
+.overlay-panel-right button:hover,
+.overlay-panel-left button:hover {
+  background-color: #ff6e00;
+}
+
+.close-icon-container-right {
+  position: absolute;
+  top: 5%;
+  left: 90%;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.close-icon-container-right img {
+  max-width: 100%;
+}
+
+.close-icon-container-left {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.close-icon-container-left img {
+  max-width: 100%;
 }

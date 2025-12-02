@@ -1,12 +1,22 @@
 import React from "react";
+import "./RecentReports.css";
 
 const RecentReports = () => {
   return (
-    <section>
-      <h2>Recent Reports Comp</h2>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
+    <section className="recent-reports-container">
+      <h3>Recent Reports</h3>
+      <div className="report-card">
+        <span>Category</span>
+        <span>Date</span>
+      </div>
+      <div className="report-card">
+        <span>Category</span>
+        <span>Date</span>
+      </div>
+      <div className="report-card">
+        <span>Category</span>
+        <span>Date</span>
+      </div>
     </section>
   );
 };

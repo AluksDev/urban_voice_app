@@ -3,14 +3,10 @@ const jwt = require('jsonwebtoken');
 // Auth middleware: verifies JWT and attaches user row to req.user
 module.exports = async function authMiddleware(req, res, next) {
     try {
-        const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-        let token = null;
-
-        if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
-            token = authHeader.split(' ')[1];
+        const token = req.cookies?.auth_token;
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'Token missing' });
         }
-
-        if (!token) return res.status(401).json({ success: false, message: 'Token missing' });
 
         const secret = process.env.JWT_SECRET;
         if (!secret) {

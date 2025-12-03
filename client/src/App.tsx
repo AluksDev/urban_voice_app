@@ -19,6 +19,7 @@ function App() {
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
   const [showNewReport, setShowNewReport] = useState<boolean>(false);
+  const [refreshReports, setRefreshReports] = useState<number>(0);
 
   useEffect(() => {
     if (showToaster) {
@@ -61,6 +62,7 @@ function App() {
                 setShowToaster(true);
                 setToasterType("success");
                 setToasterMessage(message);
+                setRefreshReports((prev) => prev + 1);
               }}
               closeModal={() => setShowNewReport(false)}
             />
@@ -91,7 +93,7 @@ function App() {
                     setShowToaster(true);
                   }}
                 >
-                  <MyReports />
+                  <MyReports refreshReports={refreshReports} />
                 </ProtectedRoutes>
               }
             />
@@ -114,7 +116,7 @@ function App() {
             />
 
             <Route
-              path="/users/:id"
+              path="/user"
               element={
                 <ProtectedRoutes
                   onAuthRequired={() => {

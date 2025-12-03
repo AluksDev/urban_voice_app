@@ -1,0 +1,25 @@
+.my-reports-container {
+  background-color: hsla(216, 75%, 43%, 0.3);
+  margin: 0 1.5rem;
+  border-radius: 20px;
+  color: white;
+}
+
+.my-reports-container table {
+  font-family: "Roboto", sans-serif;
+  width: 100%;
+  border-spacing: 0 2rem;
+  padding: 0 2rem;
+}
+
+.my-reports-container table th,
+.my-reports-container table td {
+  font-family: "Roboto", sans-serif;
+  border-bottom: 1px solid white;
+  padding-bottom: 0.5rem;
+  width: 20%;
+}
+
+.my-reports-container table td {
+  text-align: center;
+}

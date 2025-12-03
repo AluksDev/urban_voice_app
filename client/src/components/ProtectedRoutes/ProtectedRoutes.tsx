@@ -13,7 +13,6 @@ const ProtectedRoutes = ({
   onAuthRequired,
 }: ProtectedRoutesPrompt) => {
   const auth = useAuth();
-  // While the provider verifies a stored token, don't redirect; wait for verification
   if (auth.initializing) {
     return <div style={{ padding: 20 }}>Checking authentication…</div>;
   }

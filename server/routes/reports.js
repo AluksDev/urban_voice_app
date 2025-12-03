@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware");
-const { newReport } = require("../controllers/reportsController")
+const { newReport, userReports } = require("../controllers/reportsController")
 const multer = require('multer')
 const path = require("path");
 
@@ -31,5 +31,6 @@ function fileFilter(req, file, cb) {
 const upload = multer({ storage, fileFilter });
 
 router.post("/new", authMiddleware, upload.single('image'), newReport);
+router.get("/user", authMiddleware, userReports);
 
 module.exports = router;

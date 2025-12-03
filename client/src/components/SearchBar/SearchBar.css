@@ -1,0 +1,32 @@
+.searchbar-container {
+  background-color: hsla(216, 75%, 43%, 0.3);
+  margin: 2rem 1.5rem 1rem;
+  border-radius: 20px;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1rem 1rem;
+}
+
+.searchbar-container .search-icon-container {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.searchbar-container .search-icon-container img {
+  max-width: 100%;
+}
+
+.searchbar-container .search-icon-container:hover {
+  transform: scale(1.1);
+}
+
+.searchbar-container .search-icon-container:active {
+  transform: scale(1);
+}

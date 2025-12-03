@@ -79,6 +79,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result = await res.json();
@@ -87,8 +88,8 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         setToasterType("error");
       } else {
         // Successful signup — auto-login the user
-        if (result.user && result.token) {
-          auth.login(result.user, result.token);
+        if (result.user) {
+          auth.login(result.user);
         }
         onLogInSuccessful("User registered");
       }
@@ -132,6 +133,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
+        credentials: "include",
       });
 
       const result = await res.json();
@@ -140,7 +142,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         setToasterType("error");
       } else {
         onLogInSuccessful("Log in successful");
-        auth.login(result.user, result.token);
+        auth.login(result.user);
       }
       // Reset form
       setLoginEmail("");

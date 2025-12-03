@@ -60,11 +60,17 @@ exports.signup = async (req, res) => {
 
             const token = jwt.sign({ id: userObj.id, email: userObj.email, role: userObj.role }, tokenSecret, { expiresIn: '1d' });
 
+            res.cookie('auth_token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 24 * 60 * 60 * 1000 // 1 day
+            });
+
             return res.status(201).json({
                 success: true,
                 message: "User registered",
                 user: userObj,
-                token: token
             });
         } else {
             return res.status(500).json({
@@ -132,10 +138,16 @@ exports.login = async (req, res) => {
             { expiresIn: "1d" }
         );
 
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
+        });
+
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            token: token,
             user: {
                 id: userId,
                 name: userName,

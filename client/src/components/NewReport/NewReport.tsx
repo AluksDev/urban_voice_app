@@ -85,12 +85,8 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
     formData.append("lon", String(mapCoordinates[1]));
 
     try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        throw new Error("Unauthorized user");
-      }
       const res = await fetch(`${apiUrl}/reports/new`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         method: "POST",
         body: formData,
       });

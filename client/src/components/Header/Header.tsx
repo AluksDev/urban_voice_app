@@ -45,7 +45,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
         </nav>
         <div>
           {auth.isLoggedIn && (
-            <NavLink className="profile-anchor" to={`users/${auth.user?.id}`}>
+            <NavLink className="profile-anchor" to={"user"}>
               <div className="profile-container">
                 <span>
                   {auth.user?.name} {auth.user?.surname}

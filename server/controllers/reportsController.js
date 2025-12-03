@@ -90,4 +90,26 @@ exports.newReport = async (req, res) => {
             message: "Error in handling new report"
         })
     }
-} 
+}
+
+exports.userReports = async (req, res) => {
+    const userId = req.user.id ?? null;
+    let [rows] = await req.db.query("SELECT * FROM users WHERE id=?", [userId]);
+    if (rows.length == 0) {
+        return res.status(400).json({
+            success: false,
+            message: "User doen't exists"
+        })
+    }
+    let [reports] = await req.db.query("SELECT * FROM reports WHERE user_id = ?", [userId]);
+    if (reports.length == 0) {
+        return res.status(400).json({
+            success: false,
+            message: "No reports from this user"
+        })
+    }
+    return res.status(200).json({
+        success: true,
+        reports: reports
+    })
+}

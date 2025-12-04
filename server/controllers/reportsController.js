@@ -113,3 +113,60 @@ exports.userReports = async (req, res) => {
         reports: reports
     })
 }
+
+exports.searchReports = async (req, res) => {
+    const { title = "", category = "", status = "", date = "", sort = "" } = req.query;
+    const userId = req.user.id;
+
+    const allowedSortFields = ["title", "category", "status", "created_at"];
+    let orderBy = "created_at"; // default column
+    let order = "DESC";          // default order
+
+    if (sort && allowedSortFields.includes(sort)) {
+        orderBy = sort;
+
+        // Set default order depending on column
+        if (sort === "title" || sort === "category") {
+            order = "ASC"; // A → Z
+        } else {
+            order = "DESC"; // newest first for date/status
+        }
+    }
+
+    // Base query
+    let sql = `
+        SELECT * FROM reports
+        WHERE user_id = ?
+    `;
+
+    let params = [userId];
+
+    // Add filters only if they exist
+    if (title) {
+        sql += " AND title LIKE ?";
+        params.push(`%${title}%`);
+    }
+
+    if (category) {
+        sql += " AND category LIKE ?";
+        params.push(`%${category}%`);
+    }
+
+    if (status) {
+        sql += " AND status LIKE ?";
+        params.push(`%${status}%`);
+    }
+
+    if (date) {
+        sql += " AND DATE(created_at) >= ?";
+        params.push(date);
+    }
+
+    sql += ` ORDER BY ${orderBy} ${order}`;
+    const [rows] = await req.db.query(sql, params);
+
+    return res.status(200).json({
+        success: true,
+        reports: rows
+    });
+};

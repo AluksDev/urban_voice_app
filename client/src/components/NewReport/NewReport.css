@@ -16,7 +16,8 @@
   height: 90%;
   border: 1px solid #00b65c;
   border-radius: 20px;
-  background-color: #1b5dbfb7;
+  background-color: hsla(216, 75%, 43%, 0.8);
+  backdrop-filter: blur(5px);
 }
 
 .new-report-container div:nth-child(1) {

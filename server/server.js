@@ -35,5 +35,8 @@ app.use("/reports", reportRoutes);
 const apiRoutes = require("./routes/api");
 app.use("/api", apiRoutes);
 
+const locationRoutes = require("./routes/locations");
+app.use("/locations", locationRoutes);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

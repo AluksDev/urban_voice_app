@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { icon } from "leaflet";
 
 interface ReportMapProps {
   center: [number, number];
@@ -8,19 +9,48 @@ interface ReportMapProps {
   onMarkerChange?: (coords: [number, number]) => void;
 }
 
-function ChangeView({ center }: { center: [number, number] }) {
-  const map = useMap();
-  const searchZoom = 18;
-  map.setView(center, searchZoom);
-  return null;
-}
-
 const MapComponent = ({
   center,
   marker,
   zoom = 13,
   onMarkerChange,
 }: ReportMapProps) => {
+  const [locations, setLocations] = useState<any[]>([]);
+  const apiUrl: string = import.meta.env.VITE_API_URL;
+
+  var redLocationIcon = icon({
+    iconUrl: "./images/location-pin-icon.svg",
+
+    iconSize: [28, 85], // size of the icon
+    iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+    popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
+  });
+
+  function ChangeView({
+    center,
+    zoom,
+  }: {
+    center: [number, number];
+    zoom: number;
+  }) {
+    const map = useMap();
+    map.setView(center, zoom);
+    return null;
+  }
+
+  useEffect(() => {
+    const loadLocations = async () => {
+      const res = await fetch(`${apiUrl}/locations`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Error in response");
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      setLocations(data.locations);
+    };
+    loadLocations();
+  }, []);
+
   return (
     <MapContainer
       center={center}
@@ -28,7 +58,7 @@ const MapComponent = ({
       scrollWheelZoom={true}
       style={{ width: "100%", height: "100%" }}
     >
-      <ChangeView center={center} />
+      <ChangeView center={center} zoom={zoom} />
 
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
@@ -49,6 +79,14 @@ const MapComponent = ({
           <Popup>Selected location</Popup>
         </Marker>
       )}
+      {locations.length > 0 &&
+        locations.map((location) => (
+          <Marker
+            key={location.id}
+            position={[location.latitude, location.longitude]}
+            icon={redLocationIcon}
+          ></Marker>
+        ))}
     </MapContainer>
   );
 };

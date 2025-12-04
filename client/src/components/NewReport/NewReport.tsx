@@ -22,7 +22,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
     0, 0,
   ]);
   const [possibleAddresses, setPossibleAddresses] = useState<any[]>([]);
-
+  const [mapZoom, setMapZoom] = useState<number>(13);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileRefClick = () => {
@@ -147,8 +147,11 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   }, [reportAddress]);
 
   return (
-    <div className="new-report-background">
-      <div className="new-report-container">
+    <div className="new-report-background" onClick={closeModal}>
+      <div
+        className="new-report-container"
+        onClick={(e) => e.stopPropagation()}
+      >
         {toasterMessage != "" && (
           <Toaster
             message={toasterMessage}
@@ -233,6 +236,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                     Number(location.lat),
                     Number(location.lon),
                   ]);
+                  setMapZoom(18);
                 }}
               >
                 <option value="">Type address above...</option>
@@ -248,8 +252,10 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                 <MapComponent
                   center={[mapCoordinates[0], mapCoordinates[1]]}
                   marker={[mapCoordinates[0], mapCoordinates[1]]}
+                  zoom={mapZoom}
                   onMarkerChange={(newCoords) => {
                     setMapCoordinates(newCoords);
+                    setMapZoom(18);
                   }}
                 />
               </div>

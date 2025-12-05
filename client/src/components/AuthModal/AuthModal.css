@@ -12,6 +12,8 @@
 }
 
 .inner-modal {
+  width: 50%;
+  height: 75%;
   position: relative;
   border: 1px solid #00b65c;
   border-radius: 20px;
@@ -23,6 +25,11 @@
   gap: 2rem;
 }
 
+.login-container,
+.signup-container {
+  width: 100%;
+}
+
 .login-container h2,
 .signup-container h2 {
   text-align: center;
@@ -30,12 +37,40 @@
   margin: 1rem;
 }
 
-form {
+.login-container form,
+.signup-container form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+}
+
+.login-container form input,
+.signup-container form input {
+  width: 80%;
+}
+
+.login-container form button,
+.signup-container form button {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  background-color: #00b65c;
+  color: white;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.login-container form button:hover,
+.signup-container form button:hover {
+  background-color: #00d96e;
+  transform: scale(1.05);
+}
+
+.login-container form button:active,
+.signup-container form button:active {
+  transform: scale(1);
 }
 
 .overlay-container {
@@ -66,7 +101,8 @@ form {
   transform: translateX(50%);
 }
 
-.overlay-panel-left {
+.overlay-panel-left,
+.overlay-panel-right {
   position: absolute;
   width: 50%;
   top: 50%;
@@ -79,23 +115,10 @@ form {
   transform: translateY(-50%);
   color: white;
   padding: 0 1rem;
-  gap: 0.5rem;
 }
 
 .overlay-panel-right {
-  position: absolute;
-  width: 50%;
-  top: 50%;
   left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  transform: translateY(-50%);
-  color: white;
-  padding: 0 1rem;
-  gap: 0.5rem;
 }
 
 .overlay-panel-right button,
@@ -122,6 +145,7 @@ form {
   width: 2rem;
   height: 2rem;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .close-icon-container-right img {
@@ -135,8 +159,31 @@ form {
   width: 2rem;
   height: 2rem;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .close-icon-container-left img {
   max-width: 100%;
+}
+
+.close-icon-container-right:hover,
+.close-icon-container-left:hover {
+  transform: scale(1.1);
+}
+
+.close-icon-container-right:active,
+.close-icon-container-left:active {
+  transform: scale(1);
+}
+
+.overlay-panel-right h3,
+.overlay-panel-left h3 {
+  font-weight: 600;
+  letter-spacing: 0.15rem;
+}
+
+.overlay-panel-right h4,
+.overlay-panel-left h4 {
+  font-weight: 400;
+  margin-bottom: 2rem;
 }

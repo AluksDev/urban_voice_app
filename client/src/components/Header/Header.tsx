@@ -14,9 +14,14 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     <>
       <header>
         <div>
-          <div className="logoContainer">
-            <img src="images/logo.png" alt="Logo" />
-          </div>
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "activeClass" : "")}
+          >
+            <div className="logoContainer">
+              <img src="images/logo.png" alt="Logo" />
+            </div>
+          </NavLink>
           <div>{auth.isLoggedIn && <h2>Welcome, {auth.user?.name}</h2>}</div>
         </div>
         <nav className="navContainer">

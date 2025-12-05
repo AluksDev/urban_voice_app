@@ -2,9 +2,13 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 20vh;
+  height: 15vh;
   color: #f5f7fa;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+}
+
+header h2 {
+  margin: 1rem 0;
 }
 
 header > * {
@@ -28,7 +32,6 @@ header > * {
 }
 
 .navContainer a {
-  font-size: 1.1rem;
   text-decoration: none;
   color: white;
   padding: 0.5rem 1rem;

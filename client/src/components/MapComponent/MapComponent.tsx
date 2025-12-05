@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { icon } from "leaflet";
+import "./MapComponent.css";
 
 interface ReportMapProps {
   center: [number, number];

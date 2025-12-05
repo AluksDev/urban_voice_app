@@ -24,6 +24,13 @@ article {
   color: #2a2a2a;
 }
 
+.message-details-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0.25rem 0;
+}
+
 .message-details-container span {
   font-size: 0.6rem;
   font-family: "Roboto", sans-serif;

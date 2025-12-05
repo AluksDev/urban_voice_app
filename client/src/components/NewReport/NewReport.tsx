@@ -24,6 +24,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   const [possibleAddresses, setPossibleAddresses] = useState<any[]>([]);
   const [mapZoom, setMapZoom] = useState<number>(13);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
   const handleFileRefClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -169,47 +170,58 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
         <div className="inner-new-report-container">
           <form onSubmit={addReport}>
             <div className="left-side">
-              <input
-                type="text"
-                placeholder="Title"
-                value={reportTitle}
-                onChange={(e) => setReportTitle(e.target.value)}
-                required
-              />
-              <select
-                value={reportCategory}
-                onChange={(e) => setReportCategory(e.target.value)}
-                required
-              >
-                <option disabled value="">
-                  -- Select category --
-                </option>
-                <option value="road">Road Damage (potholes, cracks)</option>
-                <option value="lighting">Street Lighting (broken lamps)</option>
-                <option value="hygiene">Cleanliness (litter, dog waste)</option>
-                <option value="furniture">
-                  Public Furniture (benches, tables, bins)
-                </option>
-                <option value="traffic-signs">Signs & Traffic Signals</option>
-                <option value="parks">Parks & Green Spaces</option>
-              </select>
-
-              <textarea
-                placeholder="Description"
-                rows={5}
-                value={reportDescription}
-                onChange={(e) => setReportDescription(e.target.value)}
-                required
-              ></textarea>
-
-              <button type="button" onClick={handleFileRefClick}>
-                Attach File
-              </button>
-              {reportFile ? (
-                <p>Selected file: {reportFile.name}</p>
-              ) : (
-                <p>No Files Attached</p>
-              )}
+              <div>
+                <p>Title</p>
+                <input
+                  type="text"
+                  value={reportTitle}
+                  onChange={(e) => setReportTitle(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <p>Category</p>
+                <select
+                  value={reportCategory}
+                  onChange={(e) => setReportCategory(e.target.value)}
+                  required
+                >
+                  <option disabled value="">
+                    -- Select category --
+                  </option>
+                  <option value="road">Road Damage (potholes, cracks)</option>
+                  <option value="lighting">
+                    Street Lighting (broken lamps)
+                  </option>
+                  <option value="hygiene">
+                    Cleanliness (litter, dog waste)
+                  </option>
+                  <option value="furniture">
+                    Public Furniture (benches, tables, bins)
+                  </option>
+                  <option value="traffic-signs">Signs & Traffic Signals</option>
+                  <option value="parks">Parks & Green Spaces</option>
+                </select>
+              </div>
+              <div>
+                <p>Description</p>
+                <textarea
+                  rows={5}
+                  value={reportDescription}
+                  onChange={(e) => setReportDescription(e.target.value)}
+                  required
+                ></textarea>
+              </div>
+              <div className="file-input-container">
+                <button type="button" onClick={handleFileRefClick}>
+                  Attach File
+                </button>
+                {reportFile ? (
+                  <p>Selected file: {reportFile.name}</p>
+                ) : (
+                  <p>No Files Attached</p>
+                )}
+              </div>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -219,34 +231,42 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
               />
             </div>
             <div className="right-side">
-              <input
-                type="text"
-                value={reportAddress}
-                onChange={(e) => {
-                  setPossibleAddresses([]);
-                  setReportAddress(e.target.value);
-                }}
-                placeholder="Address"
-              />
-              <select
-                onChange={(e) => {
-                  const index: number = Number(e.target.value);
-                  const location = possibleAddresses[index];
-                  setMapCoordinates([
-                    Number(location.lat),
-                    Number(location.lon),
-                  ]);
-                  setMapZoom(18);
-                }}
-              >
-                <option value="">Type address above...</option>
-                {possibleAddresses.length > 0 &&
-                  possibleAddresses.map((location, i) => (
-                    <option key={i} value={i}>
-                      {location.display_name}
-                    </option>
-                  ))}
-              </select>
+              <div className="address-container">
+                <p>Address</p>
+                <input
+                  type="text"
+                  value={reportAddress}
+                  onChange={(e) => {
+                    setReportAddress(e.target.value);
+                    setPossibleAddresses([]);
+                    setShowDropdown(true);
+                  }}
+                  onFocus={() => setShowDropdown(true)}
+                  className="address-input"
+                />
+
+                {showDropdown && possibleAddresses.length > 0 && (
+                  <ul className="address-dropdown">
+                    {possibleAddresses.map((location, i) => (
+                      <li
+                        key={i}
+                        className="address-option"
+                        onClick={() => {
+                          setMapCoordinates([
+                            Number(location.lat),
+                            Number(location.lon),
+                          ]);
+                          setMapZoom(18);
+                          setReportAddress(location.display_name);
+                          setShowDropdown(false);
+                        }}
+                      >
+                        {location.display_name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
               <div id="map" className="map-container">
                 <MapComponent

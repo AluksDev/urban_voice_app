@@ -20,8 +20,9 @@
   backdrop-filter: blur(5px);
 }
 
-.new-report-container div:nth-child(1) {
-  margin: 2rem 1rem 4rem;
+.new-report-container > div:nth-child(1) {
+  margin: 2rem 4rem;
+  color: white;
 }
 
 .inner-new-report-container {
@@ -30,9 +31,16 @@
 
 .inner-new-report-container form {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: row;
+}
+
+.inner-new-report-container form input,
+.inner-new-report-container form select,
+.inner-new-report-container form textarea {
+  width: 100%;
+  border-radius: 10px;
 }
 
 .left-side,
@@ -40,17 +48,61 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 2rem;
   flex: 1;
+  padding: 0 10rem 0 4rem;
+}
+
+.left-side > div {
+  width: 100%;
+}
+
+.left-side > div p {
+  color: white;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.file-input-container {
+  gap: 1.5rem;
+  color: white;
+  font-size: 0.7rem;
+}
+
+.file-input-container button {
+  background-color: #0a2e52;
+  color: white;
+  outline: none;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.file-input-container button:hover {
+  background-color: #1b5dbf;
+  border: 1px solid black;
 }
 
 .close-icon-container {
   position: absolute;
-  top: 10%;
-  left: 90%;
+  top: 5%;
+  left: 95%;
   width: 2rem;
   height: 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.close-icon-container:hover {
+  transform: scale(1.1);
+}
+
+.close-icon-container:active {
+  transform: scale(1);
 }
 
 .close-icon-container img {
@@ -59,6 +111,82 @@
 
 .map-container {
   width: 500px;
-  height: 300px;
+  height: 250px;
   margin-bottom: 10px;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.actions button {
+  color: white;
+  outline: none;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.actions button[type="submit"] {
+  background-color: #00b65c;
+}
+
+.actions button[type="button"] {
+  background-color: #b5b5b5;
+  color: #2a2a2a;
+}
+
+.actions button[type="submit"]:hover {
+  background-color: #00d96e;
+}
+
+.actions button[type="button"]:hover {
+  background-color: #888888;
+  color: #2a2a2a;
+}
+
+.address-container {
+  width: 100%;
+  position: relative;
+}
+
+.address-container p {
+  color: white;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.address-input {
+  width: 100%;
+}
+
+.address-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10000;
+}
+
+.address-option {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.address-option:hover {
+  background-color: hsla(216, 75%, 43%, 0.3);
 }

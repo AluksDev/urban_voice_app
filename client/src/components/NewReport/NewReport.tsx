@@ -280,7 +280,9 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                 />
               </div>
               <div className="actions">
-                <button type="button">Cancel</button>
+                <button type="button" onClick={closeModal}>
+                  Cancel
+                </button>
                 <button type="submit">Submit</button>
               </div>
             </div>

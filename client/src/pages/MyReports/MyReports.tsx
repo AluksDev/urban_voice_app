@@ -3,10 +3,10 @@ import "./MyReports.css";
 import { capitalize } from "../../utils";
 
 interface MyReportsProps {
-  refreshReports: number;
+  refresh: number;
 }
 
-const MyReports = ({ refreshReports }: MyReportsProps) => {
+const MyReports = ({ refresh }: MyReportsProps) => {
   const [reports, setReports] = useState<any[]>([]);
   const [searchTitle, setSearchTitle] = useState<string>("");
   const [searchCategory, setSearchCategory] = useState<string>("");
@@ -72,7 +72,7 @@ const MyReports = ({ refreshReports }: MyReportsProps) => {
       }
     };
     fetchReports();
-  }, [refreshReports]);
+  }, [refresh]);
   return (
     <div>
       <div className="searchbar-container">

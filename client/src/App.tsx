@@ -19,7 +19,7 @@ function App() {
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
   const [showNewReport, setShowNewReport] = useState<boolean>(false);
-  const [refreshReports, setRefreshReports] = useState<number>(0);
+  const [refresh, setRefresh] = useState<number>(0);
 
   useEffect(() => {
     if (showToaster) {
@@ -62,7 +62,7 @@ function App() {
                 setShowToaster(true);
                 setToasterType("success");
                 setToasterMessage(message);
-                setRefreshReports((prev) => prev + 1);
+                setRefresh((prev) => prev + 1);
               }}
               closeModal={() => setShowNewReport(false)}
             />
@@ -79,7 +79,7 @@ function App() {
             onOpenModal={() => setShowModal(true)}
           />
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={<Homepage refresh={refresh} />} />
 
             <Route
               path="/reports"
@@ -93,7 +93,7 @@ function App() {
                     setShowToaster(true);
                   }}
                 >
-                  <MyReports refreshReports={refreshReports} />
+                  <MyReports refresh={refresh} />
                 </ProtectedRoutes>
               }
             />

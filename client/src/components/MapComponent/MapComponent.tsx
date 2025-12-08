@@ -10,13 +10,34 @@ interface ReportMapProps {
   onMarkerChange?: (coords: [number, number]) => void;
 }
 
+interface RawLocationData {
+  id: number;
+  latitude: string;
+  longitude: string;
+  title: string;
+  description: string;
+}
+
+interface Report {
+  title: string;
+  description: string;
+}
+
+interface MapMarker {
+  id: number;
+  latitude: number;
+  longitude: number;
+  reports: Report[];
+}
+
 const MapComponent = ({
   center,
   marker,
   zoom = 13,
   onMarkerChange,
 }: ReportMapProps) => {
-  const [locations, setLocations] = useState<any[]>([]);
+  const [locations, setLocations] = useState<MapMarker[]>([]);
+  const [currentReportIndex, setCurrentReportIndex] = useState<number>(0);
   const apiUrl: string = import.meta.env.VITE_API_URL;
 
   var redLocationIcon = icon({
@@ -39,16 +60,41 @@ const MapComponent = ({
     return null;
   }
 
-  useEffect(() => {
-    const loadLocations = async () => {
-      const res = await fetch(`${apiUrl}/locations`, {
-        credentials: "include",
+  const loadLocations = async () => {
+    const res = await fetch(`${apiUrl}/locations`, {
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Error in response");
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+
+    const rawData: RawLocationData[] = data.locations;
+    const locationMap: { [key: number]: MapMarker } = {};
+
+    rawData.forEach((item) => {
+      const locId = item.id;
+      if (!locationMap[locId]) {
+        locationMap[locId] = {
+          id: locId,
+          latitude: Number(item.latitude),
+          longitude: Number(item.longitude),
+          reports: [],
+        };
+      }
+
+      locationMap[locId].reports.push({
+        title: item.title,
+        description: item.description,
       });
-      if (!res.ok) throw new Error("Error in response");
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      setLocations(data.locations);
-    };
+    });
+
+    // Convert to array for easier use
+    const groupedLocations: MapMarker[] = Object.values(locationMap);
+    console.log(groupedLocations);
+    setLocations(groupedLocations);
+  };
+
+  useEffect(() => {
     loadLocations();
   }, []);
 
@@ -76,9 +122,7 @@ const MapComponent = ({
               if (onMarkerChange) onMarkerChange([lat, lng]);
             },
           }}
-        >
-          <Popup>Selected location</Popup>
-        </Marker>
+        ></Marker>
       )}
       {locations.length > 0 &&
         locations.map((location) => (
@@ -86,7 +130,50 @@ const MapComponent = ({
             key={location.id}
             position={[location.latitude, location.longitude]}
             icon={redLocationIcon}
-          ></Marker>
+            eventHandlers={{
+              click: () => {
+                setCurrentReportIndex(0); // reset carousel
+              },
+            }}
+          >
+            <Popup>
+              <h4>Reports at this location:</h4>
+              <ul>
+                {location.reports.map(
+                  (report, index) =>
+                    currentReportIndex === index && (
+                      <li key={index}>
+                        <h5>{report.title}</h5>
+                        <p>{report.description}</p>
+                      </li>
+                    )
+                )}
+              </ul>
+              {location.reports.length > 1 && (
+                <div>
+                  <button
+                    onClick={() => {
+                      setCurrentReportIndex(
+                        (currentReportIndex - 1 + location.reports.length) %
+                          location.reports.length
+                      );
+                    }}
+                  >
+                    Previous Report
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentReportIndex(
+                        (currentReportIndex + 1) % location.reports.length
+                      );
+                    }}
+                  >
+                    Next Report
+                  </button>
+                </div>
+              )}
+            </Popup>
+          </Marker>
         ))}
     </MapContainer>
   );

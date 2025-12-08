@@ -3,12 +3,27 @@
   border-radius: 20px;
   padding: 1rem 2rem;
   margin: 0 5rem;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3);
 }
 
 .messages-board-container h3 {
   text-align: center;
   color: white;
   margin-bottom: 1rem;
+  position: relative;
+}
+
+.messages-board-container h3::after {
+  content: "";
+  position: absolute;
+  top: 0%;
+  left: 60%;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: url("../../../public/images/announcements-icon.png");
+  background-size: contain; /* scale image to fit */
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 article {

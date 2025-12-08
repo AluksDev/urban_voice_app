@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true
 }));
 
@@ -37,6 +37,9 @@ app.use("/api", apiRoutes);
 
 const locationRoutes = require("./routes/locations");
 app.use("/locations", locationRoutes);
+
+const statsRoutes = require("./routes/stats");
+app.use("/stats", statsRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

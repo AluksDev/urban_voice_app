@@ -86,7 +86,12 @@ const Stats = ({ refresh }: StatsProps) => {
             <p>In Progress</p>
           </div>
         </div>
-        <PieChartComponent reportsData={reportsData} isAnimationActive={true} />
+        <div className="pie-chart-container">
+          <PieChartComponent
+            reportsData={reportsData}
+            isAnimationActive={true}
+          />
+        </div>
       </div>
     </section>
   );

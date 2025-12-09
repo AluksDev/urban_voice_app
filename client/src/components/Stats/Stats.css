@@ -20,7 +20,7 @@
   left: 13%;
   width: 1.5rem;
   height: 1.5rem;
-  background-image: url("../../../public/images/statistics-icon.png");
+  background-image: url("images/statistics-icon.png");
   background-size: contain; /* scale image to fit */
   background-repeat: no-repeat;
   background-position: center;

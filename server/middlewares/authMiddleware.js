@@ -24,7 +24,7 @@ module.exports = async function authMiddleware(req, res, next) {
 
         // confirm user still exists in DB
         // req.db is expected to exist (other controllers do the same)
-        const [rows] = await req.db.query('SELECT id, name, surname, email, role FROM users WHERE id = ?', [decoded.id]);
+        const [rows] = await req.db.query('SELECT id, name, surname, email, role, photo_url FROM users WHERE id = ?', [decoded.id]);
         if (!rows || rows.length === 0) {
             return res.status(401).json({ success: false, message: 'Invalid token (user not found)' });
         }

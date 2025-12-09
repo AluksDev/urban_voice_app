@@ -3,6 +3,7 @@ const express = require("express");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
+const path = require("path");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
     req.db = pool;
     next();
 })
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const authRoutes = require("./routes/auth");
 app.use("/auth", authRoutes);

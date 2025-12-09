@@ -1,10 +1,9 @@
-import React, { type ReactNode, useRef } from "react";
+import React, { type ReactNode, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 type ProtectedRoutesPrompt = {
-  children: ReactNode;
-  // called when a protected route is accessed but the user is not authenticated
+  children?: ReactNode; // optional, if you want to support direct children too
   onAuthRequired?: () => void;
 };
 
@@ -13,22 +12,34 @@ const ProtectedRoutes = ({
   onAuthRequired,
 }: ProtectedRoutesPrompt) => {
   const auth = useAuth();
+  const opened = useRef(false);
+
+  useEffect(() => {
+    if (!auth.initializing && !auth.isLoggedIn) {
+      if (!auth.justLoggedOut) {
+        if (!opened.current) {
+          if (onAuthRequired) onAuthRequired();
+          opened.current = true;
+        }
+      }
+    }
+
+    // Reset when logged in again
+    if (auth.isLoggedIn) {
+      opened.current = false;
+    }
+  }, [auth.initializing, auth.isLoggedIn, onAuthRequired]);
+
   if (auth.initializing) {
     return <div style={{ padding: 20 }}>Checking authentication…</div>;
   }
 
   if (!auth.isLoggedIn) {
-    // Inform the caller once that auth is required (used to trigger a toast)
-    const opened = useRef(false);
-    if (!opened.current) {
-      if (onAuthRequired) onAuthRequired();
-      opened.current = true;
-    }
-
     return <Navigate to="/" replace />;
   }
 
-  return <>{children}</>;
+  // If nested routes exist, render Outlet, otherwise render children
+  return <>{children ?? <Outlet />}</>;
 };
 
 export default ProtectedRoutes;

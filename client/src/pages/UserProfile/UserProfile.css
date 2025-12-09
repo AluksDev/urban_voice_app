@@ -1,0 +1,115 @@
+.profile-main-container {
+  height: 75vh;
+  display: flex;
+  align-items: flex-end;
+}
+
+.profile-inner-container {
+  background-color: hsla(216, 75%, 43%, 0.3);
+  border-radius: 20px;
+  margin: 0 2rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 90%;
+  width: 100%;
+}
+
+.profile-left-container {
+  width: 25%;
+  position: relative;
+}
+
+.profile-selection-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  transform: translateY(50%);
+}
+
+.profile-image-contianer {
+  width: 60%;
+  position: absolute;
+  top: -130%;
+  left: 20%;
+}
+
+.profile-image-contianer img {
+  width: 100%;
+  border-radius: 20px;
+}
+
+.profile-selection-container span {
+  width: 80%;
+  border: 1px solid #1b5dbf;
+  text-align: center;
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.profile-selection-container span.active {
+  background-color: #1b5dbf;
+}
+
+.profile-right-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  padding: 0 6rem;
+  gap: 1.5rem;
+}
+
+.profile-right-container > div {
+  display: flex;
+  gap: 3rem;
+  width: 100%;
+}
+
+.profile-right-container > div input {
+  background-color: #949494;
+  border-radius: 30px;
+  padding: 1rem 2rem;
+  flex: 1;
+}
+
+.profile-buttons-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.profile-buttons-container button {
+  color: white;
+  outline: none;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-buttons-container button[type="submit"] {
+  background-color: #00b65c;
+}
+
+.profile-buttons-container button[type="button"] {
+  background-color: #b5b5b5;
+  color: #2a2a2a;
+}
+
+.profile-buttons-container button[type="submit"]:hover {
+  background-color: #00d96e;
+}
+
+.profile-buttons-container button[type="button"]:hover {
+  background-color: #888888;
+  color: #2a2a2a;
+}

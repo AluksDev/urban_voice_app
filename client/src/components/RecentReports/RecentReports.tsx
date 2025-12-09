@@ -41,7 +41,6 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
         throw new Error(data.message);
       }
       setLatestReports(data.reports);
-      console.log(data.reports);
     } catch (e) {
       console.error(e);
     }

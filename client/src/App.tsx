@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header/Header";
@@ -79,10 +79,11 @@ function App() {
             onOpenModal={() => setShowModal(true)}
           />
           <Routes>
+            {/* Public route */}
             <Route path="/" element={<Homepage refresh={refresh} />} />
 
+            {/* Protected routes wrapper */}
             <Route
-              path="/reports"
               element={
                 <ProtectedRoutes
                   onAuthRequired={() => {
@@ -92,46 +93,29 @@ function App() {
                     );
                     setShowToaster(true);
                   }}
-                >
-                  <MyReports refresh={refresh} />
-                </ProtectedRoutes>
+                />
               }
-            />
+            >
+              <Route
+                path="/reports"
+                element={<MyReports refresh={refresh} />}
+              />
+              <Route path="/map" element={<Map />} />
+              <Route
+                path="/user"
+                element={
+                  <UserProfile
+                    onLogOut={() => {
+                      setToasterType("success");
+                      setToasterMessage("Logged out successfully");
+                      setShowToaster(true);
+                    }}
+                  />
+                }
+              />
+            </Route>
 
-            <Route
-              path="/map"
-              element={
-                <ProtectedRoutes
-                  onAuthRequired={() => {
-                    setToasterType("error");
-                    setToasterMessage(
-                      "You must be logged in to access this page"
-                    );
-                    setShowToaster(true);
-                  }}
-                >
-                  <Map />
-                </ProtectedRoutes>
-              }
-            />
-
-            <Route
-              path="/user"
-              element={
-                <ProtectedRoutes
-                  onAuthRequired={() => {
-                    setToasterType("error");
-                    setToasterMessage(
-                      "You must be logged in to access this page"
-                    );
-                    setShowToaster(true);
-                  }}
-                >
-                  <UserProfile />
-                </ProtectedRoutes>
-              }
-            />
-
+            {/* Fallback route */}
             <Route path="*" element={<div>Not found</div>} />
           </Routes>
         </AuthProvider>

@@ -19,7 +19,7 @@
   transform: translateY(-50%) rotate(-180deg);
   width: 1.5rem;
   height: 1.5rem;
-  background-image: url("../../../public/images/expandable-arrow.svg");
+  background-image: url("images/expandable-arrow.svg");
   background-size: contain; /* scale image to fit */
   background-repeat: no-repeat;
   background-position: center;
@@ -34,7 +34,7 @@
   left: 18%;
   width: 1.5rem;
   height: 1.5rem;
-  background-image: url("../../../public/images/latest-reports-icon.png");
+  background-image: url("images/latest-reports-icon.png");
   background-size: contain; /* scale image to fit */
   background-repeat: no-repeat;
   background-position: center;

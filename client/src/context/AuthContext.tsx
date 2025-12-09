@@ -7,7 +7,7 @@ type User = {
   surname: string;
   email: string;
   role: string;
-  picture_url: string;
+  photo_url: string;
 } | null;
 
 // Define the context type
@@ -17,6 +17,7 @@ type AuthContextType = {
   initializing: boolean;
   login: (userData: User) => void;
   logout: () => void;
+  justLoggedOut: boolean;
 };
 
 // Create the context
@@ -25,20 +26,38 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Provider component
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [initializing, setInitializing] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [initializing, setInitializing] = useState<boolean>(true);
+  const [justLoggedOut, setJustLoggedOut] = useState<boolean>(false);
   const apiUrl: string = import.meta.env.VITE_API_URL;
 
   // Login updates all auth state
   const login = (userData: User) => {
     setUser(userData);
     setIsLoggedIn(true);
+    setJustLoggedOut(false);
   };
 
   // Logout clears all auth state
-  const logout = () => {
-    setUser(null);
-    setIsLoggedIn(false);
+  const logout = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        throw new Error("Logout failed");
+      }
+      const body = await res.json();
+      if (!body.success) {
+        throw new Error(body.message);
+      }
+      setUser(null);
+      setIsLoggedIn(false);
+      setJustLoggedOut(true);
+    } catch (e) {
+      console.error("logout error:", e);
+    }
   };
 
   useEffect(() => {
@@ -53,7 +72,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         if (!res.ok) {
-          if (!cancelled) logout();
+          if (!cancelled) {
+            setUser(null);
+            setIsLoggedIn(false);
+            setJustLoggedOut(false);
+          }
           return;
         }
 
@@ -64,14 +87,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setIsLoggedIn(true);
           }
         } else {
-          if (!cancelled) logout();
+          if (!cancelled) {
+            setUser(null);
+            setIsLoggedIn(false);
+          }
         }
       } catch (e) {
         // network/server error — make sure we don't leave the app stuck; treat as logged out
         console.warn("verify-on-start failed:", e);
         try {
         } catch (er) {}
-        if (!cancelled) logout();
+        if (!cancelled) {
+          setUser(null);
+          setIsLoggedIn(false);
+        }
       } finally {
         if (!cancelled) setInitializing(false);
       }
@@ -86,7 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, initializing, login, logout }}
+      value={{ user, isLoggedIn, initializing, login, logout, justLoggedOut }}
     >
       {children}
     </AuthContext.Provider>

@@ -124,7 +124,7 @@ exports.login = async (req, res) => {
         const userSurname = user.surname;
         const userEmail = user.email;
         const userRole = user.role;
-        const userPicture = user.photo_url;
+        const userPicture = `${req.protocol}://${req.get("host")}${user.photo_url}`;
 
         const tokenSecret = process.env.JWT_SECRET;
         const tokenPayload = {
@@ -144,7 +144,6 @@ exports.login = async (req, res) => {
             sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
-
         return res.status(200).json({
             success: true,
             message: "Login successful",
@@ -154,7 +153,7 @@ exports.login = async (req, res) => {
                 surname: userSurname,
                 email: userEmail,
                 role: userRole,
-                picture_url: userPicture
+                photo_url: userPicture
             }
         });
     } catch (err) {
@@ -163,6 +162,19 @@ exports.login = async (req, res) => {
     }
 };
 
+exports.logout = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+    res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 0
+    });
+    return res.status(200).json({ success: true, message: 'Logout successful' });
+}
+
 exports.verify = async (req, res) => {
     try {
         if (!req.user) {
@@ -170,6 +182,8 @@ exports.verify = async (req, res) => {
         }
 
         const user = req.user;
+        const completePhotoUrl = `${req.protocol}://${req.get("host")}${user.photo_url}`;
+        user.photo_url = completePhotoUrl;
 
         // Keep verify response minimal for MVP — server still enforces token expiry.
         return res.status(200).json({ success: true, user });

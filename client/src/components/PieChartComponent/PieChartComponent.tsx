@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./PieChartComponent.css";
 import { capitalize } from "../../utils";
 import { Pie, PieChart, Sector, Tooltip, Cell } from "recharts";
@@ -42,7 +42,6 @@ const renderActiveShape = ({
   fill,
   payload,
   percent,
-  value,
 }: PieSectorDataItem) => {
   const RADIAN = Math.PI / 180;
   const sin = Math.sin(-RADIAN * (midAngle ?? 1));

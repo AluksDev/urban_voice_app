@@ -1,4 +1,3 @@
-import React from "react";
 import "./MessagesBoard.css";
 
 const MessagesBoard = () => {

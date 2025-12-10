@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import "./Toaster.css";
 type ToasterProps = {
   message: string;

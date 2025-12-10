@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MapComponent from "../../components/MapComponent/MapComponent";
 import "./Map.css";
 

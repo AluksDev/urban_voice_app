@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./Stats.css";
 import PieChartComponent from "../PieChartComponent/PieChartComponent";
 import SlotCounter from "react-slot-counter";

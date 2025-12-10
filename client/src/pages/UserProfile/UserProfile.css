@@ -113,3 +113,28 @@
   background-color: #888888;
   color: #2a2a2a;
 }
+
+.password-change-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.password-change-container div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10rem;
+  position: relative;
+}
+
+.password-change-container div img {
+  position: absolute;
+  top: 25%;
+  left: 75%;
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+}

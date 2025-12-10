@@ -1,3 +1,46 @@
 .leaflet-container {
   border-radius: 20px;
 }
+
+.map-marker-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.map-marker-buttons-container span {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+}
+
+.map-marker-buttons-container span img {
+  max-width: 100%;
+}
+
+.map-marker-buttons-container span:nth-child(1) {
+  transform: rotate(180deg);
+}
+
+.map-marker-buttons-container span:hover {
+  transform: scale(1.1);
+}
+
+.map-marker-buttons-container span:nth-child(1):hover {
+  transform: scale(1.1) rotate(180deg);
+}
+
+.reports-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 1.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}

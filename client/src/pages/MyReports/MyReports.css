@@ -115,3 +115,50 @@
 .searchbar-container .search-icon-container:active {
   transform: scale(1);
 }
+
+.myreports-actions-container span {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  margin: 0 0.5rem;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.myreports-actions-container span:hover {
+  transform: scale(1.1);
+}
+
+.myreports-actions-container span:nth-child(1)::after,
+.myreports-actions-container span:nth-child(2)::after {
+  content: "Modify";
+  position: absolute;
+  top: -100%;
+  left: -50%;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
+  background-color: white;
+  color: black;
+  transform: scale(0);
+  font-size: 0.8rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.myreports-actions-container span:nth-child(2):hover::after {
+  content: "Delete";
+}
+
+.myreports-actions-container span:nth-child(1):hover::after,
+.myreports-actions-container span:nth-child(2):hover::after {
+  transform: scale(1);
+}
+
+.myreports-actions-container span:active {
+  transform: scale(1);
+}
+
+.myreports-actions-container span img {
+  max-width: 100%;
+}

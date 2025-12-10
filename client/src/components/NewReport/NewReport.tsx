@@ -232,6 +232,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
             </div>
             <div className="right-side">
               <div className="address-container">
+                <h3>Write an address or drag the blue pin</h3>
                 <p>Address</p>
                 <input
                   type="text"

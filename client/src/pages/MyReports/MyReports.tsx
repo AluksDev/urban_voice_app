@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./MyReports.css";
 import { capitalize } from "../../utils";
 
@@ -143,18 +143,17 @@ const MyReports = ({ refresh }: MyReportsProps) => {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>Title</th>
                   <th>Category</th>
                   <th>Status</th>
                   <th>Date Submitted</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {reports.map((report) => {
                   return (
                     <tr key={report.id}>
-                      <td>#{report.id}</td>
                       <td>{capitalize(report.title)}</td>
                       <td>{capitalize(report.category)}</td>
                       <td>{capitalize(report.status)}</td>
@@ -162,6 +161,14 @@ const MyReports = ({ refresh }: MyReportsProps) => {
                         {new Date(report.created_at).toLocaleDateString(
                           "en-GB"
                         )}
+                      </td>
+                      <td className="myreports-actions-container">
+                        <span>
+                          <img src="images/modify-icon.png" alt="" />
+                        </span>
+                        <span>
+                          <img src="images/delete-icon.png" alt="" />
+                        </span>
                       </td>
                     </tr>
                   );

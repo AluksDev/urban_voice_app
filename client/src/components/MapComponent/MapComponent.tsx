@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { icon } from "leaflet";
 import "./MapComponent.css";
@@ -42,7 +42,6 @@ const MapComponent = ({
 
   var redLocationIcon = icon({
     iconUrl: "./images/location-pin-icon.svg",
-
     iconSize: [28, 85], // size of the icon
     iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
     popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
@@ -138,20 +137,18 @@ const MapComponent = ({
           >
             <Popup>
               <h4>Reports at this location:</h4>
-              <ul>
-                {location.reports.map(
-                  (report, index) =>
-                    currentReportIndex === index && (
-                      <li key={index}>
-                        <h5>{report.title}</h5>
-                        <p>{report.description}</p>
-                      </li>
-                    )
-                )}
-              </ul>
+              {location.reports.map(
+                (report, index) =>
+                  currentReportIndex === index && (
+                    <div key={index} className="reports-list-container">
+                      <h3>{report.title}</h3>
+                      <p>{report.description}</p>
+                    </div>
+                  )
+              )}
               {location.reports.length > 1 && (
-                <div>
-                  <button
+                <div className="map-marker-buttons-container">
+                  <span
                     onClick={() => {
                       setCurrentReportIndex(
                         (currentReportIndex - 1 + location.reports.length) %
@@ -159,17 +156,17 @@ const MapComponent = ({
                       );
                     }}
                   >
-                    Previous Report
-                  </button>
-                  <button
+                    <img src="images/map-merker-arrow-icon.png" alt="" />
+                  </span>
+                  <span
                     onClick={() => {
                       setCurrentReportIndex(
                         (currentReportIndex + 1) % location.reports.length
                       );
                     }}
                   >
-                    Next Report
-                  </button>
+                    <img src="images/map-merker-arrow-icon.png" alt="" />
+                  </span>
                 </div>
               )}
             </Popup>

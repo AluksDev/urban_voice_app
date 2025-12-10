@@ -1,0 +1,52 @@
+.report-details-container {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  transform: scale(0);
+  transition: all 0.2s ease-in-out;
+}
+
+.report-details-container.open {
+  transform: scale(1);
+}
+
+.report-details-inner {
+  width: 90%;
+  height: 90%;
+  border: 1px solid #00b65c;
+  border-radius: 20px;
+  background-color: hsla(216, 75%, 43%, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.report-details-close-icon-container {
+  position: absolute;
+  top: 5%;
+  left: 95%;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.report-details-close-icon-container:hover {
+  transform: scale(1.1);
+}
+
+.report-details-close-icon-container:active {
+  transform: scale(1);
+}
+
+.report-details-close-icon-container img {
+  max-width: 100%;
+}

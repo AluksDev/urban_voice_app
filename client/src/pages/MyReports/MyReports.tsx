@@ -1,17 +1,33 @@
 import { useEffect, useState } from "react";
 import "./MyReports.css";
 import { capitalize } from "../../utils";
+import ReportDetails from "../../components/ReportDetails/ReportDetails";
+
+interface Report {
+  id: number;
+  user_id: number;
+  location_id: number;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  photo_url: string | null;
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
+}
 
 interface MyReportsProps {
   refresh: number;
 }
 
 const MyReports = ({ refresh }: MyReportsProps) => {
-  const [reports, setReports] = useState<any[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const [searchTitle, setSearchTitle] = useState<string>("");
   const [searchCategory, setSearchCategory] = useState<string>("");
   const [searchStatus, setSearchStatus] = useState<string>("");
   const [searchDate, setSearchDate] = useState<string>("");
+  const [showReportDetails, setShowReportDetails] = useState<boolean>(false);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
   const apiUrl: string = import.meta.env.VITE_API_URL;
 
@@ -74,115 +90,135 @@ const MyReports = ({ refresh }: MyReportsProps) => {
     fetchReports();
   }, [refresh]);
   return (
-    <div>
-      <div className="searchbar-container">
-        <div>
-          <input
-            type="text"
-            placeholder="Search Title"
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-          />
-        </div>
-        <div>
-          <select
-            value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
-          >
-            <option value="" disabled>
-              -- Search Category --
-            </option>
-            <option value="road">Road Damage</option>
-            <option value="lighting">Street Lighting</option>
-            <option value="hygiene">Cleanliness</option>
-            <option value="furniture">Public Furniture</option>
-            <option value="traffic-signs">Signs & Traffic Signals</option>
-            <option value="parks">Parks & Green Spaces</option>
-          </select>
-        </div>
-        <div>
-          <select
-            value={searchStatus}
-            onChange={(e) => setSearchStatus(e.target.value)}
-          >
-            <option value="" disabled>
-              -- Search Status --
-            </option>
-            <option value="pending">Pending</option>
-            <option value="in_progress">In Progress</option>
-            <option value="closed">Closed</option>
-          </select>
-        </div>
-        <div>
-          <input
-            type="date"
-            value={searchDate}
-            onChange={(e) => setSearchDate(e.target.value)}
-          />
-        </div>
-        <div className="search-icon-container" onClick={() => handleSearch()}>
-          <img src="images/search-icon.svg" alt="" />
-        </div>
-      </div>
-      <div className="my-reports-container">
-        {reports.length > 0 ? (
-          <>
-            <div
-              className="sort-container"
-              onClick={openSortList}
-              id="sortContainer"
-            >
-              <p>Sort By</p>
-              <div className="sort-list-container" id="sortList">
-                <p onClick={() => handleSortClick("title")}>Title</p>
-                <p onClick={() => handleSortClick("category")}>Category</p>
-                <p onClick={() => handleSortClick("status")}>Status</p>
-                <p onClick={() => handleSortClick("created_at")}>Date</p>
-              </div>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Status</th>
-                  <th>Date Submitted</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {reports.map((report) => {
-                  return (
-                    <tr key={report.id}>
-                      <td>{capitalize(report.title)}</td>
-                      <td>{capitalize(report.category)}</td>
-                      <td>{capitalize(report.status)}</td>
-                      <td>
-                        {new Date(report.created_at).toLocaleDateString(
-                          "en-GB"
-                        )}
-                      </td>
-                      <td className="myreports-actions-container">
-                        <span>
-                          <img src="images/modify-icon.png" alt="" />
-                        </span>
-                        <span>
-                          <img src="images/delete-icon.png" alt="" />
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </>
-        ) : (
-          <div className="no-reports-container">
-            <p>No reports found</p>
+    <>
+      {showReportDetails ? (
+        <ReportDetails
+          isOpen={showReportDetails}
+          closeDetailsWindow={() => setShowReportDetails(false)}
+          report={selectedReport}
+        />
+      ) : (
+        <ReportDetails
+          isOpen={showReportDetails}
+          closeDetailsWindow={() => setShowReportDetails(false)}
+          report={selectedReport}
+        />
+      )}
+      <div>
+        <div className="searchbar-container">
+          <div>
+            <input
+              type="text"
+              placeholder="Search Title"
+              value={searchTitle}
+              onChange={(e) => setSearchTitle(e.target.value)}
+            />
           </div>
-        )}
+          <div>
+            <select
+              value={searchCategory}
+              onChange={(e) => setSearchCategory(e.target.value)}
+            >
+              <option value="" disabled>
+                -- Search Category --
+              </option>
+              <option value="road">Road Damage</option>
+              <option value="lighting">Street Lighting</option>
+              <option value="hygiene">Cleanliness</option>
+              <option value="furniture">Public Furniture</option>
+              <option value="traffic-signs">Signs & Traffic Signals</option>
+              <option value="parks">Parks & Green Spaces</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={searchStatus}
+              onChange={(e) => setSearchStatus(e.target.value)}
+            >
+              <option value="" disabled>
+                -- Search Status --
+              </option>
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+          <div>
+            <input
+              type="date"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+            />
+          </div>
+          <div className="search-icon-container" onClick={() => handleSearch()}>
+            <img src="images/search-icon.svg" alt="" />
+          </div>
+        </div>
+        <div className="my-reports-container">
+          {reports.length > 0 ? (
+            <>
+              <div
+                className="sort-container"
+                onClick={openSortList}
+                id="sortContainer"
+              >
+                <p>Sort By</p>
+                <div className="sort-list-container" id="sortList">
+                  <p onClick={() => handleSortClick("title")}>Title</p>
+                  <p onClick={() => handleSortClick("category")}>Category</p>
+                  <p onClick={() => handleSortClick("status")}>Status</p>
+                  <p onClick={() => handleSortClick("created_at")}>Date</p>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Date Submitted</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.map((report) => {
+                    return (
+                      <tr key={report.id}>
+                        <td>{capitalize(report.title)}</td>
+                        <td>{capitalize(report.category)}</td>
+                        <td>{capitalize(report.status)}</td>
+                        <td>
+                          {new Date(report.created_at).toLocaleDateString(
+                            "en-GB"
+                          )}
+                        </td>
+                        <td className="myreports-actions-container">
+                          <span
+                            onClick={() => {
+                              setShowReportDetails(true);
+                              setSelectedReport(report);
+                            }}
+                          >
+                            <img src="images/modify-icon.png" alt="" />
+                          </span>
+                          <span>
+                            <img src="images/delete-icon.png" alt="" />
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </>
+          ) : (
+            <div className="no-reports-container">
+              <p>No reports found</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

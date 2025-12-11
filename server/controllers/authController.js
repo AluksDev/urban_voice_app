@@ -18,13 +18,13 @@ exports.signup = async (req, res) => {
                 message: "Invalid email format"
             });
         }
-        if (!validator.isLength(trimmedName, { min: 2, max: 100 }) || !validator.isAlpha(trimmedName, 'en-US', { ignore: ' ' })) {
+        if (!validator.isLength(trimmedName, { min: 1, max: 100 }) || !validator.isAlpha(trimmedName, 'en-US', { ignore: ' ' })) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid name format"
             });
         }
-        if (!validator.isLength(trimmedSurname, { min: 2, max: 100 }) || !validator.isAlpha(trimmedSurname, 'en-US', { ignore: ' ' })) {
+        if (!validator.isLength(trimmedSurname, { min: 1, max: 100 }) || !validator.isAlpha(trimmedSurname, 'en-US', { ignore: ' ' })) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid surname format"

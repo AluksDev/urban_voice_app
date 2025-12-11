@@ -33,14 +33,14 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     const trimmedSignupPasswordRep = signupPasswordRep.trim();
 
     // Validation
-    if (trimmedSignupName.length < 2) {
-      setToasterMessage("Name must be at least 2 characters");
+    if (trimmedSignupName.length < 1) {
+      setToasterMessage("Name must be at least 1 characters");
       setToasterType("error");
       return;
     }
 
-    if (trimmedSignupSurname.length < 2) {
-      setToasterMessage("Surname must be at least 2 characters");
+    if (trimmedSignupSurname.length < 1) {
+      setToasterMessage("Surname must be at least 1 characters");
       setToasterType("error");
       return;
     }

@@ -18,6 +18,7 @@ type AuthContextType = {
   login: (userData: User) => void;
   logout: () => void;
   justLoggedOut: boolean;
+  updateUser: (newUserData: Partial<User>) => void;
 };
 
 // Create the context
@@ -58,6 +59,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (e) {
       console.error("logout error:", e);
     }
+  };
+
+  const updateUser = (newUserData: Partial<User>) => {
+    setUser((prevUser) =>
+      prevUser ? { ...prevUser, ...newUserData } : prevUser
+    );
   };
 
   useEffect(() => {
@@ -115,7 +122,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, initializing, login, logout, justLoggedOut }}
+      value={{
+        user,
+        isLoggedIn,
+        initializing,
+        login,
+        logout,
+        justLoggedOut,
+        updateUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

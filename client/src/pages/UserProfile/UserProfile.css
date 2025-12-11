@@ -42,6 +42,22 @@
   border-radius: 20px;
 }
 
+.profile-image-contianer span {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #1b5dbf;
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.profile-image-contianer span img {
+  max-width: 100%;
+}
+
 .profile-selection-container span {
   width: 80%;
   border: 1px solid #1b5dbf;
@@ -91,11 +107,11 @@
 }
 
 .profile-email-container::after {
-  content: "Password can not be changed";
+  content: "Email can not be changed";
   font-size: 0.75rem;
   position: absolute;
   top: 100%;
-  left: 2%;
+  padding-left: 2rem;
 }
 
 .profile-buttons-container {

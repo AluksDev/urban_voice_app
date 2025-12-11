@@ -14,14 +14,13 @@ const UserProfile = ({
   onUserChange,
 }: UserProfileProps) => {
   const auth = useAuth();
+  const { updateUser } = useAuth();
+
   const [nameValue, setNameValue] = useState<string | undefined>(
     auth.user?.name
   );
   const [surnameValue, setSurnameValue] = useState<string | undefined>(
     auth.user?.surname
-  );
-  const [emailValue, setEmailValue] = useState<string | undefined>(
-    auth.user?.email
   );
   const [oldPswValue, setOldPswValue] = useState<string>("");
   const [newPswValue, setNewPswValue] = useState<string>("");
@@ -131,15 +130,19 @@ const UserProfile = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: nameValue,
-          surname: surnameValue,
-          email: emailValue,
+          name: trimmedName,
+          surname: trimmedSurname,
         }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
         throw new Error(data.message || "User update failed");
       }
+      updateUser({
+        name: trimmedName,
+        surname: trimmedSurname,
+      });
+      onUserChange(data.message, "success");
     } catch (e) {
       console.error("Error in changing user details", e);
     }
@@ -157,6 +160,9 @@ const UserProfile = ({
             {auth.user?.photo_url && (
               <img src={auth.user.photo_url} alt={auth.user.name || "User"} />
             )}
+            <span>
+              <img src="images/edit-photo-icon.png" alt="" />
+            </span>
           </div>
           <div className="profile-selection-container">
             <span
@@ -198,22 +204,34 @@ const UserProfile = ({
                 <div>
                   <input
                     type="text"
-                    defaultValue={nameValue}
+                    value={nameValue}
                     placeholder="Name"
                     onChange={(e) => setNameValue(e.target.value)}
                   />
                   <input
                     type="text"
-                    defaultValue={surnameValue}
+                    value={surnameValue}
                     placeholder="Surname"
                     onChange={(e) => setSurnameValue(e.target.value)}
                   />
                 </div>
                 <div className="profile-email-container">
-                  <input type="email" defaultValue={emailValue} disabled />
+                  <input
+                    type="email"
+                    defaultValue={auth.user?.email}
+                    disabled
+                  />
                 </div>
                 <div className="profile-buttons-container">
-                  <button type="button">Cancel</button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNameValue(auth.user?.name);
+                      setSurnameValue(auth.user?.surname);
+                    }}
+                  >
+                    Cancel
+                  </button>
                   <button type="submit">Save Changes</button>
                 </div>
               </form>
@@ -258,7 +276,15 @@ const UserProfile = ({
                   </div>
                 </div>
                 <div className="profile-buttons-container">
-                  <button type="button">Cancel</button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOldPswValue("");
+                      setNewPswValue("");
+                    }}
+                  >
+                    Cancel
+                  </button>
                   <button type="submit">Save Changes</button>
                 </div>
               </form>

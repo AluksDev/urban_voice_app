@@ -98,13 +98,32 @@ function App() {
             >
               <Route
                 path="/reports"
-                element={<MyReports refresh={refresh} />}
+                element={
+                  <MyReports
+                    onReportDelete={(message) => {
+                      setToasterType("success");
+                      setToasterMessage(message);
+                      setShowToaster(true);
+                    }}
+                    refresh={refresh}
+                  />
+                }
               />
               <Route path="/map" element={<Map />} />
               <Route
                 path="/user"
                 element={
                   <UserProfile
+                    onPasswordChange={(message, type) => {
+                      setToasterType(type);
+                      setToasterMessage(message);
+                      setShowToaster(true);
+                    }}
+                    onUserChange={(message, type) => {
+                      setToasterType(type);
+                      setToasterMessage(message);
+                      setShowToaster(true);
+                    }}
                     onLogOut={() => {
                       setToasterType("success");
                       setToasterMessage("Logged out successfully");

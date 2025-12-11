@@ -23,7 +23,11 @@ const Map = () => {
   }, []);
   return (
     <div id="map" className="map-page-container">
-      <MapComponent center={[mapCoordinates[0], mapCoordinates[1]]} zoom={10} />
+      <MapComponent
+        isPinDraggable={false}
+        center={[mapCoordinates[0], mapCoordinates[1]]}
+        zoom={10}
+      />
     </div>
   );
 };

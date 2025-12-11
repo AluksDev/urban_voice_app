@@ -108,6 +108,9 @@ exports.userReports = async (req, res) => {
             message: "No reports from this user"
         })
     }
+    reports.forEach(report => {
+        report.photo_url = report.photo_url ? `${req.protocol}://${req.get("host")}${report.photo_url}` : `${req.protocol}://${req.get("host")}/uploads/reports/no-image-report.png`;
+    });
     return res.status(200).json({
         success: true,
         reports: reports
@@ -169,4 +172,32 @@ exports.searchReports = async (req, res) => {
         success: true,
         reports: rows
     });
+};
+
+exports.deleteReports = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: "Not authenticated"
+        })
+    }
+    if (!req.params.id) {
+        return res.status(400).json({
+            success: false,
+            message: "Missing report id"
+        })
+    }
+    const reportId = req.params.id;
+    let [rows] = await req.db.query("DELETE FROM reports WHERE id = ?", [reportId]);
+    if (rows.affectedRows === 1) {
+        return res.status(200).json({
+            success: true,
+            message: "Report deleted successfully"
+        })
+    } else {
+        return res.status(500).json({
+            success: false,
+            message: "Error in DB"
+        })
+    }
 };

@@ -43,5 +43,8 @@ app.use("/locations", locationRoutes);
 const statsRoutes = require("./routes/stats");
 app.use("/stats", statsRoutes);
 
+const userRoutes = require("./routes/user");
+app.use("/user", userRoutes);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

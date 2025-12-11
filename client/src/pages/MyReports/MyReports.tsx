@@ -11,16 +11,17 @@ interface Report {
   description: string;
   category: string;
   status: string;
-  photo_url: string | null;
+  photo_url: string;
   created_at: string; // ISO date string
   updated_at: string; // ISO date string
 }
 
 interface MyReportsProps {
   refresh: number;
+  onReportDelete: (message: string) => void;
 }
 
-const MyReports = ({ refresh }: MyReportsProps) => {
+const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
   const [reports, setReports] = useState<Report[]>([]);
   const [searchTitle, setSearchTitle] = useState<string>("");
   const [searchCategory, setSearchCategory] = useState<string>("");
@@ -30,6 +31,25 @@ const MyReports = ({ refresh }: MyReportsProps) => {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
   const apiUrl: string = import.meta.env.VITE_API_URL;
+
+  const fetchReports = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/reports/user`, {
+        credentials: "include",
+        method: "GET",
+      });
+      if (!res.ok) {
+        throw new Error("Error in response");
+      }
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      setReports(data.reports);
+    } catch (e) {
+      console.error("Error in fetching reports", e);
+    }
+  };
 
   const handleSearch = async (sortField?: string) => {
     const trimmedTitle = searchTitle.trim().toLowerCase();
@@ -68,38 +88,34 @@ const MyReports = ({ refresh }: MyReportsProps) => {
     handleSearch(field); // reuse search, just add sort
   };
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/reports/user`, {
-          credentials: "include",
-          method: "GET",
-        });
-        if (!res.ok) {
-          throw new Error("Error in response");
-        }
-        const data = await res.json();
-        if (!data.success) {
-          throw new Error(data.message);
-        }
-        setReports(data.reports);
-      } catch (e) {
-        console.error("Error in fetching reports", e);
+  const handleDeleteReport = async (reportId: number) => {
+    try {
+      const res = await fetch(`${apiUrl}/reports/delete/${reportId}`, {
+        credentials: "include",
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error("Error in response");
       }
-    };
+      const data = await res.json();
+      if (!data.success) {
+        onReportDelete(data.message);
+        throw new Error(data.message);
+      }
+      onReportDelete(data.message);
+      fetchReports();
+    } catch (e) {
+      console.error("Error in deleting report", e);
+    }
+  };
+
+  useEffect(() => {
     fetchReports();
   }, [refresh]);
   return (
     <>
-      {showReportDetails ? (
+      {showReportDetails && (
         <ReportDetails
-          isOpen={showReportDetails}
-          closeDetailsWindow={() => setShowReportDetails(false)}
-          report={selectedReport}
-        />
-      ) : (
-        <ReportDetails
-          isOpen={showReportDetails}
           closeDetailsWindow={() => setShowReportDetails(false)}
           report={selectedReport}
         />
@@ -201,7 +217,7 @@ const MyReports = ({ refresh }: MyReportsProps) => {
                           >
                             <img src="images/modify-icon.png" alt="" />
                           </span>
-                          <span>
+                          <span onClick={() => handleDeleteReport(report.id)}>
                             <img src="images/delete-icon.png" alt="" />
                           </span>
                         </td>

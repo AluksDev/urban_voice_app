@@ -133,7 +133,7 @@
 
 .myreports-actions-container span:nth-child(1)::after,
 .myreports-actions-container span:nth-child(2)::after {
-  content: "Modify";
+  content: "Details";
   position: absolute;
   top: -100%;
   left: -50%;

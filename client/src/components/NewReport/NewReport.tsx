@@ -272,12 +272,12 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
               <div id="map" className="map-container">
                 <MapComponent
                   center={[mapCoordinates[0], mapCoordinates[1]]}
-                  marker={[mapCoordinates[0], mapCoordinates[1]]}
                   zoom={mapZoom}
                   onMarkerChange={(newCoords) => {
                     setMapCoordinates(newCoords);
                     setMapZoom(18);
                   }}
+                  isPinDraggable={true}
                 />
               </div>
               <div className="actions">

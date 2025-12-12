@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./AuthModal.css";
 import Toaster from "../Toaster/Toaster";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 type AuthModalProps = {
   onLogInSuccessful: (message: string) => void;
@@ -9,6 +10,7 @@ type AuthModalProps = {
 };
 
 const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
+  const { t } = useTranslation();
   const [signupName, setSignupName] = useState<string>("");
   const [signupSurname, setSignupSurname] = useState<string>("");
   const [signupEmail, setSignupEmail] = useState<string>("");
@@ -22,56 +24,52 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [rightClass, setRightClass] = useState<boolean>(false);
   const apiUrl: string = import.meta.env.VITE_API_URL;
   const auth = useAuth();
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Trim inputs
-    const trimmedSignupName = signupName.trim();
-    const trimmedSignupSurname = signupSurname.trim();
-    const trimmedSignupEmail = signupEmail.trim();
-    const trimmedSignupPassword = signupPassword.trim();
-    const trimmedSignupPasswordRep = signupPasswordRep.trim();
+    const trimmedName = signupName.trim();
+    const trimmedSurname = signupSurname.trim();
+    const trimmedEmail = signupEmail.trim();
+    const trimmedPassword = signupPassword.trim();
+    const trimmedPasswordRep = signupPasswordRep.trim();
 
-    // Validation
-    if (trimmedSignupName.length < 1) {
-      setToasterMessage("Name must be at least 1 characters");
+    // Frontend validation using i18n
+    if (trimmedName.length < 1) {
+      setToasterMessage(t("authModal.messages.nameTooShort"));
       setToasterType("error");
       return;
     }
 
-    if (trimmedSignupSurname.length < 1) {
-      setToasterMessage("Surname must be at least 1 characters");
+    if (trimmedSurname.length < 1) {
+      setToasterMessage(t("authModal.messages.surnameTooShort"));
       setToasterType("error");
       return;
     }
 
-    if (
-      !trimmedSignupEmail.includes("@") ||
-      !trimmedSignupEmail.includes(".")
-    ) {
-      setToasterMessage("Please enter a valid email address");
+    if (!trimmedEmail.includes("@") || !trimmedEmail.includes(".")) {
+      setToasterMessage(t("authModal.messages.invalidEmail"));
       setToasterType("error");
       return;
     }
 
-    if (trimmedSignupPassword.length < 8) {
-      setToasterMessage("Password must be at least 8 characters");
+    if (trimmedPassword.length < 8) {
+      setToasterMessage(t("authModal.messages.invalidPassword"));
       setToasterType("error");
       return;
     }
 
-    if (trimmedSignupPassword !== trimmedSignupPasswordRep) {
-      setToasterMessage("Passwords do not match");
+    if (trimmedPassword !== trimmedPasswordRep) {
+      setToasterMessage(t("authModal.messages.passwordsDontMatch"));
       setToasterType("error");
       return;
     }
 
-    // Prepare data to send
     const data = {
-      name: trimmedSignupName,
-      surname: trimmedSignupSurname,
-      email: trimmedSignupEmail,
-      password: trimmedSignupPassword,
+      name: trimmedName,
+      surname: trimmedSurname,
+      email: trimmedEmail,
+      password: trimmedPassword,
     };
 
     try {
@@ -83,50 +81,48 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       });
 
       const result = await res.json();
-      if (result.success == false) {
-        setToasterMessage(result.message);
+
+      if (!result.success) {
+        const backendMsg =
+          t(`authModal.backend.${result.code}`) ||
+          t("authModal.messages.signupError");
+        setToasterMessage(backendMsg);
         setToasterType("error");
       } else {
-        // Successful signup — auto-login the user
-        if (result.user) {
-          auth.login(result.user);
-        }
-        onLogInSuccessful("User registered");
+        if (result.user) auth.login(result.user);
+        onLogInSuccessful(t("authModal.messages.signupSuccess"));
       }
 
-      // Reset form
       setSignupName("");
       setSignupSurname("");
       setSignupEmail("");
       setSignupPassword("");
       setSignupPasswordRep("");
     } catch (err) {
-      console.error("Error signing up: ", err);
+      console.error("Signup error:", err);
+      setToasterMessage(t("authModal.messages.signupError"));
+      setToasterType("error");
     }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedLoginEmail = loginEmail.trim();
-    const trimmedLoginPsw = loginPassword.trim();
+    const trimmedEmail = loginEmail.trim();
+    const trimmedPassword = loginPassword.trim();
 
-    if (!trimmedLoginEmail.includes("@")) {
-      setToasterMessage("Please enter a valid email");
+    if (!trimmedEmail.includes("@")) {
+      setToasterMessage(t("authModal.messages.invalidEmail"));
       setToasterType("error");
       return;
     }
 
-    if (trimmedLoginPsw.length < 8) {
-      setToasterMessage("Password must be at least 8 characters");
+    if (trimmedPassword.length < 8) {
+      setToasterMessage(t("authModal.messages.invalidPassword"));
       setToasterType("error");
       return;
     }
 
-    // Prepare data to send
-    const loginData = {
-      email: trimmedLoginEmail,
-      password: trimmedLoginPsw,
-    };
+    const loginData = { email: trimmedEmail, password: trimmedPassword };
 
     try {
       const res = await fetch(`${apiUrl}/auth/login`, {
@@ -137,36 +133,37 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       });
 
       const result = await res.json();
-      if (result.success == false) {
-        setToasterMessage(result.message);
+
+      if (!result.success) {
+        const backendMsg =
+          t(`authModal.backend.${result.code}`) ||
+          t("authModal.messages.loginError");
+        setToasterMessage(backendMsg);
         setToasterType("error");
       } else {
-        onLogInSuccessful("Log in successful");
         auth.login(result.user);
+        onLogInSuccessful(t("authModal.messages.loginSuccess"));
       }
-      // Reset form
+
       setLoginEmail("");
       setLoginPassword("");
     } catch (err) {
-      console.error("Error loggin in: ", err);
+      console.error("Login error:", err);
+      setToasterMessage(t("authModal.messages.loginError"));
+      setToasterType("error");
     }
   };
 
-  const handleClassClick = () => {
-    setRightClass(!rightClass);
-  };
+  const handleClassClick = () => setRightClass(!rightClass);
 
   useEffect(() => {
-    if (toasterMessage === "") return;
+    if (!toasterMessage) return;
 
-    const leaveTimer = setTimeout(() => {
-      setToasterLeaving(true);
-    }, 3000); // toast visible for 3s
-
+    const leaveTimer = setTimeout(() => setToasterLeaving(true), 3000);
     const removeTimer = setTimeout(() => {
       setToasterMessage("");
-      setToasterLeaving(false); // reset for next toast
-    }, 3300); // 3000 + 300ms animation
+      setToasterLeaving(false);
+    }, 3300);
 
     return () => {
       clearTimeout(leaveTimer);
@@ -180,22 +177,46 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         <div className={`overlay-container ${rightClass ? "right" : ""}`}>
           <div className={`overlay ${rightClass ? "right" : ""}`}>
             <div className="overlay-panel-left">
-              <h3>Hello friend</h3>
-              <h4>Enter your personal details and start journey with us</h4>
-              <p>Do you already have an account?</p>
-              <button onClick={handleClassClick}>Log In</button>
+              <h3>{t("authModal.overlay.panelLeft.title", "Hello friend")}</h3>
+              <h4>
+                {t(
+                  "authModal.overlay.panelLeft.subtitle",
+                  "Enter your personal details and start journey with us"
+                )}
+              </h4>
+              <p>
+                {t(
+                  "authModal.overlay.panelLeft.prompt",
+                  "Do you already have an account?"
+                )}
+              </p>
+              <button onClick={handleClassClick}>
+                {t("authModal.overlay.panelLeft.button", "Log In")}
+              </button>
             </div>
             <div className="overlay-panel-right">
-              <h3>Welcome Back!</h3>
+              <h3>
+                {t("authModal.overlay.panelRight.title", "Welcome Back!")}
+              </h3>
               <h4>
-                To keep connected with us please login with your personal info
+                {t(
+                  "authModal.overlay.panelRight.subtitle",
+                  "To keep connected with us please login with your personal info"
+                )}
               </h4>
-              <p>Don't have an account?</p>
-              <button onClick={handleClassClick}>Sign Up</button>
+              <p>
+                {t(
+                  "authModal.overlay.panelRight.prompt",
+                  "Don't have an account?"
+                )}
+              </p>
+              <button onClick={handleClassClick}>
+                {t("authModal.overlay.panelRight.button", "Sign Up")}
+              </button>
             </div>
           </div>
         </div>
-        {toasterMessage != "" && (
+        {toasterMessage && (
           <Toaster
             message={toasterMessage}
             type={toasterType}
@@ -203,64 +224,77 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
           />
         )}
         <div className="close-icon-container-right" onClick={closeModal}>
-          <img src="/images/close-icon.svg" alt="" />
+          <img
+            src="/images/close-icon.svg"
+            alt={t("authModal.closeAlt", "close icon")}
+          />
         </div>
         <div className="close-icon-container-left" onClick={closeModal}>
-          <img src="/images/close-icon.svg" alt="" />
+          <img
+            src="/images/close-icon.svg"
+            alt={t("authModal.closeAlt", "close icon")}
+          />
         </div>
-        <div className="login-container">
-          <h2>Log In</h2>
 
+        <div className="login-container">
+          <h2>{t("authModal.login.title", "Log In")}</h2>
           <form onSubmit={handleLogin}>
             <input
               type="email"
-              placeholder="Email"
+              placeholder={t("authModal.login.emailPlaceholder", "Email")}
               value={loginEmail}
               onChange={(e) => setLoginEmail(e.target.value)}
               required
             />
-
             <input
               type="password"
-              placeholder="Password"
+              placeholder={t("authModal.login.passwordPlaceholder", "Password")}
               value={loginPassword}
               onChange={(e) => setLoginPassword(e.target.value)}
               minLength={8}
               required
             />
-
-            <button type="submit">Log In</button>
+            <button type="submit">
+              {t("authModal.login.button", "Log In")}
+            </button>
           </form>
         </div>
+
         <div className="signup-container">
-          <h2>Sign Up</h2>
+          <h2>{t("authModal.signup.title", "Sign Up")}</h2>
           <form onSubmit={handleSignUp}>
             <input
               type="text"
-              placeholder="Name"
+              placeholder={t("authModal.signup.namePlaceholder", "Name")}
               value={signupName}
               onChange={(e) => setSignupName(e.target.value)}
-              minLength={2}
+              minLength={1}
               required
             />
             <input
               type="text"
-              placeholder="Surname(s)"
+              placeholder={t(
+                "authModal.signup.surnamePlaceholder",
+                "Surname(s)"
+              )}
               value={signupSurname}
               onChange={(e) => setSignupSurname(e.target.value)}
-              minLength={2}
+              minLength={1}
               required
             />
             <input
               type="email"
-              placeholder="Email"
+              placeholder={t("authModal.signup.emailPlaceholder", "Email")}
               value={signupEmail}
               onChange={(e) => setSignupEmail(e.target.value)}
               required
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder={t(
+                "authModal.signup.passwordPlaceholder",
+                "Password"
+              )}
               value={signupPassword}
               onChange={(e) => setSignupPassword(e.target.value)}
               minLength={8}
@@ -268,13 +302,18 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
             />
             <input
               type="password"
-              placeholder="Repeat Password"
+              placeholder={t(
+                "authModal.signup.repeatPasswordPlaceholder",
+                "Repeat Password"
+              )}
               value={signupPasswordRep}
               onChange={(e) => setSignupPasswordRep(e.target.value)}
               minLength={8}
               required
             />
-            <button type="submit">Sign Up</button>
+            <button type="submit">
+              {t("authModal.signup.button", "Sign Up")}
+            </button>
           </form>
         </div>
       </div>

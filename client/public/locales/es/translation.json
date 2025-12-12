@@ -79,7 +79,12 @@
     "surnameLengthError": "El apellido debe tener al menos 2 caracteres",
     "userUpdateError": "Error al actualizar el usuario",
     "viewPassword": "Ver Contraseña",
-    "hidePassword": "Ocultar Contraseña"
+    "hidePassword": "Ocultar Contraseña",
+    "messages": {
+      "INVALID_IMAGE": "Imagen no válida",
+      "PHOTO_UPDATE_ERROR": "Error al actualizar la foto",
+      "PHOTO_UPDATE_SUCCESS": "Foto actualizada correctamente"
+    }
   },
   "newReport": {
     "title": "Nuevo reporte",
@@ -115,5 +120,63 @@
       "REPORT_ERROR": "Ocurrió un error al crear el reporte",
       "REPORT_CREATED": "Reporte creado correctamente"
     }
+  },
+  "authModal": {
+    "messages": {
+      "nameTooShort": "El nombre debe tener al menos 1 carácter.",
+      "surnameTooShort": "El apellido debe tener al menos 1 carácter.",
+      "invalidEmail": "Por favor, introduce un correo electrónico válido.",
+      "invalidPassword": "La contraseña debe tener al menos 8 caracteres.",
+      "passwordsDontMatch": "Las contraseñas no coinciden.",
+      "signupSuccess": "Cuenta creada con éxito.",
+      "signupError": "No se pudo registrar al usuario.",
+      "loginSuccess": "Inicio de sesión exitoso.",
+      "loginError": "Error al iniciar sesión."
+    },
+    "backend": {
+      "INVALID_EMAIL_FORMAT": "Formato de correo electrónico inválido.",
+      "INVALID_NAME_FORMAT": "Formato de nombre inválido.",
+      "INVALID_SURNAME_FORMAT": "Formato de apellido inválido.",
+      "INVALID_PASSWORD_FORMAT": "Formato de contraseña inválido.",
+      "USER_ALREADY_REGISTERED": "Usuario ya registrado.",
+      "SIGNUP_SUCCESS": "Cuenta creada con éxito.",
+      "REGISTER_FAILED": "No se pudo registrar al usuario.",
+      "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
+      "LOGIN_SUCCESS": "Inicio de sesión exitoso.",
+      "SERVER_CONFIG_ERROR": "Error de configuración del servidor.",
+      "SERVER_ERROR": "Error del servidor.",
+      "NOT_AUTHENTICATED": "No autenticado.",
+      "LOGOUT_SUCCESS": "Cierre de sesión exitoso."
+    },
+    "overlay": {
+      "panelLeft": {
+        "title": "Hola amigo",
+        "subtitle": "Introduce tus datos personales y comienza tu viaje con nosotros",
+        "prompt": "¿Ya tienes una cuenta?",
+        "button": "Iniciar sesión"
+      },
+      "panelRight": {
+        "title": "¡Bienvenido de nuevo!",
+        "subtitle": "Para mantenerte conectado, inicia sesión con tu información personal",
+        "prompt": "¿No tienes una cuenta?",
+        "button": "Registrarse"
+      }
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "button": "Iniciar sesión"
+    },
+    "signup": {
+      "title": "Registrarse",
+      "namePlaceholder": "Nombre",
+      "surnamePlaceholder": "Apellido(s)",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "repeatPasswordPlaceholder": "Repetir contraseña",
+      "button": "Registrarse"
+    },
+    "closeAlt": "icono de cierre"
   }
 }

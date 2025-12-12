@@ -11,7 +11,7 @@ import Toaster from "./components/Toaster/Toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoutes from "./components/ProtectedRoutes/ProtectedRoutes";
 import NewReport from "./components/NewReport/NewReport";
-
+import { useTranslation } from "react-i18next";
 function App() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showToaster, setShowToaster] = useState<boolean>(false);
@@ -20,6 +20,13 @@ function App() {
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
   const [showNewReport, setShowNewReport] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<number>(0);
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const match = document.cookie.match(/(^|;)\s*lang=([^;]+)/);
+    const lang = match ? decodeURIComponent(match[2]) : "en";
+    i18n.changeLanguage(lang);
+  }, []);
 
   useEffect(() => {
     if (showToaster) {

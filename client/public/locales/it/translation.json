@@ -1,0 +1,182 @@
+{
+  "header": {
+    "welcome": "Ciao, {{name}}",
+    "dashboard": "Pannello",
+    "myReports": "I miei rapporti",
+    "map": "Mappa"
+  },
+  "buttons": {
+    "newReport": "Nuovo rapporto",
+    "login": "Accedi / Registrati"
+  },
+  "recentReports": {
+    "title": "Ultimi rapporti",
+    "errors": {
+      "fetchFailed": "Impossibile caricare gli ultimi rapporti"
+    }
+  },
+  "stats": {
+    "title": "Statistiche",
+    "labels": {
+      "total": "Totale",
+      "closed": "Chiusi",
+      "inProgress": "In corso"
+    },
+    "errors": {
+      "fetchFailed": "Impossibile caricare le statistiche"
+    }
+  },
+  "myReports": {
+    "search": {
+      "titlePlaceholder": "Cerca titolo",
+      "categoryPlaceholder": "-- Cerca categoria --",
+      "statusPlaceholder": "-- Cerca stato --",
+      "categories": {
+        "road": "Danni stradali",
+        "lighting": "Illuminazione pubblica",
+        "hygiene": "Pulizia",
+        "furniture": "Arredo urbano",
+        "traffic-signs": "Segnaletica stradale",
+        "parks": "Parchi e aree verdi"
+      },
+      "statuses": {
+        "pending": "In attesa",
+        "in_progress": "In corso",
+        "closed": "Chiuso"
+      }
+    },
+    "sortBy": "Ordina per",
+    "tableHeaders": {
+      "title": "Titolo",
+      "category": "Categoria",
+      "status": "Stato",
+      "dateSubmitted": "Data di invio"
+    },
+    "noReports": "Nessun rapporto trovato",
+    "messages": {
+      "USER_NOT_FOUND": "Utente non trovato",
+      "NO_USER_REPORTS": "Nessun rapporto per questo utente",
+      "NOT_AUTH": "Non autenticato",
+      "MISSING_REPORT_ID": "ID rapporto mancante",
+      "REPORT_DELETED": "Rapporto eliminato correttamente",
+      "DB_ERROR": "Errore del database"
+    }
+  },
+  "userProfile": {
+    "personalInfo": "Informazioni personali",
+    "changePassword": "Cambia password",
+    "logOut": "Esci",
+    "namePlaceholder": "Nome",
+    "surnamePlaceholder": "Cognome",
+    "emailCantChange": "L'email non può essere modificata",
+    "cancel": "Annulla",
+    "saveChanges": "Salva modifiche",
+    "oldPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "passwordLengthError": "La password deve contenere almeno 8 caratteri",
+    "passwordUpdateError": "Errore nell'aggiornamento della password",
+    "nameLengthError": "Il nome deve contenere almeno 2 caratteri",
+    "surnameLengthError": "Il cognome deve contenere almeno 2 caratteri",
+    "userUpdateError": "Errore nell'aggiornamento dell'utente",
+    "viewPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "messages": {
+      "INVALID_IMAGE": "Immagine non valida",
+      "PHOTO_UPDATE_ERROR": "Errore nell'aggiornamento della foto",
+      "PHOTO_UPDATE_SUCCESS": "Foto aggiornata correttamente"
+    }
+  },
+  "newReport": {
+    "title": "Nuovo rapporto",
+    "subtitle": "Per favore, compila i dettagli per inviare un rapporto",
+    "closeAlt": "chiudi icona",
+    "labelTitle": "Titolo",
+    "labelCategory": "Categoria",
+    "selectCategory": "-- Seleziona categoria --",
+    "category": {
+      "road": "Danni alla strada (buche, crepe)",
+      "lighting": "Illuminazione pubblica (lampioni rotti)",
+      "hygiene": "Pulizia (immondizia, escrementi di cane)",
+      "furniture": "Arredo urbano (panchine, tavoli, cestini)",
+      "trafficSigns": "Segnaletica stradale",
+      "parks": "Parchi e aree verdi"
+    },
+    "labelDescription": "Descrizione",
+    "attachFile": "Allega file",
+    "selectedFile": "File selezionato",
+    "noFile": "Nessun file allegato",
+    "addressInstructions": "Inserisci un indirizzo o sposta il pin blu",
+    "labelAddress": "Indirizzo",
+    "allFieldsRequired": "Tutti i campi sono obbligatori",
+    "selectImageError": "Seleziona un'immagine",
+    "errorOccurred": "Si è verificato un errore",
+    "cancel": "Annulla",
+    "submit": "Invia",
+    "messages": {
+      "INVALID_CATEGORY": "Categoria non valida",
+      "INVALID_INPUTS": "Campi non validi",
+      "INVALID_COORDINATES": "Coordinate non valide",
+      "DB_ERROR": "Errore del database",
+      "REPORT_ERROR": "Errore durante la creazione del rapporto",
+      "REPORT_CREATED": "Rapporto creato correttamente"
+    }
+  },
+  "authModal": {
+    "messages": {
+      "nameTooShort": "Il nome deve contenere almeno 1 carattere.",
+      "surnameTooShort": "Il cognome deve contenere almeno 1 carattere.",
+      "invalidEmail": "Inserisci un'email valida.",
+      "invalidPassword": "La password deve contenere almeno 8 caratteri.",
+      "passwordsDontMatch": "Le password non corrispondono.",
+      "signupSuccess": "Account creato con successo.",
+      "signupError": "Registrazione utente fallita.",
+      "loginSuccess": "Accesso effettuato con successo.",
+      "loginError": "Errore durante l'accesso."
+    },
+    "backend": {
+      "INVALID_EMAIL_FORMAT": "Formato email non valido.",
+      "INVALID_NAME_FORMAT": "Formato nome non valido.",
+      "INVALID_SURNAME_FORMAT": "Formato cognome non valido.",
+      "INVALID_PASSWORD_FORMAT": "Formato password non valido.",
+      "USER_ALREADY_REGISTERED": "Utente già registrato.",
+      "SIGNUP_SUCCESS": "Account creato con successo.",
+      "REGISTER_FAILED": "Registrazione utente fallita.",
+      "INVALID_CREDENTIALS": "Email o password errata.",
+      "LOGIN_SUCCESS": "Accesso effettuato con successo.",
+      "SERVER_CONFIG_ERROR": "Errore di configurazione del server.",
+      "SERVER_ERROR": "Errore del server.",
+      "NOT_AUTHENTICATED": "Non autenticato.",
+      "LOGOUT_SUCCESS": "Uscita effettuata con successo."
+    },
+    "overlay": {
+      "panelLeft": {
+        "title": "Ciao amico",
+        "subtitle": "Inserisci i tuoi dati e inizia il tuo viaggio con noi",
+        "prompt": "Hai già un account?",
+        "button": "Accedi"
+      },
+      "panelRight": {
+        "title": "Bentornato!",
+        "subtitle": "Per rimanere connesso, accedi con le tue credenziali",
+        "prompt": "Non hai un account?",
+        "button": "Registrati"
+      }
+    },
+    "login": {
+      "title": "Accedi",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "button": "Accedi"
+    },
+    "signup": {
+      "title": "Registrati",
+      "namePlaceholder": "Nome",
+      "surnamePlaceholder": "Cognome",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "repeatPasswordPlaceholder": "Ripeti password",
+      "button": "Registrati"
+    },
+    "closeAlt": "icona di chiusura"
+  }
+}

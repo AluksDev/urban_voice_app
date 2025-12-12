@@ -34,6 +34,7 @@ const UserProfile = ({
   const spansRef = useRef<NodeListOf<HTMLSpanElement> | null>(null);
   const oldPasswordRef = useRef<HTMLInputElement>(null);
   const newPasswordRef = useRef<HTMLInputElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   const changeView = (event: React.MouseEvent<HTMLSpanElement>) => {
     spansRef.current?.forEach((element) => {
@@ -153,6 +154,38 @@ const UserProfile = ({
     }
   };
 
+  const handlePhotoClick = () => {
+    if (photoInputRef.current) {
+      photoInputRef.current.click();
+    }
+  };
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      onUserChange(t("userProfile.messages.INVALID_IMAGE"), "error");
+      console.error("Selected file is not an image");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("photo", file);
+    try {
+      const res = await fetch(`${apiUrl}/user/photo`, {
+        method: "PATCH",
+        credentials: "include",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        onUserChange(t("userProfile.messages.PHOTO_UPDATE_ERROR"), "error");
+        throw new Error(t("userProfile.messages.PHOTO_UPDATE_ERROR"));
+      }
+      updateUser({ photo_url: data.photo_url });
+      onUserChange(t("userProfile.messages.PHOTO_UPDATE_SUCCESS"), "success");
+    } catch (e) {
+      console.error("Error in changing photo", e);
+    }
+  };
   useEffect(() => {
     spansRef.current = document.querySelectorAll(".selection-span");
   }, []);
@@ -161,13 +194,20 @@ const UserProfile = ({
     <div className="profile-main-container">
       <div className="profile-inner-container">
         <div className="profile-left-container">
-          <div className="profile-image-contianer">
+          <div className="profile-image-container">
             {auth.user?.photo_url && (
               <img src={auth.user.photo_url} alt={auth.user.name || "User"} />
             )}
-            <span>
+            <span onClick={handlePhotoClick}>
               <img src="images/edit-photo-icon.png" alt="" />
             </span>
+            <input
+              type="file"
+              ref={photoInputRef}
+              accept="image/jpeg, image/webp, image/png"
+              onChange={handlePhotoChange}
+              hidden
+            />
           </div>
           <div className="profile-selection-container">
             <span

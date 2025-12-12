@@ -79,7 +79,12 @@
     "surnameLengthError": "Surname must be at least 2 characters",
     "userUpdateError": "User update failed",
     "viewPassword": "View Password",
-    "hidePassword": "Hide Password"
+    "hidePassword": "Hide Password",
+    "messages": {
+      "INVALID_IMAGE": "Invalid image",
+      "PHOTO_UPDATE_ERROR": "Error updating photo",
+      "PHOTO_UPDATE_SUCCESS": "Photo updated successfully"
+    }
   },
   "newReport": {
     "title": "New Report",
@@ -115,5 +120,63 @@
       "REPORT_ERROR": "Error creating report",
       "REPORT_CREATED": "Report created successfully"
     }
+  },
+  "authModal": {
+    "messages": {
+      "nameTooShort": "Name must be at least 1 character.",
+      "surnameTooShort": "Surname must be at least 1 character.",
+      "invalidEmail": "Please enter a valid email address.",
+      "invalidPassword": "Password must be at least 8 characters.",
+      "passwordsDontMatch": "Passwords do not match.",
+      "signupSuccess": "Account created successfully.",
+      "signupError": "Could not register user.",
+      "loginSuccess": "Login successful.",
+      "loginError": "Login failed."
+    },
+    "backend": {
+      "INVALID_EMAIL_FORMAT": "Invalid email format.",
+      "INVALID_NAME_FORMAT": "Invalid name format.",
+      "INVALID_SURNAME_FORMAT": "Invalid surname format.",
+      "INVALID_PASSWORD_FORMAT": "Invalid password format.",
+      "USER_ALREADY_REGISTERED": "User already registered.",
+      "SIGNUP_SUCCESS": "Account created successfully.",
+      "REGISTER_FAILED": "Could not register user.",
+      "INVALID_CREDENTIALS": "Incorrect email or password.",
+      "LOGIN_SUCCESS": "Login successful.",
+      "SERVER_CONFIG_ERROR": "Server configuration error.",
+      "SERVER_ERROR": "Server error.",
+      "NOT_AUTHENTICATED": "Not authenticated.",
+      "LOGOUT_SUCCESS": "Logout successful."
+    },
+    "overlay": {
+      "panelLeft": {
+        "title": "Hello friend",
+        "subtitle": "Enter your personal details and start journey with us",
+        "prompt": "Do you already have an account?",
+        "button": "Log In"
+      },
+      "panelRight": {
+        "title": "Welcome Back!",
+        "subtitle": "To keep connected with us please login with your personal info",
+        "prompt": "Don't have an account?",
+        "button": "Sign Up"
+      }
+    },
+    "login": {
+      "title": "Log In",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "button": "Log In"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "namePlaceholder": "Name",
+      "surnamePlaceholder": "Surname(s)",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "repeatPasswordPlaceholder": "Repeat Password",
+      "button": "Sign Up"
+    },
+    "closeAlt": "close icon"
   }
 }

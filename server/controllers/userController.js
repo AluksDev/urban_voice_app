@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const fs = require("fs");
+const path = require("path");
 
 exports.changePassword = async (req, res) => {
     if (!req.user) {
@@ -86,6 +88,41 @@ exports.changeDetails = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Unable to update details"
+        })
+    }
+}
+
+exports.changeProfilePhoto = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: "Not authenticated"
+        })
+    }
+    const userId = req.user.id;
+    const newPhotoUrl = req.file ? `/uploads/users/${req.file.filename}` : null;
+
+    const [rows] = await req.db.query("SELECT photo_url FROM users WHERE id = ?", [userId]);
+    const currentPhoto = rows[0]?.photo_url;
+
+    if (currentPhoto) {
+        const oldFilePath = path.join(__dirname, "..", currentPhoto);
+        fs.unlink(oldFilePath, (err) => {
+            if (err) console.error("Failed to delete old profile image:", err);
+        });
+    }
+
+    const [user] = await req.db.query("UPDATE users SET photo_url = ? WHERE id = ?", [newPhotoUrl, userId]);
+    if (user.affectedRows === 1) {
+        return res.status(200).json({
+            success: true,
+            message: "Profile photo changed successfully",
+            photo_url: `${req.protocol}://${req.get("host")}${newPhotoUrl}`
+        })
+    } else {
+        return res.status(500).json({
+            success: false,
+            message: "Unable to update profile photo"
         })
     }
 }

@@ -1,0 +1,119 @@
+{
+  "header": {
+    "welcome": "Hello, {{name}}",
+    "dashboard": "Dashboard",
+    "myReports": "My Reports",
+    "map": "Map"
+  },
+  "buttons": {
+    "newReport": "New report",
+    "login": "Log In / Sign Up"
+  },
+  "recentReports": {
+    "title": "Latest Reports",
+    "errors": {
+      "fetchFailed": "Failed to load latest reports"
+    }
+  },
+  "stats": {
+    "title": "Statistics",
+    "labels": {
+      "total": "Total",
+      "closed": "Closed",
+      "inProgress": "In Progress"
+    },
+    "errors": {
+      "fetchFailed": "Failed to load statistics"
+    }
+  },
+  "myReports": {
+    "search": {
+      "titlePlaceholder": "Search Title",
+      "categoryPlaceholder": "-- Search Category --",
+      "statusPlaceholder": "-- Search Status --",
+      "categories": {
+        "road": "Road Damage",
+        "lighting": "Street Lighting",
+        "hygiene": "Cleanliness",
+        "furniture": "Public Furniture",
+        "traffic-signs": "Signs & Traffic Signals",
+        "parks": "Parks & Green Spaces"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "in_progress": "In Progress",
+        "closed": "Closed"
+      }
+    },
+    "sortBy": "Sort By",
+    "tableHeaders": {
+      "title": "Title",
+      "category": "Category",
+      "status": "Status",
+      "dateSubmitted": "Date Submitted"
+    },
+    "noReports": "No reports found",
+    "messages": {
+      "USER_NOT_FOUND": "User does not exist",
+      "NO_USER_REPORTS": "No reports from this user",
+      "NOT_AUTH": "Not authenticated",
+      "MISSING_REPORT_ID": "Missing report id",
+      "REPORT_DELETED": "Report deleted successfully",
+      "DB_ERROR": "Database error"
+    }
+  },
+  "userProfile": {
+    "personalInfo": "Personal Info",
+    "changePassword": "Change Password",
+    "logOut": "Log Out",
+    "namePlaceholder": "Name",
+    "surnamePlaceholder": "Surname",
+    "emailCantChange": "Email can not be changed",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "oldPassword": "Old Password",
+    "newPassword": "New Password",
+    "passwordLengthError": "Password must be at least 8 characters",
+    "passwordUpdateError": "Password update failed",
+    "nameLengthError": "Name must be at least 2 characters",
+    "surnameLengthError": "Surname must be at least 2 characters",
+    "userUpdateError": "User update failed",
+    "viewPassword": "View Password",
+    "hidePassword": "Hide Password"
+  },
+  "newReport": {
+    "title": "New Report",
+    "subtitle": "Please fill out the details below to submit a report",
+    "closeAlt": "close icon",
+    "labelTitle": "Title",
+    "labelCategory": "Category",
+    "selectCategory": "-- Select category --",
+    "category": {
+      "road": "Road Damage (potholes, cracks)",
+      "lighting": "Street Lighting (broken lamps)",
+      "hygiene": "Cleanliness (litter, dog waste)",
+      "furniture": "Public Furniture (benches, tables, bins)",
+      "trafficSigns": "Signs & Traffic Signals",
+      "parks": "Parks & Green Spaces"
+    },
+    "labelDescription": "Description",
+    "attachFile": "Attach File",
+    "selectedFile": "Selected file",
+    "noFile": "No Files Attached",
+    "addressInstructions": "Write an address or drag the blue pin",
+    "labelAddress": "Address",
+    "allFieldsRequired": "All fields are required",
+    "selectImageError": "Please select an image",
+    "errorOccurred": "An error occurred",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "messages": {
+      "INVALID_CATEGORY": "Invalid category",
+      "INVALID_INPUTS": "Invalid inputs",
+      "INVALID_COORDINATES": "Invalid coordinates",
+      "DB_ERROR": "Database error",
+      "REPORT_ERROR": "Error creating report",
+      "REPORT_CREATED": "Report created successfully"
+    }
+  }
+}

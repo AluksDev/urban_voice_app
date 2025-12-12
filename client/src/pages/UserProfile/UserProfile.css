@@ -106,8 +106,7 @@
   position: relative;
 }
 
-.profile-email-container::after {
-  content: "Email can not be changed";
+.profile-email-message {
   font-size: 0.75rem;
   position: absolute;
   top: 100%;

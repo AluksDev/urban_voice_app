@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./MyReports.css";
 import { capitalize } from "../../utils";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
+import { useTranslation } from "react-i18next";
 
 interface Report {
   id: number;
@@ -12,8 +13,8 @@ interface Report {
   category: string;
   status: string;
   photo_url: string;
-  created_at: string; // ISO date string
-  updated_at: string; // ISO date string
+  created_at: string;
+  updated_at: string;
 }
 
 interface MyReportsProps {
@@ -22,6 +23,7 @@ interface MyReportsProps {
 }
 
 const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
+  const { t } = useTranslation();
   const [reports, setReports] = useState<Report[]>([]);
   const [searchTitle, setSearchTitle] = useState<string>("");
   const [searchCategory, setSearchCategory] = useState<string>("");
@@ -38,14 +40,22 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
         credentials: "include",
         method: "GET",
       });
+
+      const data = await res.json(); // parse JSON first
+
       if (!res.ok) {
-        throw new Error("Error in response");
+        // handle specific backend codes
+        if (data.code === "NO_USER_REPORTS") {
+          setReports([]); // Clear the list
+          return;
+        } else if (data.code === "USER_NOT_FOUND") {
+          console.error("User not found");
+          return;
+        } else {
+          throw new Error(data.code || "Unknown error");
+        }
       }
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.message);
-      }
-      setReports(data.reports);
+      setReports(data.reports || []);
     } catch (e) {
       console.error("Error in fetching reports", e);
     }
@@ -60,19 +70,13 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
         status: searchStatus,
         date: searchDate,
       });
-      if (sortField) {
-        query.append("sort", sortField);
-      }
+      if (sortField) query.append("sort", sortField);
       const res = await fetch(`${apiUrl}/reports/search?${query.toString()}`, {
         credentials: "include",
       });
-      if (!res.ok) {
-        throw new Error("Error in response");
-      }
+      if (!res.ok) throw new Error("Error in response");
       const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.message);
-      }
+      if (!data.success) throw new Error(data.message);
       setReports(data.reports);
     } catch (e) {
       console.error(e);
@@ -85,7 +89,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
   };
 
   const handleSortClick = (field: string) => {
-    handleSearch(field); // reuse search, just add sort
+    handleSearch(field);
   };
 
   const handleDeleteReport = async (reportId: number) => {
@@ -94,24 +98,25 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
         credentials: "include",
         method: "DELETE",
       });
-      if (!res.ok) {
-        throw new Error("Error in response");
-      }
+      if (!res.ok) throw new Error("Error in response");
+
       const data = await res.json();
       if (!data.success) {
-        onReportDelete(data.message);
-        throw new Error(data.message);
+        onReportDelete(t(`myReports.messages.${data.code}`));
+        throw new Error(t(`myReports.messages.${data.code}`));
       }
-      onReportDelete(data.message);
+
+      onReportDelete(t(`myReports.messages.${data.code}`)); // REPORT_DELETED
       fetchReports();
     } catch (e) {
-      console.error("Error in deleting report", e);
+      console.error("Error deleting report", e);
     }
   };
 
   useEffect(() => {
     fetchReports();
   }, [refresh]);
+
   return (
     <>
       {showReportDetails && (
@@ -125,7 +130,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
           <div>
             <input
               type="text"
-              placeholder="Search Title"
+              placeholder={t("myReports.search.titlePlaceholder")}
               value={searchTitle}
               onChange={(e) => setSearchTitle(e.target.value)}
             />
@@ -136,14 +141,26 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
               onChange={(e) => setSearchCategory(e.target.value)}
             >
               <option value="" disabled>
-                -- Search Category --
+                {t("myReports.search.categoryPlaceholder")}
               </option>
-              <option value="road">Road Damage</option>
-              <option value="lighting">Street Lighting</option>
-              <option value="hygiene">Cleanliness</option>
-              <option value="furniture">Public Furniture</option>
-              <option value="traffic-signs">Signs & Traffic Signals</option>
-              <option value="parks">Parks & Green Spaces</option>
+              <option value="road">
+                {t("myReports.search.categories.road")}
+              </option>
+              <option value="lighting">
+                {t("myReports.search.categories.lighting")}
+              </option>
+              <option value="hygiene">
+                {t("myReports.search.categories.hygiene")}
+              </option>
+              <option value="furniture">
+                {t("myReports.search.categories.furniture")}
+              </option>
+              <option value="traffic-signs">
+                {t("myReports.search.categories.traffic-signs")}
+              </option>
+              <option value="parks">
+                {t("myReports.search.categories.parks")}
+              </option>
             </select>
           </div>
           <div>
@@ -152,11 +169,17 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
               onChange={(e) => setSearchStatus(e.target.value)}
             >
               <option value="" disabled>
-                -- Search Status --
+                {t("myReports.search.statusPlaceholder")}
               </option>
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="closed">Closed</option>
+              <option value="pending">
+                {t("myReports.search.statuses.pending")}
+              </option>
+              <option value="in_progress">
+                {t("myReports.search.statuses.in_progress")}
+              </option>
+              <option value="closed">
+                {t("myReports.search.statuses.closed")}
+              </option>
             </select>
           </div>
           <div>
@@ -170,6 +193,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
             <img src="images/search-icon.svg" alt="" />
           </div>
         </div>
+
         <div className="my-reports-container">
           {reports.length > 0 ? (
             <>
@@ -178,58 +202,66 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
                 onClick={openSortList}
                 id="sortContainer"
               >
-                <p>Sort By</p>
+                <p>{t("myReports.sortBy")}</p>
                 <div className="sort-list-container" id="sortList">
-                  <p onClick={() => handleSortClick("title")}>Title</p>
-                  <p onClick={() => handleSortClick("category")}>Category</p>
-                  <p onClick={() => handleSortClick("status")}>Status</p>
-                  <p onClick={() => handleSortClick("created_at")}>Date</p>
+                  <p onClick={() => handleSortClick("title")}>
+                    {t("myReports.tableHeaders.title")}
+                  </p>
+                  <p onClick={() => handleSortClick("category")}>
+                    {t("myReports.tableHeaders.category")}
+                  </p>
+                  <p onClick={() => handleSortClick("status")}>
+                    {t("myReports.tableHeaders.status")}
+                  </p>
+                  <p onClick={() => handleSortClick("created_at")}>
+                    {t("myReports.tableHeaders.dateSubmitted")}
+                  </p>
                 </div>
               </div>
               <table>
                 <thead>
                   <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Status</th>
-                    <th>Date Submitted</th>
+                    <th>{t("myReports.tableHeaders.title")}</th>
+                    <th>{t("myReports.tableHeaders.category")}</th>
+                    <th>{t("myReports.tableHeaders.status")}</th>
+                    <th>{t("myReports.tableHeaders.dateSubmitted")}</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {reports.map((report) => {
-                    return (
-                      <tr key={report.id}>
-                        <td>{capitalize(report.title)}</td>
-                        <td>{capitalize(report.category)}</td>
-                        <td>{capitalize(report.status)}</td>
-                        <td>
-                          {new Date(report.created_at).toLocaleDateString(
-                            "en-GB"
-                          )}
-                        </td>
-                        <td className="myreports-actions-container">
-                          <span
-                            onClick={() => {
-                              setShowReportDetails(true);
-                              setSelectedReport(report);
-                            }}
-                          >
-                            <img src="images/modify-icon.png" alt="" />
-                          </span>
-                          <span onClick={() => handleDeleteReport(report.id)}>
-                            <img src="images/delete-icon.png" alt="" />
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {reports.map((report) => (
+                    <tr key={report.id}>
+                      <td>{capitalize(report.title)}</td>
+                      <td>
+                        {t(`myReports.search.categories.${report.category}`)}
+                      </td>
+                      <td>{t(`myReports.search.statuses.${report.status}`)}</td>
+                      <td>
+                        {new Date(report.created_at).toLocaleDateString(
+                          "en-GB"
+                        )}
+                      </td>
+                      <td className="myreports-actions-container">
+                        <span
+                          onClick={() => {
+                            setShowReportDetails(true);
+                            setSelectedReport(report);
+                          }}
+                        >
+                          <img src="images/modify-icon.png" alt="" />
+                        </span>
+                        <span onClick={() => handleDeleteReport(report.id)}>
+                          <img src="images/delete-icon.png" alt="" />
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </>
           ) : (
             <div className="no-reports-container">
-              <p>No reports found</p>
+              <p>{t("myReports.noReports")}</p>
             </div>
           )}
         </div>

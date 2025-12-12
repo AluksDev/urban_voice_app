@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./Stats.css";
 import PieChartComponent from "../PieChartComponent/PieChartComponent";
 import SlotCounter from "react-slot-counter";
+import { useTranslation } from "react-i18next";
 
 interface StatsProps {
   refresh: number;
@@ -21,6 +22,7 @@ interface Report {
 }
 
 const Stats = ({ refresh }: StatsProps) => {
+  const { t } = useTranslation();
   const [reportsCount, setReportsCount] = useState<number>(0);
   const [reportsInProgress, setReportsInProgress] = useState<number>(0);
   const [reportsClosed, setReportsClosed] = useState<number>(0);
@@ -31,34 +33,39 @@ const Stats = ({ refresh }: StatsProps) => {
     try {
       const res = await fetch(`${apiUrl}/stats/reports`);
       if (!res.ok) {
-        throw new Error("Error in response");
+        throw new Error(t("stats.errors.fetchFailed"));
       }
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.message);
+        throw new Error(t("stats.errors.fetchFailed"));
       }
+
       setReportsData(data.reports);
       setReportsCount(data.reports.length);
-      const inProgress = 0;
-      const closed = 0;
+
+      let inProgress = 0;
+      let closed = 0;
+
       data.reports.forEach((report: Report) => {
-        if (report.status === "in_progress") {
-          setReportsInProgress(inProgress + 1);
-        } else if (report.status === "closed") {
-          setReportsClosed(closed + 1);
-        }
+        if (report.status === "in_progress") inProgress += 1;
+        else if (report.status === "closed") closed += 1;
       });
+
+      setReportsInProgress(inProgress);
+      setReportsClosed(closed);
     } catch (e) {
       console.error(e);
+      // optionally display a toast or alert with the error
     }
   };
 
   useEffect(() => {
     getReportsCount();
   }, [refresh]);
+
   return (
     <section className="stats-container">
-      <h3>Statistics</h3>
+      <h3>{t("stats.title")}</h3>
       <div className="stats-box">
         <div>
           <div className="numeric-stat">
@@ -67,7 +74,7 @@ const Stats = ({ refresh }: StatsProps) => {
               animateUnchanged={false}
               duration={2}
             />
-            <p>Total</p>
+            <p>{t("stats.labels.total")}</p>
           </div>
           <div className="numeric-stat">
             <SlotCounter
@@ -75,7 +82,7 @@ const Stats = ({ refresh }: StatsProps) => {
               animateUnchanged={false}
               duration={2}
             />
-            <p>Closed</p>
+            <p>{t("stats.labels.closed")}</p>
           </div>
           <div className="numeric-stat">
             <SlotCounter
@@ -83,7 +90,7 @@ const Stats = ({ refresh }: StatsProps) => {
               animateUnchanged={false}
               duration={2}
             />
-            <p>In Progress</p>
+            <p>{t("stats.labels.inProgress")}</p>
           </div>
         </div>
         <div className="pie-chart-container">

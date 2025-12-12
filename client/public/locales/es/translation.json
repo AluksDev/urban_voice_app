@@ -1,0 +1,119 @@
+{
+  "header": {
+    "welcome": "Hola, {{name}}",
+    "dashboard": "Panel",
+    "myReports": "Mis Informes",
+    "map": "Mapa"
+  },
+  "buttons": {
+    "newReport": "Nuevo informe",
+    "login": "Iniciar sesión / Registrarse"
+  },
+  "recentReports": {
+    "title": "Últimos Informes",
+    "errors": {
+      "fetchFailed": "No se pudieron cargar los últimos informes"
+    }
+  },
+  "stats": {
+    "title": "Estadísticas",
+    "labels": {
+      "total": "Total",
+      "closed": "Cerrados",
+      "inProgress": "En progreso"
+    },
+    "errors": {
+      "fetchFailed": "No se pudieron cargar las estadísticas"
+    }
+  },
+  "myReports": {
+    "search": {
+      "titlePlaceholder": "Buscar título",
+      "categoryPlaceholder": "-- Buscar categoría --",
+      "statusPlaceholder": "-- Buscar estado --",
+      "categories": {
+        "road": "Daños en la carretera",
+        "lighting": "Iluminación pública",
+        "hygiene": "Limpieza",
+        "furniture": "Mobiliario urbano",
+        "traffic-signs": "Señales de tráfico",
+        "parks": "Parques y áreas verdes"
+      },
+      "statuses": {
+        "pending": "Pendiente",
+        "in_progress": "En proceso",
+        "closed": "Cerrado"
+      }
+    },
+    "sortBy": "Ordenar por",
+    "tableHeaders": {
+      "title": "Título",
+      "category": "Categoría",
+      "status": "Estado",
+      "dateSubmitted": "Fecha de envío"
+    },
+    "noReports": "No se encontraron informes",
+    "messages": {
+      "USER_NOT_FOUND": "El usuario no existe",
+      "NO_USER_REPORTS": "No hay informes de este usuario",
+      "NOT_AUTH": "No autenticado",
+      "MISSING_REPORT_ID": "Falta el id del informe",
+      "REPORT_DELETED": "Informe eliminado correctamente",
+      "DB_ERROR": "Error en la base de datos"
+    }
+  },
+  "userProfile": {
+    "personalInfo": "Información Personal",
+    "changePassword": "Cambiar Contraseña",
+    "logOut": "Cerrar Sesión",
+    "namePlaceholder": "Nombre",
+    "surnamePlaceholder": "Apellido",
+    "emailCantChange": "El correo electrónico no puede ser cambiado",
+    "cancel": "Cancelar",
+    "saveChanges": "Guardar Cambios",
+    "oldPassword": "Contraseña Anterior",
+    "newPassword": "Nueva Contraseña",
+    "passwordLengthError": "La contraseña debe tener al menos 8 caracteres",
+    "passwordUpdateError": "Error al actualizar la contraseña",
+    "nameLengthError": "El nombre debe tener al menos 2 caracteres",
+    "surnameLengthError": "El apellido debe tener al menos 2 caracteres",
+    "userUpdateError": "Error al actualizar el usuario",
+    "viewPassword": "Ver Contraseña",
+    "hidePassword": "Ocultar Contraseña"
+  },
+  "newReport": {
+    "title": "Nuevo reporte",
+    "subtitle": "Por favor, rellena los detalles para enviar un reporte",
+    "closeAlt": "cerrar icono",
+    "labelTitle": "Título",
+    "labelCategory": "Categoría",
+    "selectCategory": "-- Selecciona categoría --",
+    "category": {
+      "road": "Daños en la vía (baches, grietas)",
+      "lighting": "Iluminación pública (farolas rotas)",
+      "hygiene": "Limpieza (basura, excrementos de perro)",
+      "furniture": "Mobiliario urbano (bancos, mesas, papeleras)",
+      "trafficSigns": "Señales de tráfico",
+      "parks": "Parques y zonas verdes"
+    },
+    "labelDescription": "Descripción",
+    "attachFile": "Adjuntar archivo",
+    "selectedFile": "Archivo seleccionado",
+    "noFile": "No hay archivos adjuntos",
+    "addressInstructions": "Escribe una dirección o mueve el pin azul",
+    "labelAddress": "Dirección",
+    "allFieldsRequired": "Todos los campos son obligatorios",
+    "selectImageError": "Por favor selecciona una imagen",
+    "errorOccurred": "Ocurrió un error",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "messages": {
+      "INVALID_CATEGORY": "Categoría inválida",
+      "INVALID_INPUTS": "Campos inválidos",
+      "INVALID_COORDINATES": "Coordenadas inválidas",
+      "DB_ERROR": "Error en la base de datos",
+      "REPORT_ERROR": "Ocurrió un error al crear el reporte",
+      "REPORT_CREATED": "Reporte creado correctamente"
+    }
+  }
+}

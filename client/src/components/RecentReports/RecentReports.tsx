@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./RecentReports.css";
+import { useTranslation } from "react-i18next";
 
 interface RecentReportsProps {
   refresh: number;
@@ -19,6 +20,7 @@ interface Report {
 }
 
 const RecentReports = ({ refresh }: RecentReportsProps) => {
+  const { t } = useTranslation();
   const apiUrl: string = import.meta.env.VITE_API_URL;
   const [latestReports, setLatestReports] = useState<Report[]>([]);
 
@@ -34,11 +36,11 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
     try {
       const res = await fetch(`${apiUrl}/stats/reports/latest?limit=${limit}`);
       if (!res.ok) {
-        throw new Error("Error in response");
+        throw new Error(t("recentReports.errors.fetchFailed"));
       }
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.message);
+        throw new Error(t("recentReports.errors.fetchFailed"));
       }
       setLatestReports(data.reports);
     } catch (e) {
@@ -50,7 +52,7 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
   }, [refresh]);
   return (
     <section className="recent-reports-container" onClick={handleExapand}>
-      <h3 id="latestReportTitle">Latest Reports</h3>
+      <h3 id="latestReportTitle">{t("recentReports.title")}</h3>
       <div className="recent-reports-expandable">
         {latestReports.map((report: Report) => {
           return (

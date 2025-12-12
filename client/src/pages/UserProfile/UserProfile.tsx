@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import "./UserProfile.css";
 
 interface UserProfileProps {
@@ -15,6 +16,7 @@ const UserProfile = ({
 }: UserProfileProps) => {
   const auth = useAuth();
   const { updateUser } = useAuth();
+  const { t } = useTranslation();
 
   const [nameValue, setNameValue] = useState<string | undefined>(
     auth.user?.name
@@ -70,7 +72,7 @@ const UserProfile = ({
       ? "/images/view-password-icon.png"
       : "/images/hide-password-icon.png";
 
-    input.type = showing ? "text" : "password"; // ← FIXED
+    input.type = showing ? "text" : "password";
   };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
@@ -78,7 +80,7 @@ const UserProfile = ({
     const trimmedOldPsw = oldPswValue.trim() || "";
     const trimmedNewPsw = newPswValue.trim() || "";
     if (trimmedNewPsw.length < 8) {
-      onPasswordChange("Password must be at least 8 characters", "error");
+      onPasswordChange(t("userProfile.passwordLengthError"), "error");
       return;
     }
     try {
@@ -95,10 +97,13 @@ const UserProfile = ({
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        onPasswordChange(data.message || "Password update failed", "error");
+        onPasswordChange(
+          data.message || t("userProfile.passwordUpdateError"),
+          "error"
+        );
         setOldPswValue("");
         setNewPswValue("");
-        throw new Error("Password update failed");
+        throw new Error(t("userProfile.passwordUpdateError"));
       }
 
       onPasswordChange(data.message, "success");
@@ -114,12 +119,12 @@ const UserProfile = ({
     const trimmedName = nameValue?.trim() || "";
     const trimmedSurname = surnameValue?.trim() || "";
     if (trimmedName.length < 2) {
-      onUserChange("Name must be at least 2 characters", "error");
+      onUserChange(t("userProfile.nameLengthError"), "error");
       return;
     }
 
     if (trimmedSurname.length < 2) {
-      onUserChange("Surname must be at least 2 characters", "error");
+      onUserChange(t("userProfile.surnameLengthError"), "error");
       return;
     }
     try {
@@ -136,7 +141,7 @@ const UserProfile = ({
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.message || "User update failed");
+        throw new Error(data.message || t("userProfile.userUpdateError"));
       }
       updateUser({
         name: trimmedName,
@@ -168,127 +173,116 @@ const UserProfile = ({
             <span
               id="personaInfo"
               className="selection-span active"
-              onClick={(e) => {
-                changeView(e);
-              }}
+              onClick={(e) => changeView(e)}
             >
-              Personal Info
+              {t("userProfile.personalInfo")}
             </span>
             <span
               id="changePassword"
               className="selection-span"
-              onClick={(e) => {
-                changeView(e);
-              }}
+              onClick={(e) => changeView(e)}
             >
-              Change Password
+              {t("userProfile.changePassword")}
             </span>
             <span
               id="logOut"
               className="selection-span"
-              onClick={(e) => {
-                changeView(e);
-              }}
+              onClick={(e) => changeView(e)}
             >
-              Log Out
+              {t("userProfile.logOut")}
             </span>
           </div>
         </div>
         <div className="profile-right-container">
           {isPersonalInfo && (
-            <>
-              <form
-                onSubmit={handleUserDetailsChange}
-                className="user-details-form"
-              >
-                <div>
-                  <input
-                    type="text"
-                    value={nameValue}
-                    placeholder="Name"
-                    onChange={(e) => setNameValue(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    value={surnameValue}
-                    placeholder="Surname"
-                    onChange={(e) => setSurnameValue(e.target.value)}
-                  />
-                </div>
-                <div className="profile-email-container">
-                  <input
-                    type="email"
-                    defaultValue={auth.user?.email}
-                    disabled
-                  />
-                </div>
-                <div className="profile-buttons-container">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNameValue(auth.user?.name);
-                      setSurnameValue(auth.user?.surname);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit">Save Changes</button>
-                </div>
-              </form>
-            </>
+            <form
+              onSubmit={handleUserDetailsChange}
+              className="user-details-form"
+            >
+              <div>
+                <input
+                  type="text"
+                  value={nameValue}
+                  placeholder={t("userProfile.namePlaceholder")}
+                  onChange={(e) => setNameValue(e.target.value)}
+                />
+                <input
+                  type="text"
+                  value={surnameValue}
+                  placeholder={t("userProfile.surnamePlaceholder")}
+                  onChange={(e) => setSurnameValue(e.target.value)}
+                />
+              </div>
+              <div className="profile-email-container">
+                <input type="email" defaultValue={auth.user?.email} disabled />
+                <span className="profile-email-message">
+                  {t("userProfile.emailCantChange")}
+                </span>
+              </div>
+              <div className="profile-buttons-container">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNameValue(auth.user?.name);
+                    setSurnameValue(auth.user?.surname);
+                  }}
+                >
+                  {t("userProfile.cancel")}
+                </button>
+                <button type="submit">{t("userProfile.saveChanges")}</button>
+              </div>
+            </form>
           )}
           {isChangePassword && (
-            <>
-              <form
-                onSubmit={handlePasswordChange}
-                className="password-change-form"
-              >
-                <div className="password-change-container">
-                  <div>
-                    <input
-                      type="password"
-                      placeholder="Old Password"
-                      ref={oldPasswordRef}
-                      value={oldPswValue}
-                      onChange={(e) => setOldPswValue(e.target.value)}
-                      autoComplete="current-password"
-                    />
-                    <img
-                      src="images/hide-password-icon.png"
-                      alt=""
-                      onClick={(e) => handleShowPassword(e, oldPasswordRef)}
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="password"
-                      placeholder="New Password"
-                      ref={newPasswordRef}
-                      value={newPswValue}
-                      onChange={(e) => setNewPswValue(e.target.value)}
-                      autoComplete="new-password"
-                    />
-                    <img
-                      src="images/hide-password-icon.png"
-                      alt=""
-                      onClick={(e) => handleShowPassword(e, newPasswordRef)}
-                    />
-                  </div>
+            <form
+              onSubmit={handlePasswordChange}
+              className="password-change-form"
+            >
+              <div className="password-change-container">
+                <div>
+                  <input
+                    type="password"
+                    placeholder={t("userProfile.oldPassword")}
+                    ref={oldPasswordRef}
+                    value={oldPswValue}
+                    onChange={(e) => setOldPswValue(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                  <img
+                    src="images/hide-password-icon.png"
+                    alt=""
+                    onClick={(e) => handleShowPassword(e, oldPasswordRef)}
+                  />
                 </div>
-                <div className="profile-buttons-container">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOldPswValue("");
-                      setNewPswValue("");
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit">Save Changes</button>
+                <div>
+                  <input
+                    type="password"
+                    placeholder={t("userProfile.newPassword")}
+                    ref={newPasswordRef}
+                    value={newPswValue}
+                    onChange={(e) => setNewPswValue(e.target.value)}
+                    autoComplete="new-password"
+                  />
+                  <img
+                    src="images/hide-password-icon.png"
+                    alt=""
+                    onClick={(e) => handleShowPassword(e, newPasswordRef)}
+                  />
                 </div>
-              </form>
-            </>
+              </div>
+              <div className="profile-buttons-container">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOldPswValue("");
+                    setNewPswValue("");
+                  }}
+                >
+                  {t("userProfile.cancel")}
+                </button>
+                <button type="submit">{t("userProfile.saveChanges")}</button>
+              </div>
+            </form>
           )}
         </div>
       </div>

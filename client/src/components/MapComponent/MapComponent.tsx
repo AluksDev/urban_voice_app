@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { icon } from "leaflet";
 import "./MapComponent.css";
@@ -31,6 +31,10 @@ interface MapMarker {
   reports: Report[];
 }
 
+type ReportPopupContentProps = {
+  reports: Report[];
+};
+
 const MapComponent = ({
   center,
   zoom = 13,
@@ -39,7 +43,6 @@ const MapComponent = ({
   singleMarker,
 }: ReportMapProps) => {
   const [locations, setLocations] = useState<MapMarker[]>([]);
-  const [currentReportIndex, setCurrentReportIndex] = useState<number>(0);
   const [droppedMarker, setDroppedMarker] = useState<[number, number] | null>(
     null
   );
@@ -128,6 +131,42 @@ const MapComponent = ({
     };
   }, [onMarkerChange, isPinDraggable]);
 
+  function ReportPopupContent({ reports }: ReportPopupContentProps) {
+    const [currentReportIndex, setCurrentReportIndex] = React.useState(0);
+    const currentReport = reports[currentReportIndex];
+
+    return (
+      <div>
+        <h4>Reports at this location:</h4>
+        <div className="reports-list-container">
+          <h3>{currentReport.title}</h3>
+          <p>{currentReport.description}</p>
+        </div>
+
+        {reports.length > 1 && (
+          <div className="map-marker-buttons-container">
+            <span
+              onClick={() =>
+                setCurrentReportIndex(
+                  (currentReportIndex - 1 + reports.length) % reports.length
+                )
+              }
+            >
+              <img src="images/map-merker-arrow-icon.png" alt="" />
+            </span>
+            <span
+              onClick={() =>
+                setCurrentReportIndex((currentReportIndex + 1) % reports.length)
+              }
+            >
+              <img src="images/map-merker-arrow-icon.png" alt="" />
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       id="map-container"
@@ -166,44 +205,9 @@ const MapComponent = ({
               key={location.id}
               position={[location.latitude, location.longitude]}
               icon={redLocationIcon}
-              eventHandlers={{ click: () => setCurrentReportIndex(0) }}
             >
               <Popup>
-                <h4>Reports at this location:</h4>
-
-                {location.reports.map(
-                  (report, index) =>
-                    currentReportIndex === index && (
-                      <div key={index} className="reports-list-container">
-                        <h3>{report.title}</h3>
-                        <p>{report.description}</p>
-                      </div>
-                    )
-                )}
-
-                {location.reports.length > 1 && (
-                  <div className="map-marker-buttons-container">
-                    <span
-                      onClick={() =>
-                        setCurrentReportIndex(
-                          (currentReportIndex - 1 + location.reports.length) %
-                            location.reports.length
-                        )
-                      }
-                    >
-                      <img src="images/map-merker-arrow-icon.png" alt="" />
-                    </span>
-                    <span
-                      onClick={() =>
-                        setCurrentReportIndex(
-                          (currentReportIndex + 1) % location.reports.length
-                        )
-                      }
-                    >
-                      <img src="images/map-merker-arrow-icon.png" alt="" />
-                    </span>
-                  </div>
-                )}
+                <ReportPopupContent reports={location.reports} />
               </Popup>
             </Marker>
           ))

@@ -54,7 +54,7 @@ exports.signup = async (req, res) => {
 
         if (result.affectedRows === 1) {
             const newUserId = result.insertId;
-            const userObj = { id: newUserId, name: trimmedName, surname: trimmedSurname, email: trimmedEmail, role: 'user', photo_url: null };
+            const userObj = { id: newUserId, name: trimmedName, surname: trimmedSurname, email: trimmedEmail, role: 'user', photo_url: `${req.protocol}://${req.get("host")}/uploads/users/default_user.jpg` };
 
             const tokenSecret = process.env.JWT_SECRET;
             if (!tokenSecret) {

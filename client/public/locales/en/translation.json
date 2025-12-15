@@ -178,5 +178,42 @@
       "button": "Sign Up"
     },
     "closeAlt": "close icon"
+  },
+  "reportDetails": {
+    "title": "Title",
+    "category": "Category",
+    "description": "Description",
+    "status": "Status",
+    "created": "Created",
+    "lastUpdated": "Last Updated",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "categories": {
+      "road": "Road Damage",
+      "lighting": "Street Lighting",
+      "hygiene": "Cleanliness",
+      "furniture": "Public Furniture",
+      "traffic-signs": "Signs & Traffic Signals",
+      "parks": "Parks & Green Spaces"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "in_progress": "In progress",
+      "closed": "Closed"
+    },
+    "errors": {
+      "EMPTY_TITLE": "Title cannot be empty.",
+      "EMPTY_DESCRIPTION": "Description cannot be empty.",
+      "EMPTY_CATEGORY": "Please select a category."
+    },
+    "messages": {
+      "NOT_AUTH": "Not authenticated",
+      "MISSING_REPORT_ID": "Missing report ID",
+      "INVALID_INPUTS": "Invalid input fields",
+      "INVALID_CATEGORY": "Invalid category",
+      "NO_USER_REPORTS": "Report not found",
+      "DB_ERROR": "Database error",
+      "REPORT_UPDATED": "Report updated successfully"
+    }
   }
 }

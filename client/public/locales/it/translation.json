@@ -178,5 +178,43 @@
       "button": "Registrati"
     },
     "closeAlt": "icona di chiusura"
+  },
+  "reportDetails": {
+    "title": "Titolo",
+    "category": "Categoria",
+    "description": "Descrizione",
+    "status": "Stato",
+    "created": "Creato",
+    "lastUpdated": "Ultimo aggiornamento",
+    "cancel": "Annulla",
+    "saveChanges": "Salva modifiche",
+    "categories": {
+      "road": "Danni stradali",
+      "lighting": "Illuminazione pubblica",
+      "hygiene": "Pulizia",
+      "furniture": "Arredo urbano",
+      "traffic-signs": "Segnaletica e semafori",
+      "parks": "Parchi e aree verdi"
+    },
+
+    "statuses": {
+      "pending": "In attesa",
+      "in_progress": "In corso",
+      "closed": "Chiuso"
+    },
+    "errors": {
+      "EMPTY_TITLE": "Il titolo non può essere vuoto.",
+      "EMPTY_DESCRIPTION": "La descrizione non può essere vuota.",
+      "EMPTY_CATEGORY": "Seleziona una categoria."
+    },
+    "messages": {
+      "NOT_AUTH": "Non autenticato",
+      "MISSING_REPORT_ID": "ID del rapporto mancante",
+      "INVALID_INPUTS": "Campi non validi",
+      "INVALID_CATEGORY": "Categoria non valida",
+      "NO_USER_REPORTS": "Rapporto non trovato",
+      "DB_ERROR": "Errore del database",
+      "REPORT_UPDATED": "Rapporto aggiornato correttamente"
+    }
   }
 }

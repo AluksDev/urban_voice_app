@@ -146,3 +146,39 @@ exports.deleteReports = async (req, res) => {
         return res.status(500).json({ success: false, code: "DB_ERROR" });
     }
 };
+
+exports.changeReportDetails = async (req, res) => {
+    const userId = req.user.id;
+    if (!userId) {
+        return res.status(401).json({ success: false, code: "NOT_AUTH" });
+    }
+    const reportId = req.body.reportId;
+    if (!reportId) {
+        return res.status(400).json({ success: false, code: "MISSING_REPORT_ID" });
+    }
+    const { newTitle, newCategory, newDescription } = req.body;
+    const trimmedNewTitle = validator.trim(newTitle || "");
+    const trimmedNewCategory = validator.trim(newCategory || "");
+    const trimmedNewDescription = validator.trim(newDescription || "");
+
+    if (!validator.isLength(trimmedNewTitle, { min: 1, max: 2000 }) ||
+        !validator.isLength(trimmedNewCategory, { min: 1, max: 2000 }) ||
+        !validator.isLength(trimmedNewDescription, { min: 1, max: 2000 })) {
+        return res.status(400).json({ success: false, code: "INVALID_INPUTS" });
+    }
+    if (!CATEGORY_CODES.includes(trimmedNewCategory)) {
+        return res.status(400).json({ success: false, code: "INVALID_CATEGORY" });
+    }
+    let [rows] = await req.db.query("SELECT * FROM reports WHERE  id = ?", [reportId]);
+    if (rows.length === 0) {
+        return res.status(400).json({ success: false, code: "NO_USER_REPORTS" });
+    }
+    let [updateResult] = await req.db.query(
+        "UPDATE reports SET title = ?, category = ?, description = ?, updated_at = NOW() WHERE id = ? AND user_id = ?",
+        [trimmedNewTitle, trimmedNewCategory, trimmedNewDescription, reportId, userId]
+    );
+    if (updateResult.affectedRows !== 1) {
+        return res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+    return res.status(200).json({ success: true, code: "REPORT_UPDATED" });
+}

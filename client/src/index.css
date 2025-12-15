@@ -22,3 +22,7 @@ textarea {
   outline: none;
   border: none;
 }
+
+textarea {
+  resize: none;
+}

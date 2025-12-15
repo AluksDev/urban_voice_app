@@ -178,5 +178,42 @@
       "button": "Registrarse"
     },
     "closeAlt": "icono de cierre"
+  },
+  "reportDetails": {
+    "title": "Título",
+    "category": "Categoría",
+    "description": "Descripción",
+    "status": "Estado",
+    "created": "Creado",
+    "lastUpdated": "Última actualización",
+    "cancel": "Cancelar",
+    "saveChanges": "Guardar cambios",
+    "categories": {
+      "road": "Daños en la vía",
+      "lighting": "Iluminación pública",
+      "hygiene": "Limpieza",
+      "furniture": "Mobiliario urbano",
+      "traffic-signs": "Señales y semáforos",
+      "parks": "Parques y zonas verdes"
+    },
+    "statuses": {
+      "pending": "Pendiente",
+      "in_progress": "En proceso",
+      "closed": "Cerrado"
+    },
+    "errors": {
+      "EMPTY_TITLE": "El título no puede estar vacío.",
+      "EMPTY_DESCRIPTION": "La descripción no puede estar vacía.",
+      "EMPTY_CATEGORY": "Por favor, selecciona una categoría."
+    },
+    "messages": {
+      "NOT_AUTH": "No autenticado",
+      "MISSING_REPORT_ID": "Falta el ID del informe",
+      "INVALID_INPUTS": "Campos inválidos",
+      "INVALID_CATEGORY": "Categoría inválida",
+      "NO_USER_REPORTS": "Informe no encontrado",
+      "DB_ERROR": "Error en la base de datos",
+      "REPORT_UPDATED": "Informe actualizado correctamente"
+    }
   }
 }

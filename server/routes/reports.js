@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware");
-const { newReport, userReports, searchReports, deleteReports } = require("../controllers/reportsController")
+const { newReport, userReports, searchReports, deleteReports, changeReportDetails } = require("../controllers/reportsController")
 const multer = require('multer')
 const path = require("path");
 
@@ -33,5 +33,6 @@ router.post("/new", authMiddleware, upload.single('image'), newReport);
 router.get("/user", authMiddleware, userReports);
 router.get("/search", authMiddleware, searchReports);
 router.delete("/delete/:id", authMiddleware, deleteReports);
+router.patch("/edit", authMiddleware, changeReportDetails);
 
 module.exports = router;

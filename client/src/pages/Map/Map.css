@@ -3,3 +3,18 @@
   height: 65vh;
   padding: 1rem 10rem;
 }
+
+/* Tablet */
+@media (max-width: 992px) {
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .map-page-container {
+    padding: 0 2rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+}

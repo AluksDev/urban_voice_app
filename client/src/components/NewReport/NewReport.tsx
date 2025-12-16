@@ -225,6 +225,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                   style={{ display: "none" }}
                   onChange={handleFileChange}
                   accept="image/jpeg, image/webp, image/png"
+                  capture="environment"
                 />
               </div>
 

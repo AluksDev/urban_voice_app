@@ -104,12 +104,15 @@ exports.changeProfilePhoto = async (req, res) => {
 
     const [rows] = await req.db.query("SELECT photo_url FROM users WHERE id = ?", [userId]);
     const currentPhoto = rows[0]?.photo_url;
+    console.log(currentPhoto)
 
     if (currentPhoto) {
-        const oldFilePath = path.join(__dirname, "..", currentPhoto);
-        fs.unlink(oldFilePath, (err) => {
-            if (err) console.error("Failed to delete old profile image:", err);
-        });
+        if (!currentPhoto.includes("default_user.jpg")) {
+            const oldFilePath = path.join(__dirname, "..", currentPhoto);
+            fs.unlink(oldFilePath, (err) => {
+                if (err) console.error("Failed to delete old profile image:", err);
+            });
+        }
     }
 
     const [user] = await req.db.query("UPDATE users SET photo_url = ? WHERE id = ?", [newPhotoUrl, userId]);

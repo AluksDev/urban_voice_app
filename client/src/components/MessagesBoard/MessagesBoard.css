@@ -9,7 +9,8 @@
 .messages-board-container h3 {
   text-align: center;
   color: white;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
+  width: fit-content;
   position: relative;
 }
 
@@ -17,9 +18,10 @@
   content: "";
   position: absolute;
   top: 0%;
-  left: 60%;
+  left: 100%;
   width: 1.5rem;
   height: 1.5rem;
+  margin: 0 0.25rem;
   background-image: url("images/announcements-icon.png");
   background-size: contain; /* scale image to fit */
   background-repeat: no-repeat;
@@ -65,4 +67,19 @@ article::before {
   left: 2.5%;
   border-radius: 20px;
   background-color: #0a2e52;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .messages-board-container {
+    margin: 0;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
 }

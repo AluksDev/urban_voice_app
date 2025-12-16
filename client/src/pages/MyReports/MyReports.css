@@ -36,15 +36,20 @@
   cursor: pointer;
   user-select: none;
 }
+.sort-container p {
+  width: fit-content;
+  position: relative;
+}
 
-.sort-container::after {
+.sort-container p::after {
   content: "";
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 100%;
   transform: translateY(-50%) rotate(-180deg);
   width: 1rem;
   height: 1rem;
+  margin: 0 0.25rem;
   background-image: url("../../../public/images/expandable-arrow.svg");
   background-size: contain; /* scale image to fit */
   background-repeat: no-repeat;
@@ -162,4 +167,39 @@
 
 .myreports-actions-container span img {
   max-width: 100%;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .searchbar-container {
+    margin: 2rem;
+  }
+  .my-reports-container {
+    margin: 2rem;
+  }
+  .searchbar-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .searchbar-container > div {
+    width: 75%;
+  }
+  .searchbar-container > div input,
+  .searchbar-container > div select {
+    width: 100%;
+  }
+  .my-reports-container table {
+    font-size: 0.9rem;
+  }
+  .sort-container {
+    margin-left: 75%;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
 }

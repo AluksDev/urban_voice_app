@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import "./Header.css";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type HeaderProps = {
   onOpenModal: () => void;
@@ -10,6 +10,7 @@ type HeaderProps = {
 };
 
 const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const auth = useAuth();
   const { t, i18n } = useTranslation();
   const getLangFromCookie = () => {
@@ -41,16 +42,22 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
           <NavLink
             to="/"
             className={({ isActive }) => (isActive ? "activeClass" : "")}
+            onClick={() => setIsMobileMenuOpen(false)}
           >
             <div className="logo-image-container">
               <img src="images/logo.png" alt="Logo" />
             </div>
           </NavLink>
         </div>
-        <nav className="nav-container">
+        <nav
+          className={`nav-container ${
+            isMobileMenuOpen ? "mobile-menu-open" : ""
+          }`}
+        >
           <NavLink
             to="/"
             className={({ isActive }) => (isActive ? "activeClass" : "")}
+            onClick={() => setIsMobileMenuOpen(false)}
           >
             {t("header.dashboard")}
           </NavLink>
@@ -58,6 +65,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
             <NavLink
               to="/reports"
               className={({ isActive }) => (isActive ? "activeClass" : "")}
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               {t("header.myReports")}
             </NavLink>
@@ -66,53 +74,61 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
             <NavLink
               to="/map"
               className={({ isActive }) => (isActive ? "activeClass" : "")}
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               {t("header.map")}
             </NavLink>
           )}
+          <div className="header-right-container">
+            <div className="header-profile-main-container">
+              {auth.isLoggedIn && (
+                <NavLink to="user" onClick={() => setIsMobileMenuOpen(false)}>
+                  <span>
+                    {auth.user?.name} {auth.user?.surname}
+                  </span>
+                  <span>
+                    <img src={auth.user?.photo_url} alt="Profile Image" />
+                  </span>
+                </NavLink>
+              )}
+            </div>
+            <div className="header-options-container">
+              <span className="night-mode-container">
+                <img src="images/night-mode-icon.png" alt="" />
+              </span>
+              <span
+                className="language-select-container"
+                onClick={() => {
+                  showLanguagesBox();
+                }}
+              >
+                <img
+                  src={languages.find((l) => l.code === selectedLang)?.icon}
+                  alt="Language flag"
+                />
+                <div className="languages-box">
+                  {languages.map(
+                    (lang) =>
+                      lang.code !== selectedLang && (
+                        <span
+                          key={lang.code}
+                          onClick={() => changeLanguage(lang.code)}
+                        >
+                          <img src={lang.icon} alt={lang.label} />
+                        </span>
+                      )
+                  )}
+                </div>
+              </span>
+            </div>
+          </div>
         </nav>
-        <div className="header-right-container">
-          <div className="header-profile-main-container">
-            {auth.isLoggedIn && (
-              <NavLink to="user">
-                <span>
-                  {auth.user?.name} {auth.user?.surname}
-                </span>
-                <span>
-                  <img src={auth.user?.photo_url} alt="Profile Image" />
-                </span>
-              </NavLink>
-            )}
-          </div>
-          <div className="header-options-container">
-            <span className="night-mode-container">
-              <img src="images/night-mode-icon.png" alt="" />
-            </span>
-            <span
-              className="language-select-container"
-              onClick={() => {
-                showLanguagesBox();
-              }}
-            >
-              <img
-                src={languages.find((l) => l.code === selectedLang)?.icon}
-                alt="Language flag"
-              />
-              <div className="languages-box">
-                {languages.map(
-                  (lang) =>
-                    lang.code !== selectedLang && (
-                      <span
-                        key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
-                      >
-                        <img src={lang.icon} alt={lang.label} />
-                      </span>
-                    )
-                )}
-              </div>
-            </span>
-          </div>
+
+        <div
+          className="hamburger-container"
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+        >
+          <img src="images/hamburger-menu.svg" alt="Menu" />
         </div>
       </div>
       <div className="header-second-line-container">

@@ -3,6 +3,7 @@ import "./MyReports.css";
 import { capitalize } from "../../utils";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
 import { useTranslation } from "react-i18next";
+import { apiUrl } from "../../api";
 
 interface Report {
   id: number;
@@ -31,8 +32,9 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
   const [searchDate, setSearchDate] = useState<string>("");
   const [showReportDetails, setShowReportDetails] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [width, setWidth] = useState(window.innerWidth);
 
-  const apiUrl: string = import.meta.env.VITE_API_URL;
+  const isMobile = width < 768;
 
   const fetchReports = async () => {
     try {
@@ -112,6 +114,12 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
       console.error("Error deleting report", e);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     fetchReports();
@@ -218,46 +226,78 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
                   </p>
                 </div>
               </div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>{t("myReports.tableHeaders.title")}</th>
-                    <th>{t("myReports.tableHeaders.category")}</th>
-                    <th>{t("myReports.tableHeaders.status")}</th>
-                    <th>{t("myReports.tableHeaders.dateSubmitted")}</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reports.map((report) => (
-                    <tr key={report.id}>
-                      <td>{capitalize(report.title)}</td>
-                      <td>
-                        {t(`myReports.search.categories.${report.category}`)}
-                      </td>
-                      <td>{t(`myReports.search.statuses.${report.status}`)}</td>
-                      <td>
-                        {new Date(report.created_at).toLocaleDateString(
-                          "en-GB"
-                        )}
-                      </td>
-                      <td className="myreports-actions-container">
-                        <span
-                          onClick={() => {
-                            setShowReportDetails(true);
-                            setSelectedReport(report);
-                          }}
-                        >
-                          <img src="images/modify-icon.png" alt="" />
-                        </span>
-                        <span onClick={() => handleDeleteReport(report.id)}>
-                          <img src="images/delete-icon.png" alt="" />
-                        </span>
-                      </td>
+              {isMobile ? (
+                reports.map((report) => (
+                  <div key={report.id} className="my-report-mobile-card">
+                    <p>{capitalize(report.title)}</p>
+                    <p>{t(`myReports.search.categories.${report.category}`)}</p>
+                    <p>
+                      {t("myReports.tableHeaders.status")}:{" "}
+                      {t(`myReports.search.statuses.${report.status}`)}
+                    </p>
+                    <p>
+                      {t("myReports.tableHeaders.dateSubmitted")}:{" "}
+                      {new Date(report.created_at).toLocaleDateString("en-GB")}
+                    </p>
+                    <div className="my-reports-mobile-actions-container">
+                      <span
+                        onClick={() => {
+                          setShowReportDetails(true);
+                          setSelectedReport(report);
+                        }}
+                      >
+                        <img src="images/modify-icon.png" alt="" />
+                      </span>
+                      <span onClick={() => handleDeleteReport(report.id)}>
+                        <img src="images/delete-icon.png" alt="" />
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>{t("myReports.tableHeaders.title")}</th>
+                      <th>{t("myReports.tableHeaders.category")}</th>
+                      <th>{t("myReports.tableHeaders.status")}</th>
+                      <th>{t("myReports.tableHeaders.dateSubmitted")}</th>
+                      <th></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {reports.map((report) => (
+                      <tr key={report.id}>
+                        <td>{capitalize(report.title)}</td>
+                        <td>
+                          {t(`myReports.search.categories.${report.category}`)}
+                        </td>
+                        <td>
+                          {t(`myReports.search.statuses.${report.status}`)}
+                        </td>
+                        <td>
+                          {new Date(report.created_at).toLocaleDateString(
+                            "en-GB"
+                          )}
+                        </td>
+                        <td className="myreports-actions-container">
+                          <span
+                            onClick={() => {
+                              setShowReportDetails(true);
+                              setSelectedReport(report);
+                            }}
+                          >
+                            <img src="images/modify-icon.png" alt="" />
+                          </span>
+                          <span onClick={() => handleDeleteReport(report.id)}>
+                            <img src="images/delete-icon.png" alt="" />
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </>
           ) : (
             <div className="no-reports-container">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./RecentReports.css";
 import { useTranslation } from "react-i18next";
+import { apiUrl } from "../../api";
 
 interface RecentReportsProps {
   refresh: number;
@@ -21,7 +22,6 @@ interface Report {
 
 const RecentReports = ({ refresh }: RecentReportsProps) => {
   const { t } = useTranslation();
-  const apiUrl: string = import.meta.env.VITE_API_URL;
   const [latestReports, setLatestReports] = useState<Report[]>([]);
 
   const handleExapand = () => {

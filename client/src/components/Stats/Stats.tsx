@@ -3,6 +3,7 @@ import "./Stats.css";
 import PieChartComponent from "../PieChartComponent/PieChartComponent";
 import SlotCounter from "react-slot-counter";
 import { useTranslation } from "react-i18next";
+import { apiUrl } from "../../api";
 
 interface StatsProps {
   refresh: number;
@@ -27,7 +28,6 @@ const Stats = ({ refresh }: StatsProps) => {
   const [reportsInProgress, setReportsInProgress] = useState<number>(0);
   const [reportsClosed, setReportsClosed] = useState<number>(0);
   const [reportsData, setReportsData] = useState<Report[]>([]);
-  const apiUrl: string = import.meta.env.VITE_API_URL;
 
   const getReportsCount = async () => {
     try {
@@ -93,12 +93,7 @@ const Stats = ({ refresh }: StatsProps) => {
             <p>{t("stats.labels.inProgress")}</p>
           </div>
         </div>
-        <div className="pie-chart-container">
-          <PieChartComponent
-            reportsData={reportsData}
-            isAnimationActive={true}
-          />
-        </div>
+        <PieChartComponent reportsData={reportsData} isAnimationActive={true} />
       </div>
     </section>
   );

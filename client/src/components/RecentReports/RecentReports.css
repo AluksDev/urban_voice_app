@@ -97,7 +97,7 @@
 }
 
 .recent-reports-expandable.show {
-  max-height: 200px;
+  max-height: 500px;
   transform: scaleY(1);
 }
 

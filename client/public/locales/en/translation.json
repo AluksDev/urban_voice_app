@@ -103,6 +103,7 @@
     },
     "labelDescription": "Description",
     "attachFile": "Attach File",
+    "takePicture": "Take a picture",
     "selectedFile": "Selected file",
     "noFile": "No Files Attached",
     "addressInstructions": "Write an address or drag the blue pin",

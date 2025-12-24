@@ -103,6 +103,7 @@
     },
     "labelDescription": "Descripción",
     "attachFile": "Adjuntar archivo",
+    "takePicture": "Hacer una foto",
     "selectedFile": "Archivo seleccionado",
     "noFile": "No hay archivos adjuntos",
     "addressInstructions": "Escribe una dirección o mueve el pin azul",

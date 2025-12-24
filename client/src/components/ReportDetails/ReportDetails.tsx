@@ -1,8 +1,10 @@
 import "./ReportDetails.css";
 import MapComponent from "../MapComponent/MapComponent";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import Toaster from "../Toaster/Toaster";
 import { useTranslation } from "react-i18next";
+import { apiUrl } from "../../api";
+import { useAuth } from "../../context/AuthContext";
 
 interface Report {
   id: number;
@@ -35,11 +37,16 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
     report?.description || ""
   );
   const [newStatus, setNewStatus] = useState<string>(report?.status || "");
+  const [newPhoto, setNewPhoto] = useState<File | null>(null);
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
-  const apiUrl: string = import.meta.env.VITE_API_URL;
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const [newCoords, setNewCoords] = useState<[number, number]>([0, 0]);
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const cameraRefInput = useRef<HTMLInputElement>(null);
+  const deviceRefInput = useRef<HTMLInputElement>(null);
+  const auth = useAuth();
 
   const categories = [
     { key: "road", label: t("reportDetails.categories.road") },
@@ -62,6 +69,7 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
       setLocationCoordinates([data.latitude, data.longitude]);
+      setNewCoords([data.latitude, data.longitude]);
     } catch (e) {
       console.error(e);
     }
@@ -74,6 +82,25 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
     } else {
       imageContainerRef.current.classList.add("zoomed");
     }
+  };
+
+  const handlePhotoButtonClick = (type: string) => {
+    if (type == "camera") {
+      if (cameraRefInput.current) cameraRefInput.current.click();
+      return;
+    }
+    if (deviceRefInput.current) deviceRefInput.current.click();
+  };
+
+  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target?.files?.[0] ?? null;
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setToasterType("error");
+      setToasterMessage(t("Invalid Image"));
+      return;
+    }
+    setNewPhoto(file);
   };
 
   const handleDetailsChange = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -97,19 +124,27 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
       return;
     }
 
+    const trimmedTitle = newTitle.trim();
+    const trimmedDescription = newDescription.trim();
+    const trimmedCategory = newCategory.trim();
+
+    const formData = new FormData();
+    formData.append("title", trimmedTitle);
+    formData.append("category", trimmedCategory);
+    formData.append("description", trimmedDescription);
+    if (newPhoto) formData.append("image", newPhoto);
+    formData.append("lat", String(newCoords![0]));
+    formData.append("lon", String(newCoords![1]));
+
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
     try {
       const res = await fetch(`${apiUrl}/reports/edit`, {
         method: "PATCH",
         credentials: "include",
-        body: JSON.stringify({
-          reportId: report?.id,
-          newTitle: newTitle.trim(),
-          newCategory,
-          newDescription: newDescription.trim(),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: formData,
       });
 
       const data = await res.json();
@@ -131,6 +166,9 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
   useEffect(() => {
     if (!report?.location_id) return;
     getReportLocation();
+    if (report.status === "pending") {
+      setIsPending(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -175,80 +213,121 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
           <img src="/images/close-icon.svg" alt="close icon" />
         </div>
 
-        <div className="report-details-left">
-          <form
-            className="editable-details-container"
-            onSubmit={handleDetailsChange}
-          >
-            <div>
-              <p>{t("reportDetails.title")}</p>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                required
-              />
-            </div>
+        <form
+          className="editable-details-container"
+          onSubmit={handleDetailsChange}
+        >
+          <div>
+            <h3>Edit Report #{report?.id}</h3>
+            <h4>Submitted by: {auth.user?.name}</h4>
+          </div>
+          <div>
+            <div className="report-details-left">
+              <div>
+                <p>{t("reportDetails.title")}</p>
+                <input
+                  type="text"
+                  value={newTitle}
+                  disabled={!isPending}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div>
-              <p>{t("reportDetails.category")}</p>
-              <select
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                required
-              >
-                {categories.map((cat) => (
-                  <option key={cat.key} value={cat.key}>
-                    {cat.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div>
+                <p>{t("reportDetails.category")}</p>
+                <select
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  disabled={!isPending}
+                  required
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.key} value={cat.key}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <p>{t("reportDetails.description")}</p>
-              <textarea
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-                required
-              />
+              <div>
+                <p>{t("reportDetails.description")}</p>
+                <textarea
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  disabled={!isPending}
+                  required
+                />
+              </div>
+              <div className="report-details-change-photo">
+                <div className="report-details-image-container">
+                  <img
+                    src={report?.photo_url}
+                    alt=""
+                    onClick={() => handleImageZoom("in")}
+                  />
+                </div>
+                {isPending && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handlePhotoButtonClick("device")}
+                    >
+                      Select New Image
+                    </button>
+                    <button
+                      className="report-details-camera-button"
+                      type="button"
+                      onClick={() => handlePhotoButtonClick("camera")}
+                    >
+                      Take New Photo
+                    </button>
+                  </>
+                )}
+                <input
+                  type="file"
+                  ref={cameraRefInput}
+                  style={{ display: "none" }}
+                  onChange={handlePhotoChange}
+                  capture="environment"
+                  accept="image/jpeg, image/webp, image/png"
+                />
+                <input
+                  type="file"
+                  ref={deviceRefInput}
+                  style={{ display: "none" }}
+                  onChange={handlePhotoChange}
+                  accept="image/jpeg, image/webp, image/png"
+                />
+              </div>
             </div>
+            <div className="report-details-right">
+              <div className="user-details-map-container">
+                <MapComponent
+                  center={locationCoordinates}
+                  isPinDraggable={isPending}
+                  singleMarker
+                  zoom={17}
+                  onMarkerChange={(coords) =>
+                    setNewCoords([coords[0], coords[1]])
+                  }
+                />
+              </div>
+            </div>{" "}
+          </div>
+          <div className="editable-details-button-container">
+            <div className="non-editable-details-container">
+              <div>
+                <p>{t("reportDetails.status")}</p>
+                <p>
+                  {newStatus ? t(`reportDetails.statuses.${newStatus}`) : ""}
+                </p>
+              </div>
 
-            <div className="editable-details-button-container">
-              <button
-                type="button"
-                onClick={() => {
-                  setNewTitle(report?.title || "");
-                  setNewCategory(report?.category || "");
-                  setNewDescription(report?.description || "");
-                }}
-              >
-                {t("reportDetails.cancel")}
-              </button>
-              <button type="submit">{t("reportDetails.saveChanges")}</button>
-            </div>
-          </form>
-
-          <div className="non-editable-details-container">
-            <div>
-              <p>{t("reportDetails.status")}</p>
-              <input
-                type="text"
-                readOnly
-                value={
-                  newStatus ? t(`reportDetails.statuses.${newStatus}`) : ""
-                }
-                disabled
-              />
-            </div>
-
-            <div>
-              <p>{t("reportDetails.created")}</p>
-              <input
-                type="text"
-                readOnly
-                value={
-                  report
+              <div>
+                <p>{t("reportDetails.created")}</p>
+                <p>
+                  {report
                     ? new Date(report.created_at).toLocaleString("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
@@ -256,19 +335,14 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
                         hour: "2-digit",
                         minute: "2-digit",
                       })
-                    : ""
-                }
-                disabled
-              />
-            </div>
+                    : ""}
+                </p>
+              </div>
 
-            <div>
-              <p>{t("reportDetails.lastUpdated")}</p>
-              <input
-                type="text"
-                readOnly
-                value={
-                  report
+              <div>
+                <p>{t("reportDetails.lastUpdated")}</p>
+                <p>
+                  {report
                     ? new Date(report.updated_at).toLocaleString("en-GB", {
                         day: "2-digit",
                         month: "2-digit",
@@ -276,32 +350,29 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
                         hour: "2-digit",
                         minute: "2-digit",
                       })
-                    : ""
-                }
-                disabled
-              />
+                    : ""}
+                </p>
+              </div>
             </div>
+            {isPending ? (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewTitle(report?.title || "");
+                    setNewCategory(report?.category || "");
+                    setNewDescription(report?.description || "");
+                  }}
+                >
+                  {t("reportDetails.cancel")}
+                </button>
+                <button type="submit">{t("reportDetails.saveChanges")}</button>
+              </div>
+            ) : (
+              <p>Only pending reports can be edited</p>
+            )}
           </div>
-        </div>
-
-        <div className="report-details-right">
-          <div className="report-details-image-container">
-            <img
-              src={report?.photo_url}
-              alt=""
-              onClick={() => handleImageZoom("in")}
-            />
-          </div>
-
-          <div className="user-details-map-container">
-            <MapComponent
-              center={locationCoordinates}
-              isPinDraggable={false}
-              singleMarker
-              zoom={17}
-            />
-          </div>
-        </div>
+        </form>
       </div>
     </div>
   );

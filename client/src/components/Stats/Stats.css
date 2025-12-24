@@ -72,4 +72,8 @@
 
 /* Small mobile */
 @media (max-width: 480px) {
+  .numeric-stat {
+    border-left: 2px solid white;
+    padding-left: 0.25rem;
+  }
 }

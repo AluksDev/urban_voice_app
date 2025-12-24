@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import "./NewReport.css";
 import Toaster from "../Toaster/Toaster";
 import MapComponent from "../MapComponent/MapComponent";
+import { apiUrl } from "../../api";
 
 type NewReportProps = {
   closeModal: () => void;
@@ -27,13 +28,16 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   const [possibleAddresses, setPossibleAddresses] = useState<any[]>([]);
   const [mapZoom, setMapZoom] = useState<number>(13);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
-  const handleFileRefClick = () => {
+  const handleFileRefClick = (type: string) => {
+    if (type === "camera") {
+      if (cameraInputRef.current) cameraInputRef.current.click();
+      return;
+    }
     if (fileInputRef.current) fileInputRef.current.click();
   };
-
-  const apiUrl: string = import.meta.env.VITE_API_URL;
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] ?? null;
@@ -208,8 +212,18 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                   ></textarea>
                 </div>
                 <div className="file-input-container">
-                  <button type="button" onClick={handleFileRefClick}>
+                  <button
+                    type="button"
+                    onClick={() => handleFileRefClick("file")}
+                  >
                     {t("newReport.attachFile")}
+                  </button>
+                  <button
+                    className="new-report-camera-button"
+                    type="button"
+                    onClick={() => handleFileRefClick("camera")}
+                  >
+                    {t("newReport.takePicture")}
                   </button>
                   {reportFile ? (
                     <p>
@@ -222,6 +236,13 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                 <input
                   type="file"
                   ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                  accept="image/jpeg, image/webp, image/png"
+                />
+                <input
+                  type="file"
+                  ref={cameraInputRef}
                   style={{ display: "none" }}
                   onChange={handleFileChange}
                   accept="image/jpeg, image/webp, image/png"

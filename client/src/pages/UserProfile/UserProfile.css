@@ -246,4 +246,26 @@
 
 /* Small mobile */
 @media (max-width: 480px) {
+  .profile-inner-container {
+    margin: 0 0.5rem;
+    height: fit-content;
+    padding: 0.5rem 0;
+  }
+  .profile-selection-container span {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-right-container {
+    padding: 0;
+  }
+
+  .user-details-form {
+    gap: 0.5rem;
+  }
+
+  .user-details-form > div {
+    flex-direction: column;
+  }
 }

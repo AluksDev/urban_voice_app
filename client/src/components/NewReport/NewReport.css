@@ -1,14 +1,14 @@
 .new-report-background {
   width: 100%;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 1000000;
 }
 
 .new-report-container {
@@ -196,4 +196,80 @@
   margin: 0.5rem 0;
   font-family: "Roboto", sans-serif;
   letter-spacing: 0.1rem;
+}
+
+.new-report-camera-button {
+  display: none;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .new-report-background {
+    height: 100%;
+  }
+  .new-report-container {
+    width: 100%;
+    height: fit-content;
+  }
+  .inner-new-report-container {
+    padding: 1rem 0.5rem;
+  }
+  .inner-new-report-container form {
+    flex-direction: column;
+  }
+  .left-side,
+  .right-side {
+    padding: 0;
+    align-items: center;
+    width: 100%;
+  }
+  .map-container {
+    width: 100%;
+  }
+  .close-icon-container {
+    left: 90%;
+    top: 2%;
+  }
+  .new-report-camera-button {
+    display: inline;
+    margin: 0 0.5rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .new-report-background {
+    height: fit-content;
+  }
+  .new-report-container {
+    width: 100%;
+    height: fit-content;
+  }
+  .inner-new-report-container {
+    padding: 1rem 0.5rem;
+  }
+  .inner-new-report-container form {
+    flex-direction: column;
+  }
+  .left-side,
+  .right-side {
+    padding: 0;
+    align-items: center;
+    width: 100%;
+  }
+  .map-container {
+    width: 100%;
+  }
+  .close-icon-container {
+    left: 90%;
+    top: 2%;
+  }
+  .new-report-camera-button {
+    display: inline;
+    margin: 0 0.5rem;
+  }
 }

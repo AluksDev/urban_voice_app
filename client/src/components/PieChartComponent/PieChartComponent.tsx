@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./PieChartComponent.css";
 import { capitalize } from "../../utils";
 import { Pie, PieChart, Sector, Tooltip, Cell } from "recharts";
@@ -58,7 +58,6 @@ const renderActiveShape = ({
   const ex = mx;
   const ey = my;
 
-  // small padding away from the connector
   const padding = 6;
   const paddedX = ex + (cos >= 0 ? -padding : padding);
   const paddedY = ey;
@@ -107,24 +106,27 @@ const PieChartComponent = ({
   reportsData,
 }: ChartProps) => {
   const [chartData, setChartData] = useState<ChartItem[]>([]);
+  const [size, setSize] = useState(300); // default size
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const COLORS = [
-    "#0088FE", // blue
-    "#00C49F", // teal/green
-    "#FF8042", // orange
-    "#FFBB28", // yellow
-    "#A28DD0", // purple
-    "#FF4560", // red/pink
+    "#0088FE",
+    "#00C49F",
+    "#FF8042",
+    "#FFBB28",
+    "#A28DD0",
+    "#FF4560",
   ];
 
+  // Prepare chart data
   useEffect(() => {
-    if (reportsData.length === 0) return;
-    // Use a Map to count categories
+    if (!reportsData.length) return;
+
     const counts: { [key: string]: number } = {};
     reportsData.forEach((report) => {
       counts[report.category] = (counts[report.category] || 0) + 1;
     });
 
-    // Convert to array for Recharts
     const chartDataWithColors: ChartItem[] = Object.entries(counts).map(
       ([name, value], index) => ({
         name,
@@ -132,27 +134,49 @@ const PieChartComponent = ({
         fill: COLORS[index % COLORS.length],
       })
     );
+
     setChartData(chartDataWithColors);
   }, [reportsData]);
-  if (chartData.length === 0) return null;
+
+  // ResizeObserver for dynamic chart size
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      const width = entry.contentRect.width;
+      const chartSize = Math.max(200, Math.min(width, 400)); // min 200px, max 400px
+      setSize(chartSize);
+    });
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <PieChart width={400} height={400}>
-      <Pie
-        activeShape={renderActiveShape}
-        data={chartData}
-        cx="50%"
-        cy="50%"
-        innerRadius="70%"
-        outerRadius="90%"
-        dataKey="value"
-        isAnimationActive={isAnimationActive}
-      >
-        {chartData.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={entry.fill} />
-        ))}
-      </Pie>
-      <Tooltip content={() => null} defaultIndex={defaultIndex} />
-    </PieChart>
+    <div
+      ref={containerRef}
+      className="pie-chart-container"
+      style={{ width: "100%" }}
+    >
+      <PieChart width={size} height={size}>
+        <Pie
+          data={chartData}
+          dataKey="value"
+          cx="50%"
+          cy="50%"
+          innerRadius={size * 0.35}
+          outerRadius={size * 0.45}
+          isAnimationActive={isAnimationActive}
+          activeShape={renderActiveShape}
+        >
+          {chartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill} />
+          ))}
+        </Pie>
+        <Tooltip content={() => null} defaultIndex={defaultIndex} />
+      </PieChart>
+    </div>
   );
 };
 

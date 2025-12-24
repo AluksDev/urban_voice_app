@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { apiUrl } from "../api";
 
 // Define the shape of your user
 type User = {
@@ -30,7 +31,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [initializing, setInitializing] = useState<boolean>(true);
   const [justLoggedOut, setJustLoggedOut] = useState<boolean>(false);
-  const apiUrl: string = import.meta.env.VITE_API_URL;
 
   // Login updates all auth state
   const login = (userData: User) => {

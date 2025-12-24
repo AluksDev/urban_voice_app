@@ -3,6 +3,7 @@ import "./AuthModal.css";
 import Toaster from "../Toaster/Toaster";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { apiUrl } from "../../api";
 
 type AuthModalProps = {
   onLogInSuccessful: (message: string) => void;
@@ -22,7 +23,6 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [loginEmail, setLoginEmail] = useState<string>("");
   const [loginPassword, setLoginPassword] = useState<string>("");
   const [rightClass, setRightClass] = useState<boolean>(false);
-  const apiUrl: string = import.meta.env.VITE_API_URL;
   const auth = useAuth();
 
   const handleSignUp = async (e: React.FormEvent) => {

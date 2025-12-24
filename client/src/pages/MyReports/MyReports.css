@@ -169,6 +169,52 @@
   max-width: 100%;
 }
 
+.my-report-mobile-card {
+  background-color: hsla(210, 33%, 96%, 0.5);
+  color: #2a2a2a;
+  border-radius: 10px;
+  margin: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
+  position: relative;
+}
+.my-report-mobile-card p:nth-child(1) {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+.my-report-mobile-card p:nth-child(2) {
+  background-color: rgba(0, 195, 0, 0.26);
+  width: fit-content;
+}
+.my-report-mobile-card p:nth-child(3),
+.my-report-mobile-card p:nth-child(4) {
+  font-size: 0.8rem;
+}
+
+.my-reports-mobile-actions-container {
+  position: absolute;
+  top: 60%;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0.5rem;
+}
+
+.my-reports-mobile-actions-container span {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid #2a2a2a;
+  border-radius: 50%;
+  padding: 0.25rem;
+}
+
+.my-reports-mobile-actions-container span img {
+  max-width: 100%;
+}
+
 /* Tablet */
 @media (max-width: 992px) {
 }
@@ -202,4 +248,11 @@
 
 /* Small mobile */
 @media (max-width: 480px) {
+  .searchbar-container {
+    margin: 1rem;
+  }
+  .my-reports-container {
+    margin: 1rem;
+    padding: 0.5rem;
+  }
 }

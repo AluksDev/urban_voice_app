@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvent,
+} from "react-leaflet";
 import { icon } from "leaflet";
 import "./MapComponent.css";
+import { apiUrl } from "../../api";
 
 interface ReportMapProps {
   center: [number, number];
@@ -46,9 +54,33 @@ const MapComponent = ({
   const [droppedMarker, setDroppedMarker] = useState<[number, number] | null>(
     null
   );
-  const apiUrl: string = import.meta.env.VITE_API_URL;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const mapRef = useRef<any>(null);
+
+  function MapClickHandler({
+    isMobile,
+    onMapClick,
+  }: {
+    isMobile: boolean;
+    onMapClick: (latlng: [number, number]) => void;
+  }) {
+    useMapEvent("click", (e) => {
+      if (isMobile) {
+        const { lat, lng } = e.latlng;
+        onMapClick([lat, lng]);
+      }
+    });
+
+    return null; // This component doesn't render anything
+  }
 
   const redLocationIcon = icon({
     iconUrl: "./images/location-pin-icon.svg",
@@ -199,6 +231,13 @@ const MapComponent = ({
             }}
           />
         )}
+        <MapClickHandler
+          isMobile={isMobile}
+          onMapClick={(coords) => {
+            setDroppedMarker(coords);
+            if (onMarkerChange) onMarkerChange(coords);
+          }}
+        />
         {!singleMarker ? (
           locations.map((location) => (
             <Marker
@@ -217,7 +256,7 @@ const MapComponent = ({
       </MapContainer>
 
       {/* Floating corner pin */}
-      {isPinDraggable && (
+      {isPinDraggable && !isMobile && (
         <img
           src="./images/user-location-icon.png"
           draggable

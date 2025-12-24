@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoutes from "./components/ProtectedRoutes/ProtectedRoutes";
 import NewReport from "./components/NewReport/NewReport";
 import { useTranslation } from "react-i18next";
+
 function App() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showToaster, setShowToaster] = useState<boolean>(false);

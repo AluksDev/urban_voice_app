@@ -33,6 +33,6 @@ router.post("/new", authMiddleware, upload.single('image'), newReport);
 router.get("/user", authMiddleware, userReports);
 router.get("/search", authMiddleware, searchReports);
 router.delete("/delete/:id", authMiddleware, deleteReports);
-router.patch("/edit", authMiddleware, changeReportDetails);
+router.patch("/edit", authMiddleware, upload.single('image'), changeReportDetails);
 
 module.exports = router;

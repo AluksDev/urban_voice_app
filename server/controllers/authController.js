@@ -69,7 +69,7 @@ exports.signup = async (req, res) => {
 
             res.cookie('auth_token', token, {
                 httpOnly: true,
-                secure: true,
+                secure: false, //IMPORTANT: Change to true if using HTTPS!!!!!!!!!!!!!!!!!!
                 sameSite: 'strict',
                 maxAge: 24 * 60 * 60 * 1000
             });
@@ -145,7 +145,7 @@ exports.login = async (req, res) => {
 
         res.cookie('auth_token', token, {
             httpOnly: true,
-            secure: true,
+            secure: false, //IMPORTANT: Change to true if using HTTPS!!!!!!!!!!!!!!!!!!
             sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -169,7 +169,7 @@ exports.logout = async (req, res) => {
 
     res.clearCookie('auth_token', {
         httpOnly: true,
-        secure: true,
+        secure: false, //IMPORTANT: Change to true if using HTTPS!!!!!!!!!!!!!!!!!!
         sameSite: 'strict',
         maxAge: 0
     });

@@ -7,10 +7,27 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true);
+
+            const allowedOrigins = [
+                "http://localhost:5173",
+                "http://192.168.56.1:5173",
+                "http://172.22.111.62:5173",
+                "https://ten-dryers-hang.loca.lt"
+            ];
+
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+    })
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -47,4 +64,6 @@ const userRoutes = require("./routes/user");
 app.use("/user", userRoutes);
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => {
+    console.log("Server running on port 3001");
+});

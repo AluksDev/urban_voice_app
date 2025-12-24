@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./UserProfile.css";
+import { apiUrl } from "../../api";
 
 interface UserProfileProps {
   onLogOut: () => void;
@@ -28,8 +29,6 @@ const UserProfile = ({
   const [newPswValue, setNewPswValue] = useState<string>("");
   const [isPersonalInfo, setIsPersonalInfo] = useState<boolean>(true);
   const [isChangePassword, setIsChangePassword] = useState<boolean>(false);
-
-  const apiUrl: string = import.meta.env.VITE_API_URL;
 
   const spansRef = useRef<NodeListOf<HTMLSpanElement> | null>(null);
   const oldPasswordRef = useRef<HTMLInputElement>(null);
@@ -206,6 +205,7 @@ const UserProfile = ({
               ref={photoInputRef}
               accept="image/jpeg, image/webp, image/png"
               onChange={handlePhotoChange}
+              capture="user"
               hidden
             />
           </div>

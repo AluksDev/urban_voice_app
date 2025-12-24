@@ -103,6 +103,8 @@
     },
     "labelDescription": "Descrizione",
     "attachFile": "Allega file",
+    "takePicture": "Scatta una foto",
+
     "selectedFile": "File selezionato",
     "noFile": "Nessun file allegato",
     "addressInstructions": "Inserisci un indirizzo o sposta il pin blu",

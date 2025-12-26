@@ -16,6 +16,7 @@ app.use(
                 "http://localhost:5173",
                 "http://192.168.56.1:5173",
                 "http://172.22.111.62:5173",
+                "http://192.168.1.33:5173",
                 "https://ten-dryers-hang.loca.lt"
             ];
 

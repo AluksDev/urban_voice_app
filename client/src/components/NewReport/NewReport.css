@@ -243,11 +243,12 @@
 /* Small mobile */
 @media (max-width: 480px) {
   .new-report-background {
-    height: fit-content;
+    position: absolute;
+    height: 100%;
   }
   .new-report-container {
     width: 100%;
-    height: fit-content;
+    height: 100%;
   }
   .inner-new-report-container {
     padding: 1rem 0.5rem;

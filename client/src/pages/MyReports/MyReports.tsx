@@ -229,6 +229,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
               {isMobile ? (
                 reports.map((report) => (
                   <div key={report.id} className="my-report-mobile-card">
+                  <div className="my-report-mobile-card-details">
                     <p>{capitalize(report.title)}</p>
                     <p>{t(`myReports.search.categories.${report.category}`)}</p>
                     <p>
@@ -239,6 +240,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
                       {t("myReports.tableHeaders.dateSubmitted")}:{" "}
                       {new Date(report.created_at).toLocaleDateString("en-GB")}
                     </p>
+                    </div>
                     <div className="my-reports-mobile-actions-container">
                       <span
                         onClick={() => {

@@ -30,11 +30,14 @@
 }
 
 .sort-container {
-  margin-left: 90%;
   padding: 1rem 0;
   position: relative;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 4rem;
 }
 .sort-container p {
   width: fit-content;
@@ -66,12 +69,12 @@
   transform-origin: top;
   transform: scaleY(0);
   top: 75%;
-  left: 0;
+  left: 100;
   background-color: rgba(255, 255, 255);
   color: #2a2a2a;
   overflow: hidden;
   border-radius: 0 0 5px 5px;
-  z-index: 1000;
+  z-index: 10000;
   transition: all 0.2s ease-in-out;
 }
 
@@ -176,28 +179,27 @@
   margin: 0.5rem 1rem;
   padding: 0.5rem 1rem;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.my-report-mobile-card p:nth-child(1) {
+.my-report-mobile-card-details p:nth-child(1) {
   font-weight: 600;
   font-size: 1.2rem;
 }
-.my-report-mobile-card p:nth-child(2) {
+.my-report-mobile-card-details p:nth-child(2) {
   background-color: rgba(0, 195, 0, 0.26);
   width: fit-content;
 }
-.my-report-mobile-card p:nth-child(3),
-.my-report-mobile-card p:nth-child(4) {
+.my-report-mobile-card-details p:nth-child(3),
+.my-report-mobile-card-details p:nth-child(4) {
   font-size: 0.8rem;
 }
 
 .my-reports-mobile-actions-container {
-  position: absolute;
-  top: 60%;
-  right: 0;
-  z-index: 1000;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   gap: 1rem;
   margin: 0 0.5rem;
 }
@@ -242,8 +244,10 @@
     font-size: 0.9rem;
   }
   .sort-container {
-    margin-left: 75%;
-  }
+ 
+  margin-right: 1.5rem;
+}
+
 }
 
 /* Small mobile */

@@ -6,7 +6,10 @@ import { useTranslation } from "react-i18next";
 import { apiUrl } from "../../api";
 
 type AuthModalProps = {
-  onLogInSuccessful: (message: string) => void;
+  onLogInSuccessful: (
+    user: { role: string; [key: string]: any },
+    message: string
+  ) => void;
   closeModal: () => void;
 };
 
@@ -90,7 +93,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         setToasterType("error");
       } else {
         if (result.user) auth.login(result.user);
-        onLogInSuccessful(t("authModal.messages.signupSuccess"));
+        onLogInSuccessful(result.user, t("authModal.messages.signupSuccess"));
       }
 
       setSignupName("");
@@ -142,7 +145,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         setToasterType("error");
       } else {
         auth.login(result.user);
-        onLogInSuccessful(t("authModal.messages.loginSuccess"));
+        onLogInSuccessful(result.user, t("authModal.messages.loginSuccess"));
       }
 
       setLoginEmail("");

@@ -104,7 +104,6 @@ exports.changeProfilePhoto = async (req, res) => {
 
     const [rows] = await req.db.query("SELECT photo_url FROM users WHERE id = ?", [userId]);
     const currentPhoto = rows[0]?.photo_url;
-    console.log(currentPhoto)
 
     if (currentPhoto) {
         if (!currentPhoto.includes("default_user.jpg")) {

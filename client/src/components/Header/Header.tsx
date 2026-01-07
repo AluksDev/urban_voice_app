@@ -70,6 +70,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
               {t("header.myReports")}
             </NavLink>
           )}
+
           {auth.isLoggedIn && (
             <NavLink
               to="/map"

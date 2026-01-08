@@ -1,0 +1,47 @@
+.admin-panel-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.admin-side-container {
+  border: 1px solid black;
+  text-align: center;
+  width: 25%;
+}
+.admin-side-container h3 {
+  margin: 2rem 0;
+}
+.admin-main-container {
+  border: 1px solid black;
+  flex: 1;
+}
+.admin-menu-items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.admin-menu-items div {
+  border-radius: 20px;
+  width: 75%;
+  padding: 0.5rem 2rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+.admin-menu-span.active {
+  background-color: #1b5dbf;
+}
+
+.admin-menu-items div span:nth-child(1) {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.admin-menu-items div span:nth-child(1) img {
+  max-width: 100%;
+}

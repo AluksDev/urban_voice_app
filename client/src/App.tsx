@@ -7,7 +7,7 @@ import Map from "./pages/Map/Map";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import AuthModal from "./components/AuthModal/AuthModal";
 import Toaster from "./components/Toaster/Toaster";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
 import ProtectedRoutes from "./components/ProtectedRoutes/ProtectedRoutes";
 import NewReport from "./components/NewReport/NewReport";
 import { useTranslation } from "react-i18next";

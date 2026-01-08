@@ -41,7 +41,7 @@ const Admin = () => {
             onClick={(e) => changeView(e)}
           >
             <span>
-              <img src="images/admin-reports-icon.png" alt="" />
+              <img src="images/admin-reports-icon.svg" alt="" />
             </span>
             <span>Reports</span>
           </div>
@@ -51,7 +51,7 @@ const Admin = () => {
             onClick={(e) => changeView(e)}
           >
             <span>
-              <img src="images/admin-messages-icon.png" alt="" />
+              <img src="images/admin-messages-icon.svg" alt="" />
             </span>
             <span>Announcements</span>
           </div>
@@ -61,7 +61,7 @@ const Admin = () => {
             onClick={(e) => changeView(e)}
           >
             <span>
-              <img src="images/admin-users-icon.png" alt="" />
+              <img src="images/admin-users-icon.svg" alt="" />
             </span>
             <span>Users</span>
           </div>
@@ -71,7 +71,63 @@ const Admin = () => {
         {isReports && (
           <div>
             <h4>Reports Overview</h4>
-            <div className="admin-reports-stats-container"></div>
+            <div className="admin-reports-stats-container">
+              <div className="admin-stat-box">
+                <div>
+                  <span>Pending</span>
+                  <span className="admin-stat-box-icon-container">
+                    <img src="images/stopwatch-icon.png" alt="" />
+                  </span>
+                </div>
+                <div>
+                  <span>10</span>
+                </div>
+              </div>
+              <div className="admin-stat-box">
+                <div>
+                  <span>Approved</span>
+                  <span className="admin-stat-box-icon-container">
+                    <img src="images/admin-approved-icon.png" alt="" />
+                  </span>
+                </div>
+                <div>
+                  <span>24</span>
+                </div>
+              </div>
+              <div className="admin-stat-box">
+                <div>
+                  <span>Rejected</span>
+                  <span className="admin-stat-box-icon-container">
+                    <img src="images/admin-rejected-reports-icon.png" alt="" />
+                  </span>
+                </div>
+                <div>
+                  <span>4</span>
+                </div>
+              </div>
+              <div className="admin-stat-box">
+                <div>
+                  <span>Closed</span>
+                  <span className="admin-stat-box-icon-container">
+                    <img src="images/admin-closed-reports-icon.png" alt="" />
+                  </span>
+                </div>
+                <div>
+                  <span>15</span>
+                </div>
+              </div>
+              <div className="admin-stat-box">
+                <div>
+                  <span>Total</span>
+                  <span className="admin-stat-box-icon-container">
+                    <img src="images/admin-total-reports-icon.png" alt="" />
+                  </span>
+                </div>
+                <div>
+                  <span>53</span>
+                </div>
+              </div>
+            </div>
             <div></div>
           </div>
         )}

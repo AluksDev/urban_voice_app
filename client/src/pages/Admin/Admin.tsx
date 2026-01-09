@@ -259,8 +259,16 @@ const Admin = () => {
             </div>
           </div>
         )}
-        {isAnnouncements && <div>Announcements</div>}
-        {isUsers && <div>Users</div>}
+        {isAnnouncements && (
+          <div>
+            <h4>Announcements</h4>
+          </div>
+        )}
+        {isUsers && (
+          <div>
+            <h4>Users</h4>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -182,8 +182,8 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
               <option value="pending">
                 {t("myReports.search.statuses.pending")}
               </option>
-              <option value="in_progress">
-                {t("myReports.search.statuses.in_progress")}
+              <option value="approved">
+                {t("myReports.search.statuses.approved")}
               </option>
               <option value="closed">
                 {t("myReports.search.statuses.closed")}
@@ -229,17 +229,21 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
               {isMobile ? (
                 reports.map((report) => (
                   <div key={report.id} className="my-report-mobile-card">
-                  <div className="my-report-mobile-card-details">
-                    <p>{capitalize(report.title)}</p>
-                    <p>{t(`myReports.search.categories.${report.category}`)}</p>
-                    <p>
-                      {t("myReports.tableHeaders.status")}:{" "}
-                      {t(`myReports.search.statuses.${report.status}`)}
-                    </p>
-                    <p>
-                      {t("myReports.tableHeaders.dateSubmitted")}:{" "}
-                      {new Date(report.created_at).toLocaleDateString("en-GB")}
-                    </p>
+                    <div className="my-report-mobile-card-details">
+                      <p>{capitalize(report.title)}</p>
+                      <p>
+                        {t(`myReports.search.categories.${report.category}`)}
+                      </p>
+                      <p>
+                        {t("myReports.tableHeaders.status")}:{" "}
+                        {t(`myReports.search.statuses.${report.status}`)}
+                      </p>
+                      <p>
+                        {t("myReports.tableHeaders.dateSubmitted")}:{" "}
+                        {new Date(report.created_at).toLocaleDateString(
+                          "en-GB"
+                        )}
+                      </p>
                     </div>
                     <div className="my-reports-mobile-actions-container">
                       <span

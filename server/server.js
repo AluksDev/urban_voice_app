@@ -64,6 +64,9 @@ app.use("/stats", statsRoutes);
 const userRoutes = require("./routes/user");
 app.use("/user", userRoutes);
 
+const adminRoutes = require("./routes/admin");
+app.use("/admin", adminRoutes);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
     console.log("Server running on port 3001");

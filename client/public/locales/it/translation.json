@@ -20,7 +20,7 @@
     "labels": {
       "total": "Totale",
       "closed": "Chiusi",
-      "inProgress": "In corso"
+      "approved": "Approvato"
     },
     "errors": {
       "fetchFailed": "Impossibile caricare le statistiche"
@@ -41,7 +41,7 @@
       },
       "statuses": {
         "pending": "In attesa",
-        "in_progress": "In corso",
+        "approved": "Approvato",
         "closed": "Chiuso"
       }
     },
@@ -201,7 +201,7 @@
 
     "statuses": {
       "pending": "In attesa",
-      "in_progress": "In corso",
+      "approved": "Approvato",
       "closed": "Chiuso"
     },
     "errors": {

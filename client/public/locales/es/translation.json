@@ -20,7 +20,7 @@
     "labels": {
       "total": "Total",
       "closed": "Cerrados",
-      "inProgress": "En progreso"
+      "approved": "Aprobado"
     },
     "errors": {
       "fetchFailed": "No se pudieron cargar las estadísticas"
@@ -41,7 +41,7 @@
       },
       "statuses": {
         "pending": "Pendiente",
-        "in_progress": "En proceso",
+        "approved": "Aprobado",
         "closed": "Cerrado"
       }
     },
@@ -199,7 +199,7 @@
     },
     "statuses": {
       "pending": "Pendiente",
-      "in_progress": "En proceso",
+      "approved": "Aprobado",
       "closed": "Cerrado"
     },
     "errors": {

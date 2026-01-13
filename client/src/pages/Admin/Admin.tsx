@@ -2,6 +2,7 @@ import "./Admin.css";
 import { useEffect, useState } from "react";
 import { apiUrl } from "../../api";
 import { useAuth } from "../../context/AuthContext";
+import ReportDetails from "../../components/ReportDetails/ReportDetails";
 
 interface Report {
   id: number;
@@ -16,12 +17,26 @@ interface Report {
   updated_at: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  surname: string;
+  email: string;
+  role: string;
+  photo_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const Admin = () => {
   const [isReports, setIsReports] = useState<boolean>(true);
   const [isAnnouncements, setIsAnnouncements] = useState<boolean>(false);
   const [isUsers, setIsUsers] = useState<boolean>(false);
   const [reports, setReports] = useState<Report[] | null>([]);
   const [filteredReports, setFilteredReports] = useState<Report[] | null>([]);
+  const [users, setUsers] = useState<User[] | null>([]);
+  const [showReportDetails, setShowReportDetails] = useState<boolean>(false);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
   const auth = useAuth();
 
@@ -64,6 +79,22 @@ const Admin = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/admin/users`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const body = await res.json();
+      if (!body.success) {
+        throw new Error("Error in response: " + body.code);
+      }
+      setUsers(body.users);
+    } catch (e) {
+      console.error("Error fetching users:", e);
+    }
+  };
+
   const filterReports = (status: string) => {
     if (status !== "all") {
       setFilteredReports(
@@ -74,203 +105,270 @@ const Admin = () => {
     }
   };
 
+  const changeReportStatus = async (reportStatus: string) => {
+    try {
+      const res = await fetch(`${apiUrl}/admin/reports/${selectedReport?.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ status: reportStatus }),
+      });
+    } catch (e) {
+      console.error("Error changing report status:", e);
+    }
+  };
+
   useEffect(() => {
     fetchReports();
+    fetchUsers();
   }, []);
 
   return (
-    <div className="admin-panel-container">
-      <div className="admin-side-container">
-        <div>
-          <h3>Admin Dashboard</h3>
-        </div>
-        <div className="admin-menu-items">
-          <div
-            id="reports"
-            className="admin-menu-span active"
-            onClick={(e) => changeView(e)}
-          >
-            <span>
-              <img src="images/admin-reports-icon.svg" alt="" />
-            </span>
-            <span>Reports</span>
-          </div>
-          <div
-            id="announcements"
-            className="admin-menu-span"
-            onClick={(e) => changeView(e)}
-          >
-            <span>
-              <img src="images/admin-messages-icon.svg" alt="" />
-            </span>
-            <span>Announcements</span>
-          </div>
-          <div
-            id="users"
-            className="admin-menu-span"
-            onClick={(e) => changeView(e)}
-          >
-            <span>
-              <img src="images/admin-users-icon.svg" alt="" />
-            </span>
-            <span>Users</span>
-          </div>
-          <div
-            id="logout"
-            className="admin-menu-span"
-            onClick={() => auth.logout()}
-          >
-            <span>
-              <img src="images/admin-logout-icon.svg" alt="" />
-            </span>
-            <span>Log Out</span>
-          </div>
-        </div>
-      </div>
-      <div className="admin-main-container">
-        {isReports && (
+    <>
+      {showReportDetails && (
+        <ReportDetails
+          closeDetailsWindow={() => setShowReportDetails(false)}
+          report={selectedReport}
+          isAdmin={true}
+          onStatusChange={(newStatus) => changeReportStatus(newStatus)}
+        />
+      )}
+      <div className="admin-panel-container">
+        <div className="admin-side-container">
           <div>
-            <h4>Reports Overview</h4>
-            <div className="admin-reports-stats-container">
-              <div
-                className="admin-stat-box"
-                onClick={() => filterReports("pending")}
-              >
-                <div>
-                  <span>Pending</span>
-                  <span className="admin-stat-box-icon-container">
-                    <img src="images/stopwatch-icon.png" alt="" />
-                  </span>
-                </div>
-                <div>
-                  <span>
-                    {
-                      reports?.filter((report) => report.status === "pending")
-                        .length
-                    }
-                  </span>
-                </div>
-              </div>
-              <div
-                className="admin-stat-box"
-                onClick={() => filterReports("approved")}
-              >
-                <div>
-                  <span>Approved</span>
-                  <span className="admin-stat-box-icon-container">
-                    <img src="images/admin-approved-icon.png" alt="" />
-                  </span>
-                </div>
-                <div>
-                  <span>
-                    {
-                      reports?.filter((report) => report.status === "approved")
-                        .length
-                    }
-                  </span>
-                </div>
-              </div>
-              <div
-                className="admin-stat-box"
-                onClick={() => filterReports("rejected")}
-              >
-                <div>
-                  <span>Rejected</span>
-                  <span className="admin-stat-box-icon-container">
-                    <img src="images/admin-rejected-reports-icon.png" alt="" />
-                  </span>
-                </div>
-                <div>
-                  <span>
-                    {
-                      reports?.filter((report) => report.status === "rejected")
-                        .length
-                    }
-                  </span>
-                </div>
-              </div>
-              <div
-                className="admin-stat-box"
-                onClick={() => filterReports("closed")}
-              >
-                <div>
-                  <span>Closed</span>
-                  <span className="admin-stat-box-icon-container">
-                    <img src="images/admin-closed-reports-icon.png" alt="" />
-                  </span>
-                </div>
-                <div>
-                  <span>
-                    {
-                      reports?.filter((report) => report.status === "closed")
-                        .length
-                    }
-                  </span>
-                </div>
-              </div>
-              <div
-                className="admin-stat-box"
-                onClick={() => filterReports("all")}
-              >
-                <div>
-                  <span>Total</span>
-                  <span className="admin-stat-box-icon-container">
-                    <img src="images/admin-total-reports-icon.png" alt="" />
-                  </span>
-                </div>
-                <div>
-                  <span>{reports?.length}</span>
-                </div>
-              </div>
+            <h3>Admin Dashboard</h3>
+          </div>
+          <div className="admin-menu-items">
+            <div
+              id="reports"
+              className="admin-menu-span active"
+              onClick={(e) => changeView(e)}
+            >
+              <span>
+                <img src="images/admin-reports-icon.svg" alt="" />
+              </span>
+              <span>Reports</span>
             </div>
-            <div className="admin-reports-table-container">
-              {filteredReports && filteredReports.length > 0 ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>id</th>
-                      <th>User_id</th>
-                      <th>Location_id</th>
-                      <th>Title</th>
-                      <th>Description</th>
-                      <th>Category</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredReports.map((report) => {
-                      return (
-                        <tr key={report.id}>
-                          <td>{report.id}</td>
-                          <td>{report.user_id}</td>
-                          <td>{report.location_id}</td>
-                          <td>{report.title}</td>
-                          <td>{report.description}</td>
-                          <td>{report.category}</td>
-                          <td>{report.status}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No reports found</p>
-              )}
+            <div
+              id="announcements"
+              className="admin-menu-span"
+              onClick={(e) => changeView(e)}
+            >
+              <span>
+                <img src="images/admin-messages-icon.svg" alt="" />
+              </span>
+              <span>Announcements</span>
+            </div>
+            <div
+              id="users"
+              className="admin-menu-span"
+              onClick={(e) => changeView(e)}
+            >
+              <span>
+                <img src="images/admin-users-icon.svg" alt="" />
+              </span>
+              <span>Users</span>
+            </div>
+            <div
+              id="logout"
+              className="admin-menu-span"
+              onClick={() => auth.logout()}
+            >
+              <span>
+                <img src="images/admin-logout-icon.svg" alt="" />
+              </span>
+              <span>Log Out</span>
             </div>
           </div>
-        )}
-        {isAnnouncements && (
-          <div>
-            <h4>Announcements</h4>
-          </div>
-        )}
-        {isUsers && (
-          <div>
-            <h4>Users</h4>
-          </div>
-        )}
+        </div>
+        <div className="admin-main-container">
+          {isReports && (
+            <div>
+              <h4>Reports Overview</h4>
+              <div className="admin-reports-stats-container">
+                <div
+                  className="admin-stat-box"
+                  onClick={() => filterReports("pending")}
+                >
+                  <div>
+                    <span>Pending</span>
+                    <span className="admin-stat-box-icon-container">
+                      <img src="images/stopwatch-icon.png" alt="" />
+                    </span>
+                  </div>
+                  <div>
+                    <span>
+                      {
+                        reports?.filter((report) => report.status === "pending")
+                          .length
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className="admin-stat-box"
+                  onClick={() => filterReports("approved")}
+                >
+                  <div>
+                    <span>Approved</span>
+                    <span className="admin-stat-box-icon-container">
+                      <img src="images/admin-approved-icon.png" alt="" />
+                    </span>
+                  </div>
+                  <div>
+                    <span>
+                      {
+                        reports?.filter(
+                          (report) => report.status === "approved"
+                        ).length
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className="admin-stat-box"
+                  onClick={() => filterReports("rejected")}
+                >
+                  <div>
+                    <span>Rejected</span>
+                    <span className="admin-stat-box-icon-container">
+                      <img
+                        src="images/admin-rejected-reports-icon.png"
+                        alt=""
+                      />
+                    </span>
+                  </div>
+                  <div>
+                    <span>
+                      {
+                        reports?.filter(
+                          (report) => report.status === "rejected"
+                        ).length
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className="admin-stat-box"
+                  onClick={() => filterReports("closed")}
+                >
+                  <div>
+                    <span>Closed</span>
+                    <span className="admin-stat-box-icon-container">
+                      <img src="images/admin-closed-reports-icon.png" alt="" />
+                    </span>
+                  </div>
+                  <div>
+                    <span>
+                      {
+                        reports?.filter((report) => report.status === "closed")
+                          .length
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className="admin-stat-box"
+                  onClick={() => filterReports("all")}
+                >
+                  <div>
+                    <span>Total</span>
+                    <span className="admin-stat-box-icon-container">
+                      <img src="images/admin-total-reports-icon.png" alt="" />
+                    </span>
+                  </div>
+                  <div>
+                    <span>{reports?.length}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="admin-table-container">
+                {filteredReports && filteredReports.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>id</th>
+                        <th>User_id</th>
+                        <th>Location_id</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredReports.map((report) => {
+                        return (
+                          <tr
+                            key={report.id}
+                            onClick={() => {
+                              setSelectedReport(report);
+                              setShowReportDetails(true);
+                            }}
+                          >
+                            <td>{report.id}</td>
+                            <td>{report.user_id}</td>
+                            <td>{report.location_id}</td>
+                            <td>{report.title}</td>
+                            <td>{report.description}</td>
+                            <td>{report.category}</td>
+                            <td>{report.status}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No reports found</p>
+                )}
+              </div>
+            </div>
+          )}
+          {isAnnouncements && (
+            <div>
+              <h4>Announcements</h4>
+            </div>
+          )}
+          {isUsers && (
+            <div>
+              <h4>Users</h4>
+              <div className="admin-table-container">
+                {users && users.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user) => {
+                        return (
+                          <tr key={user.id}>
+                            <td>{user.id}</td>
+                            <td>{user.name}</td>
+                            <td>{user.surname}</td>
+                            <td>{user.email}</td>
+                            <td>{user.role}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No users found</p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

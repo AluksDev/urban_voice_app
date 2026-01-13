@@ -131,6 +131,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
         <ReportDetails
           closeDetailsWindow={() => setShowReportDetails(false)}
           report={selectedReport}
+          isAdmin={false}
         />
       )}
       <div>

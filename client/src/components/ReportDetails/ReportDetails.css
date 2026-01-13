@@ -137,6 +137,16 @@
   color: #2a2a2a;
 }
 
+.admin-status-container button[type="button"] {
+  background-color: #00b65c;
+  color: white;
+}
+
+.admin-status-container button[type="button"]:hover {
+  background-color: #00d96e;
+  color: white;
+}
+
 .non-editable-details-container {
   display: flex;
   justify-content: center;

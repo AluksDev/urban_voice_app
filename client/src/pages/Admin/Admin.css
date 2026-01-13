@@ -85,20 +85,21 @@
   max-width: 100%;
 }
 
-.admin-reports-table-container table {
+.admin-table-container table {
   font-family: "Roboto", sans-serif;
   width: 100%;
   border-spacing: 0 2rem;
   padding: 0 2rem;
 }
 
-.admin-reports-table-container table th,
-.admin-reports-table-container table td {
+.admin-table-container table th,
+.admin-table-container table td {
   font-family: "Roboto", sans-serif;
   border-bottom: 1px solid white;
   padding-bottom: 0.5rem;
 }
 
-.admin-reports-table-container table td {
+.admin-table-container table td {
   text-align: center;
+  cursor: pointer;
 }

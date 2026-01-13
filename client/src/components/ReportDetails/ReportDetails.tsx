@@ -22,9 +22,16 @@ interface Report {
 interface ReportDetailsProps {
   closeDetailsWindow: () => void;
   report: Report | null;
+  isAdmin?: boolean;
+  onStatusChange?: (reportStatus: string) => void;
 }
 
-const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
+const ReportDetails = ({
+  closeDetailsWindow,
+  report,
+  isAdmin,
+  onStatusChange,
+}: ReportDetailsProps) => {
   const { t } = useTranslation();
   const [locationCoordinates, setLocationCoordinates] = useState<
     [number, number]
@@ -354,22 +361,46 @@ const ReportDetails = ({ closeDetailsWindow, report }: ReportDetailsProps) => {
                 </p>
               </div>
             </div>
-            {isPending ? (
-              <div>
+            {!isAdmin ? (
+              isPending ? (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewTitle(report?.title || "");
+                      setNewCategory(report?.category || "");
+                      setNewDescription(report?.description || "");
+                    }}
+                  >
+                    {t("reportDetails.cancel")}
+                  </button>
+                  <button type="submit">
+                    {t("reportDetails.saveChanges")}
+                  </button>
+                </div>
+              ) : (
+                <p>Only pending reports can be edited</p>
+              )
+            ) : (
+              <div className="admin-status-container">
+                <select defaultValue={report?.status} id="status-select">
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="closed">Closed</option>
+                </select>
                 <button
                   type="button"
                   onClick={() => {
-                    setNewTitle(report?.title || "");
-                    setNewCategory(report?.category || "");
-                    setNewDescription(report?.description || "");
+                    const select = document.getElementById(
+                      "status-select"
+                    ) as HTMLSelectElement;
+                    if (onStatusChange) onStatusChange(select.value);
                   }}
                 >
-                  {t("reportDetails.cancel")}
+                  Save
                 </button>
-                <button type="submit">{t("reportDetails.saveChanges")}</button>
               </div>
-            ) : (
-              <p>Only pending reports can be edited</p>
             )}
           </div>
         </form>

@@ -235,7 +235,7 @@ const ReportDetails = ({
                 <input
                   type="text"
                   value={newTitle}
-                  disabled={!isPending}
+                  disabled={!isPending || isAdmin}
                   onChange={(e) => setNewTitle(e.target.value)}
                   required
                 />
@@ -246,7 +246,7 @@ const ReportDetails = ({
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  disabled={!isPending}
+                  disabled={!isPending || isAdmin}
                   required
                 >
                   {categories.map((cat) => (
@@ -262,7 +262,7 @@ const ReportDetails = ({
                 <textarea
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  disabled={!isPending}
+                  disabled={!isPending || isAdmin}
                   required
                 />
               </div>
@@ -274,23 +274,24 @@ const ReportDetails = ({
                     onClick={() => handleImageZoom("in")}
                   />
                 </div>
-                {isPending && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handlePhotoButtonClick("device")}
-                    >
-                      Select New Image
-                    </button>
-                    <button
-                      className="report-details-camera-button"
-                      type="button"
-                      onClick={() => handlePhotoButtonClick("camera")}
-                    >
-                      Take New Photo
-                    </button>
-                  </>
-                )}
+                {isPending ||
+                  (!isAdmin && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handlePhotoButtonClick("device")}
+                      >
+                        Select New Image
+                      </button>
+                      <button
+                        className="report-details-camera-button"
+                        type="button"
+                        onClick={() => handlePhotoButtonClick("camera")}
+                      >
+                        Take New Photo
+                      </button>
+                    </>
+                  ))}
                 <input
                   type="file"
                   ref={cameraRefInput}
@@ -312,7 +313,7 @@ const ReportDetails = ({
               <div className="user-details-map-container">
                 <MapComponent
                   center={locationCoordinates}
-                  isPinDraggable={isPending}
+                  isPinDraggable={isAdmin ? false : isPending}
                   singleMarker
                   zoom={17}
                   onMarkerChange={(coords) =>

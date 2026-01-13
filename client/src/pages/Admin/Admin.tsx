@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { apiUrl } from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
+import Toaster from "../../components/Toaster/Toaster";
 
 interface Report {
   id: number;
@@ -37,6 +38,10 @@ const Admin = () => {
   const [users, setUsers] = useState<User[] | null>([]);
   const [showReportDetails, setShowReportDetails] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [showToaster, setShowToaster] = useState<boolean>(false);
+  const [toasterMessage, setToasterMessage] = useState<string>("");
+  const [toasterType, setToasterType] = useState<string>("success");
+  const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
 
   const auth = useAuth();
 
@@ -115,6 +120,16 @@ const Admin = () => {
         credentials: "include",
         body: JSON.stringify({ status: reportStatus }),
       });
+      const body = await res.json();
+      if (!body.success) {
+        throw new Error("Error in response: " + body.code);
+      }
+      setToasterMessage("Report status updated successfully");
+      setToasterType("success");
+      setShowToaster(true);
+      setSelectedReport(null);
+      setShowReportDetails(false);
+      fetchReports();
     } catch (e) {
       console.error("Error changing report status:", e);
     }
@@ -125,8 +140,35 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    if (showToaster) {
+      setToasterLeaving(false); // ensure visible initially
+
+      const leaveTimer = setTimeout(() => {
+        setToasterLeaving(true); // start leaving animation
+      }, 3000);
+
+      const removeTimer = setTimeout(() => {
+        setShowToaster(false); // hide completely
+        setToasterLeaving(false); // reset for next toast
+      }, 3300);
+
+      return () => {
+        clearTimeout(leaveTimer);
+        clearTimeout(removeTimer);
+      };
+    }
+  }, [showToaster]);
+
   return (
     <>
+      {showToaster && (
+        <Toaster
+          message={toasterMessage}
+          type={toasterType}
+          isLeaving={toasterLeaving}
+        />
+      )}
       {showReportDetails && (
         <ReportDetails
           closeDetailsWindow={() => setShowReportDetails(false)}
@@ -135,6 +177,7 @@ const Admin = () => {
           onStatusChange={(newStatus) => changeReportStatus(newStatus)}
         />
       )}
+
       <div className="admin-panel-container">
         <div className="admin-side-container">
           <div>
@@ -329,6 +372,27 @@ const Admin = () => {
           {isAnnouncements && (
             <div>
               <h4>Announcements</h4>
+              <div className="admin-announcements-filter-container">
+                <div>
+                  <div>Draft</div>
+                  <div className="admin-announcements-filter-icon-container">
+                    <img
+                      src="images/admin-announcements-draft-icon.png"
+                      alt=""
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div>Published</div>
+                  <div className="admin-announcements-filter-icon-container">
+                    <img
+                      src="images/admin-announcements-published-icon.png"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </div>
+              <div></div>
             </div>
           )}
           {isUsers && (

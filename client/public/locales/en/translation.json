@@ -42,7 +42,8 @@
       "statuses": {
         "pending": "Pending",
         "approved": "Approved",
-        "closed": "Closed"
+        "closed": "Closed",
+        "rejected": "Rejected"
       }
     },
     "sortBy": "Sort By",
@@ -200,7 +201,8 @@
     "statuses": {
       "pending": "Pending",
       "approved": "Approved",
-      "closed": "Closed"
+      "closed": "Closed",
+      "rejected": "Rejected"
     },
     "errors": {
       "EMPTY_TITLE": "Title cannot be empty.",

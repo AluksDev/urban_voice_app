@@ -42,7 +42,8 @@
       "statuses": {
         "pending": "In attesa",
         "approved": "Approvato",
-        "closed": "Chiuso"
+        "closed": "Chiuso",
+        "rejected": "Rifiutato"
       }
     },
     "sortBy": "Ordina per",
@@ -202,7 +203,8 @@
     "statuses": {
       "pending": "In attesa",
       "approved": "Approvato",
-      "closed": "Chiuso"
+      "closed": "Chiuso",
+      "rejected": "Rifiutato"
     },
     "errors": {
       "EMPTY_TITLE": "Il titolo non può essere vuoto.",

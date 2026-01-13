@@ -29,7 +29,19 @@ exports.allUsers = async (req, res) => {
 }
 
 exports.updateStatus = async (req, res) => {
-    console.log("Updating status");
-    console.log("id: " + req.params.id);
-    console.log("new status: " + req.body.status);
+    if (!req.user) {
+        return res.status(401).json({ success: false, code: "NOT_AUTHENTICATED" });
+    }
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, code: "FORBIDDEN" });
+    }
+    const reportId = req.params.id;
+    const { status } = req.body;
+    const [result] = await req.db.query("UPDATE reports SET status = ? WHERE id = ?", [status, reportId]);
+    if (result.affectedRows === 1) {
+        const [report] = await req.db.query("SELECT * FROM reports WHERE id = ?", [reportId]);
+        return res.status(200).json({ success: true, code: "STATUS_UPDATED", report: report[0] });
+    } else {
+        return res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
 }

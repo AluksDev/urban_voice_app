@@ -45,3 +45,34 @@ exports.updateStatus = async (req, res) => {
         return res.status(500).json({ success: false, code: "DB_ERROR" });
     }
 }
+
+exports.allAnnouncements = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, code: "NOT_AUTHENTICATED" });
+    }
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, code: "FORBIDDEN" });
+    }
+    const [announcements] = await req.db.query("SELECT * from announcements");
+    if (!announcements) {
+        return res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+    return res.status(200).json({ success: true, announcements });
+}
+
+exports.newAnnouncement = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, code: "NOT_AUTHENTICATED" });
+    }
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, code: "FORBIDDEN" });
+    }
+    const { title, content, publish } = req.body;
+    const userId = req.user.id;
+    const [result] = await req.db.query("INSERT INTO announcements (title, content, is_published, created_by, updated_at) VALUES (?, ?, ?, ?, NOW())", [title, content, publish, userId]);
+    if (result.affectedRows === 1) {
+        return res.status(200).json({ success: true, code: "ANNOUNCEMENT_CREATED" });
+    } else {
+        return res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+}

@@ -120,10 +120,36 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
+.admin-announcements-filter-container > div:hover {
+  transform: scale(1.1);
+}
+.admin-announcements-filter-container > div:active {
+  transform: scale(1);
+}
 .admin-announcements-filter-icon-container {
   width: 2rem;
   height: 2rem;
 }
 .admin-announcements-filter-icon-container img {
   max-width: 100%;
+}
+.admin-announcements-main-container {
+  text-align: center;
+}
+.admin-announcements-main-container > * {
+  margin: 2rem 0;
+}
+.new-announcement-button {
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  background-color: #00b65c;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.new-announcement-button:hover {
+  background-color: #00d96e;
 }

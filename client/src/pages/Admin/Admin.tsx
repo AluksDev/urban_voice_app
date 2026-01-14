@@ -4,6 +4,7 @@ import { apiUrl } from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
 import Toaster from "../../components/Toaster/Toaster";
+import NewAnnouncement from "../../components/NewAnnouncement/NewAnnouncement";
 
 interface Report {
   id: number;
@@ -29,6 +30,16 @@ interface User {
   updated_at: string;
 }
 
+interface Announcement {
+  id: number;
+  title: string;
+  content: string;
+  is_published: number;
+  created_at: string;
+  updated_at: string;
+  created_by: number;
+}
+
 const Admin = () => {
   const [isReports, setIsReports] = useState<boolean>(true);
   const [isAnnouncements, setIsAnnouncements] = useState<boolean>(false);
@@ -42,6 +53,11 @@ const Admin = () => {
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
+  const [showNewAnnouncement, setShowNewAnnouncement] =
+    useState<boolean>(false);
+  const [announcements, setAnnouncements] = useState<Announcement[] | null>(
+    null
+  );
 
   const auth = useAuth();
 
@@ -100,6 +116,23 @@ const Admin = () => {
     }
   };
 
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/admin/announcements`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const body = await res.json();
+      if (!body.success) {
+        throw new Error("Error in response: " + body.code);
+      }
+      console.log(body.announcements);
+      setAnnouncements(body.announcements);
+    } catch (e) {
+      console.error("Error fetching announcements:", e);
+    }
+  };
+
   const filterReports = (status: string) => {
     if (status !== "all") {
       setFilteredReports(
@@ -138,6 +171,7 @@ const Admin = () => {
   useEffect(() => {
     fetchReports();
     fetchUsers();
+    fetchAnnouncements();
   }, []);
 
   useEffect(() => {
@@ -175,6 +209,18 @@ const Admin = () => {
           report={selectedReport}
           isAdmin={true}
           onStatusChange={(newStatus) => changeReportStatus(newStatus)}
+        />
+      )}
+      {showNewAnnouncement && (
+        <NewAnnouncement
+          closeNewAnnouncementWindow={(message?: string) => {
+            setShowNewAnnouncement(false);
+            if (message) {
+              setToasterMessage(message);
+              setToasterType("success");
+              setShowToaster(true);
+            }
+          }}
         />
       )}
 
@@ -370,8 +416,16 @@ const Admin = () => {
             </div>
           )}
           {isAnnouncements && (
-            <div>
+            <div className="admin-announcements-main-container">
               <h4>Announcements</h4>
+              <div>
+                <button
+                  className="new-announcement-button"
+                  onClick={() => setShowNewAnnouncement(true)}
+                >
+                  New Announcement
+                </button>
+              </div>
               <div className="admin-announcements-filter-container">
                 <div>
                   <div>Draft</div>
@@ -392,7 +446,52 @@ const Admin = () => {
                   </div>
                 </div>
               </div>
-              <div></div>
+              <div className="admin-table-container">
+                {announcements && announcements.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Is Published</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Created By</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {announcements.map((announcement) => {
+                        return (
+                          <tr key={announcement.id}>
+                            <td>{announcement.id}</td>
+                            <td>{announcement.title}</td>
+                            <td>{announcement.content}</td>
+                            <td>
+                              {announcement.is_published === 1
+                                ? "Published"
+                                : "Draft"}
+                            </td>
+                            <td>
+                              {new Date(announcement.created_at).toLocaleString(
+                                "es-ES"
+                              )}
+                            </td>
+                            <td>
+                              {new Date(announcement.updated_at).toLocaleString(
+                                "es-ES"
+                              )}
+                            </td>
+                            <td>{announcement.created_by}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No announcements found</p>
+                )}
+              </div>
             </div>
           )}
           {isUsers && (

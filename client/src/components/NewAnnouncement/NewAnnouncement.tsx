@@ -4,11 +4,13 @@ import { apiUrl } from "../../api";
 import Toaster from "../Toaster/Toaster";
 
 interface NewAnnouncementProps {
-  closeNewAnnouncementWindow: (message?: string) => void;
+  closeNewAnnouncementWindow: () => void;
+  onSuccessfulAnnouncement: (message: string) => void;
 }
 
 const NewAnnouncement = ({
   closeNewAnnouncementWindow,
+  onSuccessfulAnnouncement,
 }: NewAnnouncementProps) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -41,7 +43,8 @@ const NewAnnouncement = ({
       if (!body.success) {
         throw new Error("Error in response: " + body.code);
       }
-      closeNewAnnouncementWindow("Announcement created successfully");
+      onSuccessfulAnnouncement("Announcement created successfully");
+      closeNewAnnouncementWindow();
     } catch (e) {
       console.error("Error creating new announcement:", e);
     }

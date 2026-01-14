@@ -68,7 +68,6 @@ const Admin = () => {
     document.querySelectorAll(".admin-menu-span").forEach((el) => {
       el.classList.remove("active");
     });
-    console.log(event.currentTarget.id);
     switch (event.currentTarget.id) {
       case "reports":
         setIsReports(true);
@@ -126,7 +125,6 @@ const Admin = () => {
       if (!body.success) {
         throw new Error("Error in response: " + body.code);
       }
-      console.log(body.announcements);
       setAnnouncements(body.announcements);
     } catch (e) {
       console.error("Error fetching announcements:", e);
@@ -213,13 +211,14 @@ const Admin = () => {
       )}
       {showNewAnnouncement && (
         <NewAnnouncement
-          closeNewAnnouncementWindow={(message?: string) => {
+          onSuccessfulAnnouncement={(message: string) => {
+            setToasterMessage(message);
+            setToasterType("success");
+            setShowToaster(true);
+            fetchAnnouncements();
+          }}
+          closeNewAnnouncementWindow={() => {
             setShowNewAnnouncement(false);
-            if (message) {
-              setToasterMessage(message);
-              setToasterType("success");
-              setShowToaster(true);
-            }
           }}
         />
       )}
@@ -455,9 +454,6 @@ const Admin = () => {
                         <th>Title</th>
                         <th>Content</th>
                         <th>Is Published</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
-                        <th>Created By</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -472,17 +468,6 @@ const Admin = () => {
                                 ? "Published"
                                 : "Draft"}
                             </td>
-                            <td>
-                              {new Date(announcement.created_at).toLocaleString(
-                                "es-ES"
-                              )}
-                            </td>
-                            <td>
-                              {new Date(announcement.updated_at).toLocaleString(
-                                "es-ES"
-                              )}
-                            </td>
-                            <td>{announcement.created_by}</td>
                           </tr>
                         );
                       })}

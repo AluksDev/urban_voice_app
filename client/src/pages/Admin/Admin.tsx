@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
 import Toaster from "../../components/Toaster/Toaster";
 import NewAnnouncement from "../../components/NewAnnouncement/NewAnnouncement";
+import { t } from "i18next";
 
 interface Report {
   id: number;
@@ -58,6 +59,9 @@ const Admin = () => {
   const [announcements, setAnnouncements] = useState<Announcement[] | null>(
     null
   );
+  const [filteredAnnouncements, setFilteredAnnouncements] = useState<
+    Announcement[] | null
+  >([]);
 
   const auth = useAuth();
 
@@ -126,6 +130,7 @@ const Admin = () => {
         throw new Error("Error in response: " + body.code);
       }
       setAnnouncements(body.announcements);
+      setFilteredAnnouncements(body.announcements);
     } catch (e) {
       console.error("Error fetching announcements:", e);
     }
@@ -163,6 +168,24 @@ const Admin = () => {
       fetchReports();
     } catch (e) {
       console.error("Error changing report status:", e);
+    }
+  };
+
+  const filterAnnouncements = (type: string) => {
+    if (type == "draft") {
+      setFilteredAnnouncements(
+        announcements?.filter(
+          (announcement) => announcement.is_published === 0
+        ) || null
+      );
+    } else if (type == "published") {
+      setFilteredAnnouncements(
+        announcements?.filter(
+          (announcement) => announcement.is_published === 1
+        ) || null
+      );
+    } else {
+      setFilteredAnnouncements(announcements);
     }
   };
 
@@ -426,7 +449,7 @@ const Admin = () => {
                 </button>
               </div>
               <div className="admin-announcements-filter-container">
-                <div>
+                <div onClick={() => filterAnnouncements("draft")}>
                   <div>Draft</div>
                   <div className="admin-announcements-filter-icon-container">
                     <img
@@ -435,7 +458,7 @@ const Admin = () => {
                     />
                   </div>
                 </div>
-                <div>
+                <div onClick={() => filterAnnouncements("published")}>
                   <div>Published</div>
                   <div className="admin-announcements-filter-icon-container">
                     <img
@@ -444,9 +467,15 @@ const Admin = () => {
                     />
                   </div>
                 </div>
+                <div onClick={() => filterAnnouncements("all")}>
+                  <div>All</div>
+                  <div className="admin-announcements-filter-icon-container">
+                    <img src="images/admin-all-announcements.png" alt="" />
+                  </div>
+                </div>
               </div>
               <div className="admin-table-container">
-                {announcements && announcements.length > 0 ? (
+                {filteredAnnouncements && filteredAnnouncements.length > 0 ? (
                   <table>
                     <thead>
                       <tr>
@@ -457,7 +486,7 @@ const Admin = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {announcements.map((announcement) => {
+                      {filteredAnnouncements.map((announcement) => {
                         return (
                           <tr key={announcement.id}>
                             <td>{announcement.id}</td>

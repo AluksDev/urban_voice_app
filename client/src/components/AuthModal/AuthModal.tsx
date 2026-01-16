@@ -3,7 +3,7 @@ import "./AuthModal.css";
 import Toaster from "../Toaster/Toaster";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { apiUrl } from "../../api";
+import { apiUrl, apiRequest } from "../../api";
 
 type AuthModalProps = {
   onLogInSuccessful: (
@@ -37,7 +37,6 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     const trimmedPassword = signupPassword.trim();
     const trimmedPasswordRep = signupPasswordRep.trim();
 
-    // Frontend validation using i18n
     if (trimmedName.length < 1) {
       setToasterMessage(t("authModal.messages.nameTooShort"));
       setToasterType("error");
@@ -74,36 +73,26 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       email: trimmedEmail,
       password: trimmedPassword,
     };
-
     try {
-      const res = await fetch(`${apiUrl}/auth/signup`, {
+      const body = await apiRequest("auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
         credentials: "include",
       });
 
-      const result = await res.json();
-
-      if (!result.success) {
-        const backendMsg =
-          t(`authModal.backend.${result.code}`) ||
-          t("authModal.messages.signupError");
-        setToasterMessage(backendMsg);
-        setToasterType("error");
-      } else {
-        if (result.user) auth.login(result.user);
-        onLogInSuccessful(result.user, t("authModal.messages.signupSuccess"));
-      }
+      if (body.user) auth.login(body.user);
+      onLogInSuccessful(body.user, t("authModal.messages.signupSuccess"));
 
       setSignupName("");
       setSignupSurname("");
       setSignupEmail("");
       setSignupPassword("");
       setSignupPasswordRep("");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Signup error:", err);
-      setToasterMessage(t("authModal.messages.signupError"));
+      const backendMsg = t(`authModal.backend.${err.message}`);
+      setToasterMessage(backendMsg);
       setToasterType("error");
     }
   };
@@ -126,33 +115,21 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     }
 
     const loginData = { email: trimmedEmail, password: trimmedPassword };
-
     try {
-      const res = await fetch(`${apiUrl}/auth/login`, {
+      const body = await apiRequest("auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
         credentials: "include",
       });
-
-      const result = await res.json();
-
-      if (!result.success) {
-        const backendMsg =
-          t(`authModal.backend.${result.code}`) ||
-          t("authModal.messages.loginError");
-        setToasterMessage(backendMsg);
-        setToasterType("error");
-      } else {
-        auth.login(result.user);
-        onLogInSuccessful(result.user, t("authModal.messages.loginSuccess"));
-      }
-
+      console.log(body);
+      auth.login(body.user);
+      onLogInSuccessful(body.user, t("authModal.messages.loginSuccess"));
       setLoginEmail("");
       setLoginPassword("");
-    } catch (err) {
-      console.error("Login error:", err);
-      setToasterMessage(t("authModal.messages.loginError"));
+    } catch (err: any) {
+      const backendMsg = t(`authModal.backend.${err.message}`);
+      setToasterMessage(backendMsg);
       setToasterType("error");
     }
   };

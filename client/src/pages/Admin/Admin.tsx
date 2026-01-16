@@ -1,10 +1,10 @@
 import "./Admin.css";
 import { useEffect, useState } from "react";
-import { apiUrl } from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
 import Toaster from "../../components/Toaster/Toaster";
 import NewAnnouncement from "../../components/NewAnnouncement/NewAnnouncement";
+import { apiRequest } from "../../api";
 import { t } from "i18next";
 
 interface Report {
@@ -87,53 +87,29 @@ const Admin = () => {
   };
 
   const fetchReports = async () => {
-    try {
-      const res = await fetch(`${apiUrl}/admin/reports`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const body = await res.json();
-      if (!body.success) {
-        throw new Error("Error in response: " + body.code);
-      }
-      setReports(body.reports);
-      setFilteredReports(body.reports);
-    } catch (e) {
-      console.error("Error fetching reports:", e);
-    }
+    const body = await apiRequest("admin/reports", {
+      method: "GET",
+      credentials: "include",
+    });
+    setReports(body.reports);
+    setFilteredReports(body.reports);
   };
 
   const fetchUsers = async () => {
-    try {
-      const res = await fetch(`${apiUrl}/admin/users`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const body = await res.json();
-      if (!body.success) {
-        throw new Error("Error in response: " + body.code);
-      }
-      setUsers(body.users);
-    } catch (e) {
-      console.error("Error fetching users:", e);
-    }
+    const body = await apiRequest("admin/users", {
+      method: "GET",
+      credentials: "include",
+    });
+    setUsers(body.users);
   };
 
   const fetchAnnouncements = async () => {
-    try {
-      const res = await fetch(`${apiUrl}/admin/announcements`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const body = await res.json();
-      if (!body.success) {
-        throw new Error("Error in response: " + body.code);
-      }
-      setAnnouncements(body.announcements);
-      setFilteredAnnouncements(body.announcements);
-    } catch (e) {
-      console.error("Error fetching announcements:", e);
-    }
+    const body = await apiRequest("admin/announcements", {
+      method: "GET",
+      credentials: "include",
+    });
+    setAnnouncements(body.announcements);
+    setFilteredAnnouncements(body.announcements);
   };
 
   const filterReports = (status: string) => {
@@ -147,28 +123,20 @@ const Admin = () => {
   };
 
   const changeReportStatus = async (reportStatus: string) => {
-    try {
-      const res = await fetch(`${apiUrl}/admin/reports/${selectedReport?.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ status: reportStatus }),
-      });
-      const body = await res.json();
-      if (!body.success) {
-        throw new Error("Error in response: " + body.code);
-      }
-      setToasterMessage("Report status updated successfully");
-      setToasterType("success");
-      setShowToaster(true);
-      setSelectedReport(null);
-      setShowReportDetails(false);
-      fetchReports();
-    } catch (e) {
-      console.error("Error changing report status:", e);
-    }
+    const body = await apiRequest(`admin/reports/${selectedReport?.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ status: reportStatus }),
+    });
+    setToasterMessage("Report status updated successfully");
+    setToasterType("success");
+    setShowToaster(true);
+    setSelectedReport(null);
+    setShowReportDetails(false);
+    fetchReports();
   };
 
   const filterAnnouncements = (type: string) => {

@@ -38,10 +38,10 @@ const ReportDetails = ({
   >([0, 0]);
   const [newTitle, setNewTitle] = useState<string>(report?.title || "");
   const [newCategory, setNewCategory] = useState<string>(
-    report?.category || ""
+    report?.category || "",
   );
   const [newDescription, setNewDescription] = useState<string>(
-    report?.description || ""
+    report?.description || "",
   );
   const [newStatus, setNewStatus] = useState<string>(report?.status || "");
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
@@ -226,7 +226,7 @@ const ReportDetails = ({
         >
           <div>
             <h3>Edit Report #{report?.id}</h3>
-            <h4>Submitted by: {auth.user?.name}</h4>
+            {isAdmin && <h4>Submitted by user ID: {report?.user_id}</h4>}
           </div>
           <div>
             <div className="report-details-left">
@@ -394,7 +394,7 @@ const ReportDetails = ({
                   type="button"
                   onClick={() => {
                     const select = document.getElementById(
-                      "status-select"
+                      "status-select",
                     ) as HTMLSelectElement;
                     if (onStatusChange) onStatusChange(select.value);
                   }}

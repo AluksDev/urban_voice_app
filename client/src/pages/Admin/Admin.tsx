@@ -5,6 +5,7 @@ import ReportDetails from "../../components/ReportDetails/ReportDetails";
 import Toaster from "../../components/Toaster/Toaster";
 import NewAnnouncement from "../../components/NewAnnouncement/NewAnnouncement";
 import { apiRequest } from "../../api";
+import AnnouncementDetails from "../../components/AnnouncementDetails/AnnouncementDetails";
 import { t } from "i18next";
 
 interface Report {
@@ -39,6 +40,7 @@ interface Announcement {
   created_at: string;
   updated_at: string;
   created_by: number;
+  archived_at: string | null;
 }
 
 const Admin = () => {
@@ -57,11 +59,15 @@ const Admin = () => {
   const [showNewAnnouncement, setShowNewAnnouncement] =
     useState<boolean>(false);
   const [announcements, setAnnouncements] = useState<Announcement[] | null>(
-    null
+    null,
   );
   const [filteredAnnouncements, setFilteredAnnouncements] = useState<
     Announcement[] | null
   >([]);
+  const [selectedAnnouncement, setSelectedAnnouncement] =
+    useState<Announcement | null>(null);
+  const [showAnnouncementDetails, setShowAnnouncementDetails] =
+    useState<boolean>(false);
 
   const auth = useAuth();
 
@@ -115,7 +121,7 @@ const Admin = () => {
   const filterReports = (status: string) => {
     if (status !== "all") {
       setFilteredReports(
-        reports?.filter((report) => report.status === status) || null
+        reports?.filter((report) => report.status === status) || null,
       );
     } else {
       setFilteredReports(reports);
@@ -143,14 +149,20 @@ const Admin = () => {
     if (type == "draft") {
       setFilteredAnnouncements(
         announcements?.filter(
-          (announcement) => announcement.is_published === 0
-        ) || null
+          (announcement) => announcement.is_published === 0,
+        ) || null,
       );
     } else if (type == "published") {
       setFilteredAnnouncements(
         announcements?.filter(
-          (announcement) => announcement.is_published === 1
-        ) || null
+          (announcement) => announcement.is_published === 1,
+        ) || null,
+      );
+    } else if (type == "archived") {
+      setFilteredAnnouncements(
+        announcements?.filter(
+          (announcement) => announcement.archived_at !== null,
+        ) || null,
       );
     } else {
       setFilteredAnnouncements(announcements);
@@ -211,6 +223,14 @@ const Admin = () => {
           closeNewAnnouncementWindow={() => {
             setShowNewAnnouncement(false);
           }}
+        />
+      )}
+      {showAnnouncementDetails && (
+        <AnnouncementDetails
+          announcement={selectedAnnouncement}
+          closeAnnouncementDetailsWindow={() =>
+            setShowAnnouncementDetails(false)
+          }
         />
       )}
 
@@ -300,7 +320,7 @@ const Admin = () => {
                     <span>
                       {
                         reports?.filter(
-                          (report) => report.status === "approved"
+                          (report) => report.status === "approved",
                         ).length
                       }
                     </span>
@@ -323,7 +343,7 @@ const Admin = () => {
                     <span>
                       {
                         reports?.filter(
-                          (report) => report.status === "rejected"
+                          (report) => report.status === "rejected",
                         ).length
                       }
                     </span>
@@ -435,6 +455,15 @@ const Admin = () => {
                     />
                   </div>
                 </div>
+                <div onClick={() => filterAnnouncements("archived")}>
+                  <div>Archived</div>
+                  <div className="admin-announcements-filter-icon-container">
+                    <img
+                      src="images/admin-announcements-archived-icon.png"
+                      alt=""
+                    />
+                  </div>
+                </div>
                 <div onClick={() => filterAnnouncements("all")}>
                   <div>All</div>
                   <div className="admin-announcements-filter-icon-container">
@@ -456,14 +485,22 @@ const Admin = () => {
                     <tbody>
                       {filteredAnnouncements.map((announcement) => {
                         return (
-                          <tr key={announcement.id}>
+                          <tr
+                            key={announcement.id}
+                            onClick={() => {
+                              setSelectedAnnouncement(announcement);
+                              setShowAnnouncementDetails(true);
+                            }}
+                          >
                             <td>{announcement.id}</td>
                             <td>{announcement.title}</td>
                             <td>{announcement.content}</td>
                             <td>
-                              {announcement.is_published === 1
-                                ? "Published"
-                                : "Draft"}
+                              {announcement.archived_at
+                                ? "Archived"
+                                : announcement.is_published === 1
+                                  ? "Published"
+                                  : "Draft"}
                             </td>
                           </tr>
                         );

@@ -3,12 +3,12 @@ import "./AuthModal.css";
 import Toaster from "../Toaster/Toaster";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { apiUrl, apiRequest } from "../../api";
+import { apiRequest } from "../../api";
 
 type AuthModalProps = {
   onLogInSuccessful: (
     user: { role: string; [key: string]: any },
-    message: string
+    message: string,
   ) => void;
   closeModal: () => void;
 };
@@ -161,13 +161,13 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               <h4>
                 {t(
                   "authModal.overlay.panelLeft.subtitle",
-                  "Enter your personal details and start journey with us"
+                  "Enter your personal details and start journey with us",
                 )}
               </h4>
               <p>
                 {t(
                   "authModal.overlay.panelLeft.prompt",
-                  "Do you already have an account?"
+                  "Do you already have an account?",
                 )}
               </p>
               <button onClick={handleClassClick}>
@@ -181,13 +181,13 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               <h4>
                 {t(
                   "authModal.overlay.panelRight.subtitle",
-                  "To keep connected with us please login with your personal info"
+                  "To keep connected with us please login with your personal info",
                 )}
               </h4>
               <p>
                 {t(
                   "authModal.overlay.panelRight.prompt",
-                  "Don't have an account?"
+                  "Don't have an account?",
                 )}
               </p>
               <button onClick={handleClassClick}>
@@ -255,7 +255,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               type="text"
               placeholder={t(
                 "authModal.signup.surnamePlaceholder",
-                "Surname(s)"
+                "Surname(s)",
               )}
               value={signupSurname}
               onChange={(e) => setSignupSurname(e.target.value)}
@@ -273,7 +273,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               type="password"
               placeholder={t(
                 "authModal.signup.passwordPlaceholder",
-                "Password"
+                "Password",
               )}
               value={signupPassword}
               onChange={(e) => setSignupPassword(e.target.value)}
@@ -284,7 +284,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               type="password"
               placeholder={t(
                 "authModal.signup.repeatPasswordPlaceholder",
-                "Repeat Password"
+                "Repeat Password",
               )}
               value={signupPasswordRep}
               onChange={(e) => setSignupPasswordRep(e.target.value)}

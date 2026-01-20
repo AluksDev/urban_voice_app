@@ -1,6 +1,17 @@
 import "./MessagesBoard.css";
+import { apiRequest } from "../../api";
+import { useEffect } from "react";
 
 const MessagesBoard = () => {
+  const fetchMessages = async () => {
+    const data = await apiRequest("announcements/", { method: "GET" });
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
   return (
     <section className="messages-board-container">
       <h3>Board</h3>

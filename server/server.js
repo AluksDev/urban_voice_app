@@ -17,7 +17,6 @@ app.use(
                 "http://192.168.56.1:5173",
                 "http://172.22.111.62:5173",
                 "http://192.168.1.33:5173",
-                "https://ten-dryers-hang.loca.lt"
             ];
 
             if (allowedOrigins.includes(origin)) {
@@ -66,6 +65,9 @@ app.use("/user", userRoutes);
 
 const adminRoutes = require("./routes/admin");
 app.use("/admin", adminRoutes);
+
+const announcementRoutes = require("./routes/announcements");
+app.use("/announcements", announcementRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {

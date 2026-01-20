@@ -132,7 +132,7 @@ const PieChartComponent = ({
         name,
         value: Number(value),
         fill: COLORS[index % COLORS.length],
-      })
+      }),
     );
 
     setChartData(chartDataWithColors);
@@ -145,7 +145,7 @@ const PieChartComponent = ({
 
     const observer = new ResizeObserver(([entry]) => {
       const width = entry.contentRect.width;
-      const chartSize = Math.max(200, Math.min(width, 400)); // min 200px, max 400px
+      const chartSize = Math.max(150, Math.min(width, 350)); // min 200px, max 400px
       setSize(chartSize);
     });
 

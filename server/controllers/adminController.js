@@ -76,3 +76,42 @@ exports.newAnnouncement = async (req, res) => {
         return res.status(500).json({ success: false, code: "DB_ERROR" });
     }
 }
+
+exports.changeAnnouncementStatus = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, code: "NOT_AUTHENTICATED" });
+    }
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, code: "FORBIDDEN" });
+    }
+    const announcementId = req.params.id;
+    if (req.params.action === 'publish') {
+        const [result] = await req.db.query("UPDATE announcements SET is_published = 1, updated_at = NOW() WHERE id = ?", [announcementId]);
+        if (result.affectedRows === 1) {
+            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_PUBLISHED" });
+        } else {
+            return res.status(500).json({ success: false, code: "DB_ERROR" });
+        }
+    } else if (req.params.action === 'unpublish') {
+        const [result] = await req.db.query("UPDATE announcements SET is_published = 0, updated_at = NOW() WHERE id = ?", [announcementId]);
+        if (result.affectedRows === 1) {
+            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_UNPUBLISHED" });
+        } else {
+            return res.status(500).json({ success: false, code: "DB_ERROR" });
+        }
+    } else if (req.params.action === 'archive') {
+        const [result] = await req.db.query("UPDATE announcements SET archived_at = NOW(), updated_at = NOW() WHERE id = ?", [announcementId]);
+        if (result.affectedRows === 1) {
+            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_ARCHIVED" });
+        } else {
+            return res.status(500).json({ success: false, code: "DB_ERROR" });
+        }
+    } else if (req.params.action === 'restore') {
+        const [result] = await req.db.query("UPDATE announcements SET archived_at = NULL, updated_at = NOW(), is_published = 0 WHERE id = ?", [announcementId]);
+        if (result.affectedRows === 1) {
+            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_RESTORED" });
+        } else {
+            return res.status(500).json({ success: false, code: "DB_ERROR" });
+        }
+    };
+}

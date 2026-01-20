@@ -149,13 +149,17 @@ const Admin = () => {
     if (type == "draft") {
       setFilteredAnnouncements(
         announcements?.filter(
-          (announcement) => announcement.is_published === 0,
+          (announcement) =>
+            announcement.is_published === 0 &&
+            announcement.archived_at === null,
         ) || null,
       );
     } else if (type == "published") {
       setFilteredAnnouncements(
         announcements?.filter(
-          (announcement) => announcement.is_published === 1,
+          (announcement) =>
+            announcement.is_published === 1 &&
+            announcement.archived_at === null,
         ) || null,
       );
     } else if (type == "archived") {
@@ -228,9 +232,15 @@ const Admin = () => {
       {showAnnouncementDetails && (
         <AnnouncementDetails
           announcement={selectedAnnouncement}
-          closeAnnouncementDetailsWindow={() =>
-            setShowAnnouncementDetails(false)
-          }
+          closeAnnouncementDetailsWindow={() => {
+            setShowAnnouncementDetails(false);
+          }}
+          onAnnouncementStatusChanged={(message: string) => {
+            setToasterMessage(message);
+            setToasterType("success");
+            setShowToaster(true);
+            fetchAnnouncements();
+          }}
         />
       )}
 

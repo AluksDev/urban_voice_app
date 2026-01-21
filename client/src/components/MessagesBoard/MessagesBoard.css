@@ -51,6 +51,11 @@ article {
 .message-details-container span {
   font-size: 0.6rem;
   font-family: "Roboto", sans-serif;
+  font-weight: bold;
+}
+
+.message-details-container span:nth-child(2) {
+  margin: 0 0.5rem;
 }
 
 article p {

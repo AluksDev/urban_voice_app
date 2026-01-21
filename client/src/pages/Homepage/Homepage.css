@@ -2,7 +2,7 @@ main {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  height: 80%;
+  min-height: 80vh;
   padding: 2rem 0;
 }
 

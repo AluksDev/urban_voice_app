@@ -21,7 +21,7 @@ exports.allUsers = async (req, res) => {
     if (req.user.role !== 'admin') {
         return res.status(403).json({ success: false, code: "FORBIDDEN" });
     }
-    const [users] = await req.db.query("SELECT id, name, surname, email, role, photo_url, created_at, updated_at FROM users");
+    const [users] = await req.db.query("SELECT id, name, surname, email, role, photo_url, created_at, updated_at, status FROM users");
     if (!users) {
         return res.status(500).json({ success: false, code: "DB_ERROR" });
     }

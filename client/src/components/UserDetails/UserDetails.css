@@ -1,0 +1,107 @@
+.user-details-container {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  transition: all 0.2s ease-in-out;
+}
+
+.user-details-inner {
+  border: 1px solid #00b65c;
+  border-radius: 20px;
+  background-color: hsla(216, 75%, 43%, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 1rem;
+  color: white;
+  gap: 2rem;
+}
+
+.user-details-close-icon-container {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.user-details-close-icon-container:hover {
+  transform: scale(1.1);
+}
+
+.user-details-close-icon-container:active {
+  transform: scale(1);
+}
+
+.user-details-close-icon-container img {
+  max-width: 100%;
+}
+
+.user-details-left,
+.user-details-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-details-info-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  gap: 1rem;
+}
+
+.user-details-left > div,
+.user-details-right > div {
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.user-details-left > div span,
+.user-details-right > div span {
+  font-size: 0.8rem;
+}
+
+.user-details-left > div p,
+.user-details-right > div p {
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+}
+
+.user-details-actions-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-details-actions-container button {
+  color: white;
+  outline: none;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin: 0 1rem;
+  background-color: #00b65c;
+}
+
+.user-details-actions-container button:hover {
+  background-color: #00d96e;
+}

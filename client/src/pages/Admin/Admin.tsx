@@ -6,6 +6,7 @@ import Toaster from "../../components/Toaster/Toaster";
 import NewAnnouncement from "../../components/NewAnnouncement/NewAnnouncement";
 import { apiRequest } from "../../api";
 import AnnouncementDetails from "../../components/AnnouncementDetails/AnnouncementDetails";
+import UserDetails from "../../components/UserDetails/UserDetails";
 import { t } from "i18next";
 
 interface Report {
@@ -30,6 +31,7 @@ interface User {
   photo_url: string;
   created_at: string;
   updated_at: string;
+  status: string;
 }
 
 interface Announcement {
@@ -68,6 +70,11 @@ const Admin = () => {
     useState<Announcement | null>(null);
   const [showAnnouncementDetails, setShowAnnouncementDetails] =
     useState<boolean>(false);
+  const [userSearch, setUserSearch] = useState<string>("");
+  const [filteredUsers, setFilteredUsers] = useState<User[] | null>(null);
+  const [searchUserStatus, setSearchUserStatus] = useState<string>("");
+  const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const auth = useAuth();
 
@@ -107,6 +114,7 @@ const Admin = () => {
       credentials: "include",
     });
     setUsers(body.users);
+    setFilteredUsers(body.users);
   };
 
   const fetchAnnouncements = async () => {
@@ -170,6 +178,47 @@ const Admin = () => {
       );
     } else {
       setFilteredAnnouncements(announcements);
+    }
+  };
+
+  const filterUsers = () => {
+    if (searchUserStatus == "") {
+      const filteredUsers = users?.filter((user) => {
+        const fullName = `${user.name} ${user.surname}`.toLowerCase();
+        return (
+          fullName.includes(userSearch.toLowerCase()) ||
+          user.email.toLowerCase().includes(userSearch.toLowerCase())
+        );
+      });
+      setFilteredUsers(filteredUsers || null);
+    } else {
+      switch (searchUserStatus) {
+        case "active":
+          const filteredUsersActive = users?.filter((user) => {
+            const fullName = `${user.name} ${user.surname}`.toLowerCase();
+            return (
+              (fullName.includes(userSearch.toLowerCase()) ||
+                user.email.toLowerCase().includes(userSearch.toLowerCase())) &&
+              user.status === "active"
+            );
+          });
+          setFilteredUsers(filteredUsersActive || null);
+          break;
+        case "inactive":
+          const filteredUsersInactive = users?.filter((user) => {
+            const fullName = `${user.name} ${user.surname}`.toLowerCase();
+            return (
+              (fullName.includes(userSearch.toLowerCase()) ||
+                user.email.toLowerCase().includes(userSearch.toLowerCase())) &&
+              user.status === "inactive"
+            );
+          });
+          setFilteredUsers(filteredUsersInactive || null);
+          break;
+        default:
+          setFilteredUsers(users);
+          break;
+      }
     }
   };
 
@@ -241,6 +290,12 @@ const Admin = () => {
             setShowToaster(true);
             fetchAnnouncements();
           }}
+        />
+      )}
+      {showUserDetails && (
+        <UserDetails
+          user={selectedUser}
+          closeUserDetailsWindow={() => setShowUserDetails(false)}
         />
       )}
 
@@ -526,8 +581,37 @@ const Admin = () => {
           {isUsers && (
             <div>
               <h4>Users</h4>
+              <div className="user-announcements-filter-container">
+                <div>
+                  <span>Search for name, surname or email</span>
+                  <input
+                    type="text"
+                    defaultValue={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <span>Status</span>
+                  <select onChange={(e) => setSearchUserStatus(e.target.value)}>
+                    <option value="">-- Select Status --</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+                <div>
+                  <button onClick={filterUsers}>Filter</button>
+                </div>
+              </div>
+              <div className="user-announcements-sort-container">
+                <span>Sort</span>
+                <select defaultValue="">
+                  <option disabled>-- Select Sort --</option>
+                  <option value="">Name A-Z</option>
+                  <option value="">Name Z-A</option>
+                </select>
+              </div>
               <div className="admin-table-container">
-                {users && users.length > 0 ? (
+                {filteredUsers && filteredUsers.length > 0 ? (
                   <table>
                     <thead>
                       <tr>
@@ -536,17 +620,25 @@ const Admin = () => {
                         <th>Surname</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {users.map((user) => {
+                      {filteredUsers.map((user) => {
                         return (
-                          <tr key={user.id}>
+                          <tr
+                            key={user.id}
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setShowUserDetails(true);
+                            }}
+                          >
                             <td>{user.id}</td>
                             <td>{user.name}</td>
                             <td>{user.surname}</td>
                             <td>{user.email}</td>
                             <td>{user.role}</td>
+                            <td>{user.status}</td>
                           </tr>
                         );
                       })}

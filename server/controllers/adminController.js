@@ -25,6 +25,9 @@ exports.allUsers = async (req, res) => {
     if (!users) {
         return res.status(500).json({ success: false, code: "DB_ERROR" });
     }
+    for (let user of users) {
+        user.photo_url = user.photo_url ? `${req.protocol}://${req.get("host")}${user.photo_url}` : null;
+    }
     return res.status(200).json({ success: true, users });
 }
 
@@ -115,3 +118,34 @@ exports.changeAnnouncementStatus = async (req, res) => {
         }
     };
 }
+
+exports.updateUserStatus = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, code: "NOT_AUTHENTICATED" });
+    }
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, code: "FORBIDDEN" });
+    }
+    const userId = req.params.id;
+    const { status } = req.body;
+    const [result] = await req.db.query("UPDATE users SET status = ?, updated_at = NOW() WHERE id = ?", [status, userId]);
+    if (result.affectedRows === 1) {
+        return res.status(200).json({ success: true, code: "USER_STATUS_UPDATED" });
+    } else {
+        return res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+}
+exports.getUserReports = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ success: false, code: "NOT_AUTHENTICATED" });
+    }
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, code: "FORBIDDEN" });
+    }
+    const userId = req.params.id;
+    const [reports] = await req.db.query("SELECT * FROM reports WHERE user_id = ?", [userId]);
+    if (!reports) {
+        return res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+    return res.status(200).json({ success: true, reports });
+}  

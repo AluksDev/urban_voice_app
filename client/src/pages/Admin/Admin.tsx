@@ -88,12 +88,15 @@ const Admin = () => {
     switch (event.currentTarget.id) {
       case "reports":
         setIsReports(true);
+        fetchReports();
         break;
       case "announcements":
         setIsAnnouncements(true);
+        fetchAnnouncements();
         break;
       case "users":
         setIsUsers(true);
+        fetchUsers();
         break;
     }
     event.currentTarget.classList.add("active");
@@ -115,6 +118,7 @@ const Admin = () => {
     });
     setUsers(body.users);
     setFilteredUsers(body.users);
+    sortUsers("az");
   };
 
   const fetchAnnouncements = async () => {
@@ -181,6 +185,25 @@ const Admin = () => {
     }
   };
 
+  const sortUsers = (sortBy: string) => {
+    setFilteredUsers((prevUsers) => {
+      if (!prevUsers) return null;
+
+      const usersCopy = [...prevUsers];
+
+      usersCopy.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+
+        return sortBy === "az"
+          ? nameA.localeCompare(nameB)
+          : nameB.localeCompare(nameA);
+      });
+
+      return usersCopy;
+    });
+  };
+
   const filterUsers = () => {
     if (searchUserStatus == "") {
       const filteredUsers = users?.filter((user) => {
@@ -204,13 +227,13 @@ const Admin = () => {
           });
           setFilteredUsers(filteredUsersActive || null);
           break;
-        case "inactive":
+        case "suspended":
           const filteredUsersInactive = users?.filter((user) => {
             const fullName = `${user.name} ${user.surname}`.toLowerCase();
             return (
               (fullName.includes(userSearch.toLowerCase()) ||
                 user.email.toLowerCase().includes(userSearch.toLowerCase())) &&
-              user.status === "inactive"
+              user.status === "suspended"
             );
           });
           setFilteredUsers(filteredUsersInactive || null);
@@ -294,6 +317,12 @@ const Admin = () => {
       )}
       {showUserDetails && (
         <UserDetails
+          onUserStatusChange={(message: string) => {
+            setToasterMessage(message);
+            setToasterType("success");
+            setShowToaster(true);
+            fetchUsers();
+          }}
           user={selectedUser}
           closeUserDetailsWindow={() => setShowUserDetails(false)}
         />
@@ -588,6 +617,7 @@ const Admin = () => {
                     type="text"
                     defaultValue={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
+                    placeholder="Search"
                   />
                 </div>
                 <div>
@@ -595,7 +625,7 @@ const Admin = () => {
                   <select onChange={(e) => setSearchUserStatus(e.target.value)}>
                     <option value="">-- Select Status --</option>
                     <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
                   </select>
                 </div>
                 <div>
@@ -604,10 +634,12 @@ const Admin = () => {
               </div>
               <div className="user-announcements-sort-container">
                 <span>Sort</span>
-                <select defaultValue="">
-                  <option disabled>-- Select Sort --</option>
-                  <option value="">Name A-Z</option>
-                  <option value="">Name Z-A</option>
+                <select
+                  defaultValue="az"
+                  onChange={(e) => sortUsers(e.target.value)}
+                >
+                  <option value="az">Name A-Z</option>
+                  <option value="za">Name Z-A</option>
                 </select>
               </div>
               <div className="admin-table-container">

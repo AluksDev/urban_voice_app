@@ -17,13 +17,13 @@ exports.signup = async (req, res) => {
                 code: "INVALID_EMAIL_FORMAT"
             });
         }
-        if (!validator.isLength(trimmedName, { min: 1, max: 100 }) || !validator.isAlpha(trimmedName, 'en-US', { ignore: ' ' })) {
+        if (!validator.isLength(trimmedName, { min: 1, max: 100 }) || !validator.isAlpha(trimmedName, 'es-ES', { ignore: " -'." })) {
             return res.status(400).json({
                 success: false,
                 code: "INVALID_NAME_FORMAT"
             });
         }
-        if (!validator.isLength(trimmedSurname, { min: 1, max: 100 }) || !validator.isAlpha(trimmedSurname, 'en-US', { ignore: ' ' })) {
+        if (!validator.isLength(trimmedSurname, { min: 1, max: 100 }) || !validator.isAlpha(trimmedSurname, 'es-ES', { ignore: " -'." })) {
             return res.status(400).json({
                 success: false,
                 code: "INVALID_SURNAME_FORMAT"
@@ -69,7 +69,7 @@ exports.signup = async (req, res) => {
 
             res.cookie('auth_token', token, {
                 httpOnly: true,
-                secure: false, //IMPORTANT: Change to true if using HTTPS!!!!!!!!!!!!!!!!!!
+                secure: true,
                 sameSite: 'strict',
                 maxAge: 24 * 60 * 60 * 1000
             });
@@ -145,7 +145,7 @@ exports.login = async (req, res) => {
 
         res.cookie('auth_token', token, {
             httpOnly: true,
-            secure: false, //IMPORTANT: Change to true if using HTTPS!!!!!!!!!!!!!!!!!!
+            secure: true,
             sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -169,7 +169,7 @@ exports.logout = async (req, res) => {
 
     res.clearCookie('auth_token', {
         httpOnly: true,
-        secure: false, //IMPORTANT: Change to true if using HTTPS!!!!!!!!!!!!!!!!!!
+        secure: true,
         sameSite: 'strict',
         maxAge: 0
     });

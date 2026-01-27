@@ -69,7 +69,7 @@ exports.signup = async (req, res) => {
 
             res.cookie('auth_token', token, {
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: 'strict',
                 maxAge: 24 * 60 * 60 * 1000
             });
@@ -134,7 +134,8 @@ exports.login = async (req, res) => {
             surname: user.surname,
             email: user.email,
             role: user.role,
-            photo_url: `${req.protocol}://${req.get("host")}${user.photo_url}`
+            photo_url: `${req.protocol}://${req.get("host")}${user.photo_url}`,
+            status: user.status
         };
 
         const token = jwt.sign(
@@ -145,7 +146,7 @@ exports.login = async (req, res) => {
 
         res.cookie('auth_token', token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -169,7 +170,7 @@ exports.logout = async (req, res) => {
 
     res.clearCookie('auth_token', {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'strict',
         maxAge: 0
     });
@@ -180,12 +181,13 @@ exports.logout = async (req, res) => {
 exports.verify = async (req, res) => {
     try {
         if (!req.user) {
-            return res.status(401).json({ success: false, valid: false, code: 'NOT_AUTHENTICATED' });
+            return res.status(200).json({ success: true, user: req.user });
         }
-
+        if (req.user.status !== 'active') {
+            return res.status(401).json({ success: false, valid: false, code: 'ACCOUNT_SUSPENDED' });
+        }
         const user = req.user;
         user.photo_url = `${req.protocol}://${req.get("host")}${user.photo_url}`;
-
         return res.status(200).json({ success: true, user });
     } catch (err) {
         console.error('Verify error:', err);

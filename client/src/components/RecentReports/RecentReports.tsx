@@ -32,7 +32,7 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
   };
 
   const fetchLatestReports = async () => {
-    const limit = 3;
+    const limit = 5;
     try {
       const res = await fetch(`${apiUrl}/stats/reports/latest?limit=${limit}`);
       if (!res.ok) {

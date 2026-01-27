@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { apiUrl } from "../api";
+import Toaster from "../components/Toaster/Toaster";
 
 // Define the shape of your user
 type User = {
@@ -9,6 +10,7 @@ type User = {
   email: string;
   role: string;
   photo_url: string;
+  status: string;
 } | null;
 
 // Define the context type
@@ -31,9 +33,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [initializing, setInitializing] = useState<boolean>(true);
   const [justLoggedOut, setJustLoggedOut] = useState<boolean>(false);
+  const [showToaster, setShowToaster] = useState<boolean>(false);
+  const [toasterMessage, setToasterMessage] = useState<string>("");
+  const [toasterType, setToasterType] = useState<string>("success");
+  const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
 
   // Login updates all auth state
   const login = (userData: User) => {
+    if (userData?.status === "suspended") {
+      setToasterMessage("Your account has been suspended.");
+      setToasterType("error");
+      setShowToaster(true);
+      return;
+    }
     setUser(userData);
     setIsLoggedIn(true);
     setJustLoggedOut(false);
@@ -63,7 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateUser = (newUserData: Partial<User>) => {
     setUser((prevUser) =>
-      prevUser ? { ...prevUser, ...newUserData } : prevUser
+      prevUser ? { ...prevUser, ...newUserData } : prevUser,
     );
   };
 
@@ -77,17 +89,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           method: "GET",
           credentials: "include",
         });
+        const body = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok || !body.success) {
           if (!cancelled) {
             setUser(null);
             setIsLoggedIn(false);
             setJustLoggedOut(false);
+            if (body.code) {
+              setToasterMessage(body.code);
+              setToasterType("error");
+              setShowToaster(true);
+            }
           }
           return;
         }
 
-        const body = await res.json();
         if (body && body.success && body.user) {
           if (!cancelled) {
             setUser(body.user);
@@ -119,6 +136,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       cancelled = true;
     };
   }, []);
+  useEffect(() => {
+    if (showToaster) {
+      setToasterLeaving(false); // ensure visible initially
+
+      const leaveTimer = setTimeout(() => {
+        setToasterLeaving(true); // start leaving animation
+      }, 3000);
+
+      const removeTimer = setTimeout(() => {
+        setShowToaster(false); // hide completely
+        setToasterLeaving(false); // reset for next toast
+      }, 3300);
+
+      return () => {
+        clearTimeout(leaveTimer);
+        clearTimeout(removeTimer);
+      };
+    }
+  }, [showToaster]);
 
   return (
     <AuthContext.Provider
@@ -132,6 +168,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateUser,
       }}
     >
+      {showToaster && (
+        <Toaster
+          message={toasterMessage}
+          type={toasterType}
+          isLeaving={toasterLeaving}
+        />
+      )}
       {children}
     </AuthContext.Provider>
   );

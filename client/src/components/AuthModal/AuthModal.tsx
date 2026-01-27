@@ -122,8 +122,8 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
         body: JSON.stringify(loginData),
         credentials: "include",
       });
-      console.log(body);
       auth.login(body.user);
+      if (body.user.status === "suspended") return;
       onLogInSuccessful(body.user, t("authModal.messages.loginSuccess"));
       setLoginEmail("");
       setLoginPassword("");

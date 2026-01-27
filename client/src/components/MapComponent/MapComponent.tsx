@@ -52,7 +52,7 @@ const MapComponent = ({
 }: ReportMapProps) => {
   const [locations, setLocations] = useState<MapMarker[]>([]);
   const [droppedMarker, setDroppedMarker] = useState<[number, number] | null>(
-    null
+    null,
   );
   const [isMobile, setIsMobile] = useState(false);
 
@@ -180,7 +180,7 @@ const MapComponent = ({
             <span
               onClick={() =>
                 setCurrentReportIndex(
-                  (currentReportIndex - 1 + reports.length) % reports.length
+                  (currentReportIndex - 1 + reports.length) % reports.length,
                 )
               }
             >

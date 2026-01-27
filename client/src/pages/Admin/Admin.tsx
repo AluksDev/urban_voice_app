@@ -192,14 +192,19 @@ const Admin = () => {
       const usersCopy = [...prevUsers];
 
       usersCopy.sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-
-        return sortBy === "az"
-          ? nameA.localeCompare(nameB)
-          : nameB.localeCompare(nameA);
+        switch (sortBy) {
+          case "az":
+            return a.name.localeCompare(b.name);
+          case "za":
+            return b.name.localeCompare(a.name);
+          case "id":
+            return a.id - b.id;
+          case "id-reverse":
+            return b.id - a.id;
+          default:
+            return 0;
+        }
       });
-
       return usersCopy;
     });
   };
@@ -640,6 +645,8 @@ const Admin = () => {
                 >
                   <option value="az">Name A-Z</option>
                   <option value="za">Name Z-A</option>
+                  <option value="id">ID Low to High</option>
+                  <option value="id-reverse">ID High to Low</option>
                 </select>
               </div>
               <div className="admin-table-container">

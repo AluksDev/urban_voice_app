@@ -9,7 +9,8 @@ import {
 } from "react-leaflet";
 import { icon } from "leaflet";
 import "./MapComponent.css";
-import { apiUrl } from "../../api";
+import { apiUrl, apiRequest } from "../../api";
+import ReportDetails from "../ReportDetails/ReportDetails";
 
 interface ReportMapProps {
   center: [number, number];
@@ -27,20 +28,34 @@ interface RawLocationData {
   description: string;
 }
 
-interface Report {
+interface PartialReport {
+  id: number;
   title: string;
   description: string;
+}
+
+interface Report {
+  id: number;
+  user_id: number;
+  location_id: number;
+  title: string;
+  description: string;
+  category: string;
+  photo_url: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface MapMarker {
   id: number;
   latitude: number;
   longitude: number;
-  reports: Report[];
+  reports: PartialReport[];
 }
 
 type ReportPopupContentProps = {
-  reports: Report[];
+  reports: PartialReport[];
 };
 
 const MapComponent = ({
@@ -55,7 +70,8 @@ const MapComponent = ({
     null,
   );
   const [isMobile, setIsMobile] = useState(false);
-
+  const [showReportDetails, setShowReportDetails] = useState<boolean>(false);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -121,6 +137,7 @@ const MapComponent = ({
         };
       }
       locationMap[locId].reports.push({
+        id: item.id,
         title: item.title,
         description: item.description,
       });
@@ -167,8 +184,17 @@ const MapComponent = ({
     const [currentReportIndex, setCurrentReportIndex] = React.useState(0);
     const currentReport = reports[currentReportIndex];
 
+    const handlePopUpClick = async () => {
+      const data = await apiRequest(`reports/${currentReport.id}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      setSelectedReport(data.report);
+      setShowReportDetails(true);
+    };
+
     return (
-      <div>
+      <div onClick={handlePopUpClick}>
         <h4>Reports at this location:</h4>
         <div className="reports-list-container">
           <h3>{currentReport.title}</h3>
@@ -204,6 +230,12 @@ const MapComponent = ({
       id="map-container"
       style={{ position: "relative", width: "100%", height: "100%" }}
     >
+      {showReportDetails && (
+        <ReportDetails
+          report={selectedReport}
+          closeDetailsWindow={() => setShowReportDetails(false)}
+        />
+      )}
       <MapContainer
         ref={mapRef}
         center={center}

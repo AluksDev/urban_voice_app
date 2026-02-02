@@ -182,3 +182,59 @@ exports.changeReportDetails = async (req, res) => {
     }
     return res.status(200).json({ success: true, code: "REPORT_UPDATED" });
 }
+
+exports.likeReport = async (req, res) => {
+    if (!req.user) return res.status(401).json({ success: false, code: "NOT_AUTH" });
+    if (!req.params.id) return res.status(400).json({ success: false, code: "MISSING_REPORT_ID" });
+    const reportId = req.params.id;
+    const userId = req.user.id;
+    let [rows] = await req.db.query("SELECT * FROM reports WHERE id = ?", [reportId]);
+    if (rows.length === 0) {
+        return res.status(400).json({ success: false, code: "NO_USER_REPORTS" });
+    }
+    const [like] = await req.db.query(
+        "SELECT 1 FROM report_upvotes WHERE user_id = ? AND report_id = ?",
+        [userId, reportId]
+    );
+
+    if (like.length > 0) {
+        await req.db.query(
+            "DELETE FROM report_upvotes WHERE user_id = ? AND report_id = ?",
+            [userId, reportId]
+        );
+        return res.status(200).json({ success: true, code: "LIKE_REMOVED" });
+    } else {
+        await req.db.query(
+            "INSERT INTO report_upvotes (user_id, report_id, created_at) VALUES (?, ?, NOW())",
+            [userId, reportId]
+        );
+        return res.status(200).json({ success: true, code: "LIKE_ADDED" });
+    }
+}
+
+exports.checkLike = async (req, res) => {
+    if (!req.user) return res.status(401).json({ success: false, code: "NOT_AUTH" });
+    if (!req.params.id) return res.status(400).json({ success: false, code: "MISSING_REPORT_ID" });
+    const reportId = req.params.id;
+    const userId = req.user.id;
+    const [like] = await req.db.query(
+        "SELECT 1 FROM report_upvotes WHERE user_id = ? AND report_id = ?",
+        [userId, reportId]
+    );
+    if (like.length > 0) {
+        return res.status(200).json({ success: true, isLiked: true });
+    } else {
+        return res.status(200).json({ success: true, isLiked: false });
+    }
+}
+
+exports.singleReportDetails = async (req, res) => {
+    if (!req.user) return res.status(401).json({ success: false, code: "NOT_AUTH" });
+    if (!req.params.id) return res.status(400).json({ success: false, code: "MISSING_REPORT_ID" });
+    const reportId = req.params.id;
+    let [rows] = await req.db.query("SELECT * FROM reports WHERE id = ?", [reportId]);
+    if (rows.length === 0) {
+        return res.status(400).json({ success: false, code: "NO_USER_REPORTS" });
+    }
+    return res.status(200).json({ success: true, report: rows[0] });
+}

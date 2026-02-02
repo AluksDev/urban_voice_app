@@ -5,6 +5,7 @@ import Toaster from "../Toaster/Toaster";
 import { useTranslation } from "react-i18next";
 import { apiUrl } from "../../api";
 import { useAuth } from "../../context/AuthContext";
+import { apiRequest } from "../../api";
 
 interface Report {
   id: number;
@@ -50,6 +51,7 @@ const ReportDetails = ({
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [newCoords, setNewCoords] = useState<[number, number]>([0, 0]);
+  const [isLike, setIsLike] = useState<boolean>(false);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const cameraRefInput = useRef<HTMLInputElement>(null);
   const deviceRefInput = useRef<HTMLInputElement>(null);
@@ -170,6 +172,45 @@ const ReportDetails = ({
     }
   };
 
+  const handleLikeReport = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    reportId: number | undefined,
+  ) => {
+    e.preventDefault();
+    try {
+      const data = await apiRequest(`reports/${reportId}/like`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (data) {
+        setToasterMessage(data.code);
+        setToasterType("success");
+        setIsLike(data.code === "LIKE_ADDED" ? true : false);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const checkReportLike = async () => {
+    try {
+      const data = await apiRequest(`reports/${report?.id}/like`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (data) {
+        setIsLike(data.isLiked);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!report) return;
+    checkReportLike();
+  }, []);
+
   useEffect(() => {
     if (!report?.location_id) return;
     getReportLocation();
@@ -200,7 +241,6 @@ const ReportDetails = ({
           isLeaving={toasterLeaving}
         />
       )}
-
       <div
         className="report-details-inner"
         onClick={(e) => e.stopPropagation()}
@@ -225,7 +265,10 @@ const ReportDetails = ({
           onSubmit={handleDetailsChange}
         >
           <div>
-            <h3>Edit Report #{report?.id}</h3>
+            <h3>
+              {report?.user_id === auth.user?.id ? "Edit" : ""} Report #
+              {report?.id}
+            </h3>
             {isAdmin && <h4>Submitted by user ID: {report?.user_id}</h4>}
           </div>
           <div>
@@ -235,7 +278,9 @@ const ReportDetails = ({
                 <input
                   type="text"
                   value={newTitle}
-                  disabled={!isPending || isAdmin}
+                  disabled={
+                    !isPending || isAdmin || report?.user_id !== auth.user?.id
+                  }
                   onChange={(e) => setNewTitle(e.target.value)}
                   required
                 />
@@ -246,7 +291,9 @@ const ReportDetails = ({
                 <select
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  disabled={!isPending || isAdmin}
+                  disabled={
+                    !isPending || isAdmin || report?.user_id !== auth.user?.id
+                  }
                   required
                 >
                   {categories.map((cat) => (
@@ -262,7 +309,9 @@ const ReportDetails = ({
                 <textarea
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  disabled={!isPending || isAdmin}
+                  disabled={
+                    !isPending || isAdmin || report?.user_id !== auth.user?.id
+                  }
                   required
                 />
               </div>
@@ -275,7 +324,7 @@ const ReportDetails = ({
                   />
                 </div>
                 {isPending ||
-                  (!isAdmin && (
+                  (!isAdmin && report?.user_id === auth.user?.id && (
                     <>
                       <button
                         type="button"
@@ -313,7 +362,11 @@ const ReportDetails = ({
               <div className="user-details-map-container">
                 <MapComponent
                   center={locationCoordinates}
-                  isPinDraggable={isAdmin ? false : isPending}
+                  isPinDraggable={
+                    isAdmin
+                      ? false
+                      : isPending && report?.user_id === auth.user?.id
+                  }
                   singleMarker
                   zoom={17}
                   onMarkerChange={(coords) =>
@@ -379,6 +432,22 @@ const ReportDetails = ({
                     {t("reportDetails.saveChanges")}
                   </button>
                 </div>
+              ) : report?.user_id !== auth.user?.id ? (
+                isLike ? (
+                  <button
+                    type="submit"
+                    onClick={(e) => handleLikeReport(e, report?.id)}
+                  >
+                    Unlike
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    onClick={(e) => handleLikeReport(e, report?.id)}
+                  >
+                    Like
+                  </button>
+                )
               ) : (
                 <p>Only pending reports can be edited</p>
               )

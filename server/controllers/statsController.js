@@ -25,7 +25,10 @@ exports.getLatestReports = async (req, res) => {
                 message: "Invalid limit"
             })
         }
-        let [result] = await req.db.query("SELECT * FROM reports ORDER BY created_at DESC LIMIT ?", [limit]);
+        let [result] = await req.db.query(
+            "SELECT * FROM reports WHERE status = 'approved' ORDER BY created_at DESC LIMIT ?",
+            [limit]
+        );
         if (result.length == 0) {
             return res.status(400).json({
                 success: false,

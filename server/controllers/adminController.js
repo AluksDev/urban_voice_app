@@ -7,7 +7,7 @@ exports.allReports = async (req, res) => {
     if (req.user.role !== 'admin') {
         return res.status(403).json({ success: false, code: "FORBIDDEN" });
     }
-    const [reports] = await req.db.query("SELECT * from reports");
+    const [reports] = await req.db.query("SELECT r.*, COUNT(ru.report_id) as likes from reports r LEFT JOIN report_upvotes ru ON r.id = ru.report_id GROUP BY r.id");
     if (!reports) {
         return res.status(500).json({ success: false, code: "DB_ERROR" });
     }
@@ -72,13 +72,48 @@ exports.newAnnouncement = async (req, res) => {
     }
     const { title, content, publish } = req.body;
     const userId = req.user.id;
-    const [result] = await req.db.query("INSERT INTO announcements (title, content, is_published, created_by, updated_at) VALUES (?, ?, ?, ?, NOW())", [title, content, publish, userId]);
-    if (result.affectedRows === 1) {
+    const connection = await req.db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        const [announcementResult] = await connection.query(
+            "INSERT INTO announcements (title, content, is_published, created_by, updated_at) VALUES (?, ?, ?, ?, NOW())",
+            [title, content, publish, userId]
+        );
+
+        const announcementId = announcementResult.insertId;
+
+        if (publish) {
+            const [notificationResult] = await connection.query(
+                "INSERT INTO notifications (type, reference_id, message, created_at) VALUES (?, ?, ?, NOW())",
+                ['announcement', announcementId, 'New announcement published!']
+            );
+
+            const notificationId = notificationResult.insertId;
+
+            const [users] = await connection.query("SELECT id FROM users");
+
+            if (users.length > 0) {
+                const values = users.map(user => [
+                    user.id,
+                    notificationId,
+                    0
+                ]);
+                await connection.query(
+                    "INSERT INTO notification_user (user_id, notification_id, is_read) VALUES ?",
+                    [values]
+                );
+            }
+        }
+        await connection.commit();
         return res.status(200).json({ success: true, code: "ANNOUNCEMENT_CREATED" });
-    } else {
+    } catch (err) {
+        await connection.rollback();
         return res.status(500).json({ success: false, code: "DB_ERROR" });
+    } finally {
+        connection.release();
     }
-}
+};
 
 exports.changeAnnouncementStatus = async (req, res) => {
     if (!req.user) {
@@ -87,37 +122,90 @@ exports.changeAnnouncementStatus = async (req, res) => {
     if (req.user.role !== 'admin') {
         return res.status(403).json({ success: false, code: "FORBIDDEN" });
     }
+
     const announcementId = req.params.id;
-    if (req.params.action === 'publish') {
-        const [result] = await req.db.query("UPDATE announcements SET is_published = 1, updated_at = NOW() WHERE id = ?", [announcementId]);
-        if (result.affectedRows === 1) {
-            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_PUBLISHED" });
-        } else {
-            return res.status(500).json({ success: false, code: "DB_ERROR" });
+    const action = req.params.action;
+
+    if (action === 'publish') {
+        const connection = await req.db.getConnection();
+        try {
+            await connection.beginTransaction();
+            const [result] = await connection.query(
+                "UPDATE announcements SET is_published = 1, updated_at = NOW() WHERE id = ? AND is_published = 0",
+                [announcementId]
+            );
+            if (result.affectedRows !== 1) {
+                await connection.rollback();
+                return res.status(400).json({
+                    success: false,
+                    code: "ALREADY_PUBLISHED"
+                });
+            }
+            const [notification] = await connection.query(
+                "INSERT INTO notifications (type, reference_id, message, created_at) VALUES (?, ?, ?, NOW())",
+                ['announcement', announcementId, 'New announcement published!']
+            );
+            const notificationId = notification.insertId;
+            const [users] = await connection.query("SELECT id FROM users");
+            if (users.length > 0) {
+                const values = users.map(user => [
+                    user.id,
+                    notificationId,
+                    0
+                ]);
+                await connection.query(
+                    "INSERT INTO notification_user (user_id, notification_id, is_read) VALUES ?",
+                    [values]
+                );
+            }
+            await connection.commit();
+            return res.status(200).json({
+                success: true,
+                code: "ANNOUNCEMENT_PUBLISHED"
+            });
+        } catch (err) {
+            await connection.rollback();
+            return res.status(500).json({
+                success: false,
+                code: "DB_ERROR"
+            });
+        } finally {
+            connection.release();
         }
-    } else if (req.params.action === 'unpublish') {
-        const [result] = await req.db.query("UPDATE announcements SET is_published = 0, updated_at = NOW() WHERE id = ?", [announcementId]);
-        if (result.affectedRows === 1) {
-            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_UNPUBLISHED" });
-        } else {
-            return res.status(500).json({ success: false, code: "DB_ERROR" });
-        }
-    } else if (req.params.action === 'archive') {
-        const [result] = await req.db.query("UPDATE announcements SET archived_at = NOW(), updated_at = NOW() WHERE id = ?", [announcementId]);
-        if (result.affectedRows === 1) {
-            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_ARCHIVED" });
-        } else {
-            return res.status(500).json({ success: false, code: "DB_ERROR" });
-        }
-    } else if (req.params.action === 'restore') {
-        const [result] = await req.db.query("UPDATE announcements SET archived_at = NULL, updated_at = NOW(), is_published = 0 WHERE id = ?", [announcementId]);
-        if (result.affectedRows === 1) {
-            return res.status(200).json({ success: true, code: "ANNOUNCEMENT_RESTORED" });
-        } else {
-            return res.status(500).json({ success: false, code: "DB_ERROR" });
-        }
-    };
-}
+    }
+
+    if (action === 'unpublish') {
+        const [result] = await req.db.query(
+            "UPDATE announcements SET is_published = 0, updated_at = NOW() WHERE id = ?",
+            [announcementId]
+        );
+        return result.affectedRows === 1
+            ? res.status(200).json({ success: true, code: "ANNOUNCEMENT_UNPUBLISHED" })
+            : res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+
+    if (action === 'archive') {
+        const [result] = await req.db.query(
+            "UPDATE announcements SET archived_at = NOW(), updated_at = NOW() WHERE id = ?",
+            [announcementId]
+        );
+        return result.affectedRows === 1
+            ? res.status(200).json({ success: true, code: "ANNOUNCEMENT_ARCHIVED" })
+            : res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+
+    if (action === 'restore') {
+        const [result] = await req.db.query(
+            "UPDATE announcements SET archived_at = NULL, updated_at = NOW(), is_published = 0 WHERE id = ?",
+            [announcementId]
+        );
+        return result.affectedRows === 1
+            ? res.status(200).json({ success: true, code: "ANNOUNCEMENT_RESTORED" })
+            : res.status(500).json({ success: false, code: "DB_ERROR" });
+    }
+
+    return res.status(400).json({ success: false, code: "INVALID_ACTION" });
+};
 
 exports.updateUserStatus = async (req, res) => {
     if (!req.user) {

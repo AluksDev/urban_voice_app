@@ -4,7 +4,7 @@ export const apiUrl =
 
 export const apiRequest = async (
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ) => {
   try {
     const res = await fetch(`${apiUrl}/${endpoint}`, options);
@@ -14,7 +14,6 @@ export const apiRequest = async (
     }
     return body;
   } catch (e) {
-    console.error(e);
     throw e;
   }
 };

@@ -7,7 +7,6 @@ import NewAnnouncement from "../../components/NewAnnouncement/NewAnnouncement";
 import { apiRequest } from "../../api";
 import AnnouncementDetails from "../../components/AnnouncementDetails/AnnouncementDetails";
 import UserDetails from "../../components/UserDetails/UserDetails";
-import { t } from "i18next";
 
 interface Report {
   id: number;
@@ -20,6 +19,7 @@ interface Report {
   photo_url: string;
   created_at: string;
   updated_at: string;
+  likes: number;
 }
 
 interface User {
@@ -132,9 +132,17 @@ const Admin = () => {
 
   const filterReports = (status: string) => {
     if (status !== "all") {
-      setFilteredReports(
-        reports?.filter((report) => report.status === status) || null,
-      );
+      if (status === "likes") {
+        setFilteredReports(
+          reports
+            ?.filter((report) => report.likes > 0)
+            .sort((a, b) => b.likes - a.likes) || null,
+        );
+      } else {
+        setFilteredReports(
+          reports?.filter((report) => report.status === status) || null,
+        );
+      }
     } else {
       setFilteredReports(reports);
     }
@@ -481,6 +489,17 @@ const Admin = () => {
                     <span>{reports?.length}</span>
                   </div>
                 </div>
+                <div
+                  className="admin-stat-box"
+                  onClick={() => filterReports("likes")}
+                >
+                  <div>
+                    <span>Most Likes</span>
+                    <span className="admin-stat-box-icon-container">
+                      <img src="images/thumb-up-icon.svg" alt="" />
+                    </span>
+                  </div>
+                </div>
               </div>
               <div className="admin-table-container">
                 {filteredReports && filteredReports.length > 0 ? (
@@ -494,6 +513,7 @@ const Admin = () => {
                         <th>Description</th>
                         <th>Category</th>
                         <th>Status</th>
+                        <th>Likes</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -513,6 +533,7 @@ const Admin = () => {
                             <td>{report.description}</td>
                             <td>{report.category}</td>
                             <td>{report.status}</td>
+                            <td>{report.likes}</td>
                           </tr>
                         );
                       })}

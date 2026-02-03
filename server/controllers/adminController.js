@@ -40,12 +40,54 @@ exports.updateStatus = async (req, res) => {
     }
     const reportId = req.params.id;
     const { status } = req.body;
-    const [result] = await req.db.query("UPDATE reports SET status = ? WHERE id = ?", [status, reportId]);
-    if (result.affectedRows === 1) {
-        const [report] = await req.db.query("SELECT * FROM reports WHERE id = ?", [reportId]);
-        return res.status(200).json({ success: true, code: "STATUS_UPDATED", report: report[0] });
-    } else {
+    const connection = await req.db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // 1️⃣ Update report status
+        const [updateResult] = await connection.query(
+            "UPDATE reports SET status = ? WHERE id = ?",
+            [status, reportId]
+        );
+
+        if (updateResult.affectedRows !== 1) {
+            await connection.rollback();
+            return res.status(400).json({ success: false, code: "REPORT_NOT_FOUND" });
+        }
+
+        // 2️⃣ Get report to find the owner
+        const [reportRows] = await connection.query(
+            "SELECT * FROM reports WHERE id = ?",
+            [reportId]
+        );
+
+        const report = reportRows[0];
+        const userId = report.user_id;
+
+        // 3️⃣ Create notification
+        const [notification] = await connection.query(
+            "INSERT INTO notifications (type, reference_id, message, created_at) VALUES (?, ?, ?, NOW())",
+            ['report', reportId, 'Your report status has been updated!']
+        );
+
+        const notificationId = notification.insertId;
+
+        // 4️⃣ Link notification to the report owner
+        await connection.query(
+            "INSERT INTO notification_user (user_id, notification_id, is_read) VALUES (?, ?, 0)",
+            [userId, notificationId]
+        );
+
+        // 5️⃣ Commit all
+        await connection.commit();
+
+        return res.status(200).json({ success: true, code: "STATUS_UPDATED", report });
+
+    } catch (err) {
+        await connection.rollback();
         return res.status(500).json({ success: false, code: "DB_ERROR" });
+    } finally {
+        connection.release();
     }
 }
 

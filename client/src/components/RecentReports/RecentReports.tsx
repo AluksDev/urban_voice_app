@@ -34,6 +34,18 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
       .querySelector(".recent-reports-expandable")
       ?.classList.toggle("show");
     document.getElementById("latestReportTitle")?.classList.toggle("active");
+    const container = document.querySelector(
+      ".recent-reports-container",
+    ) as HTMLElement;
+    if (
+      document
+        .querySelector(".recent-reports-expandable")
+        ?.classList.contains("show")
+    ) {
+      container.style.borderRadius = "20px 20px 0 0";
+    } else {
+      container.style.borderRadius = "20px";
+    }
   };
 
   const fetchLatestReports = async () => {

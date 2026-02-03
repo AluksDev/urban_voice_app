@@ -128,3 +128,25 @@ exports.changeProfilePhoto = async (req, res) => {
         })
     }
 }
+
+exports.fetchNotifications = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: "Not authenticated"
+        })
+    }
+    const userId = req.user.id;
+    const [notifications] = await req.db.query("SELECT n.*, nu.is_read FROM notifications n LEFT JOIN notification_user nu ON n.id = nu.notification_id Where nu.user_id = ?; ", [userId]);
+    if (notifications.length > 0) {
+        return res.status(200).json({
+            success: true,
+            notifications
+        })
+    } else {
+        return res.status(200).json({
+            success: true,
+            notifications: []
+        })
+    }
+}

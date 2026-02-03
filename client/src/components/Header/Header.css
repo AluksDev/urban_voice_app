@@ -93,7 +93,7 @@ header {
 }
 
 .header-right-container {
-  width: 25%;
+  min-width: 25%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -146,15 +146,100 @@ header {
 }
 
 .night-mode-container,
-.language-select-container {
+.language-select-container,
+.notifications-container {
   width: 1.5rem;
   height: 1.5rem;
   cursor: pointer;
 }
 
 .night-mode-container img,
-.language-select-container img {
+.language-select-container img,
+.notifications-container img {
   max-width: 100%;
+}
+
+.notifications-container {
+  position: relative;
+  cursor: auto;
+}
+.notifications-container img {
+  cursor: pointer;
+}
+
+.notification-counter {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  background-color: red;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notifications-box {
+  position: absolute;
+  transform-origin: top;
+  transform: scaleY(0);
+  top: 100%;
+  right: 0;
+  background-color: white;
+  color: #2a2a2a;
+  overflow: hidden;
+  z-index: 1000;
+  transition: all 0.2s ease-in-out;
+  border-radius: 20px;
+  padding: 0.5rem;
+}
+
+.notifications-box.show {
+  transform: scaleY(1);
+}
+.notifications-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+}
+.notifications-box-header > span:nth-child(1) {
+  font-weight: bold;
+}
+.notifications-box-header > span:nth-child(2) {
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #667eea;
+}
+
+.single-notification {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem 0;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.single-notification:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.single-notification > span:nth-child(2) {
+  white-space: nowrap;
+  font-family: "Roboto", sans-serif;
+}
+
+.single-notification > span:nth-child(1) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
 }
 
 .language-select-container {

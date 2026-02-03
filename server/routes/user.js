@@ -4,7 +4,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const multer = require('multer')
 const path = require("path");
 
-const { changePassword, changeDetails, changeProfilePhoto } = require("../controllers/userController");
+const { changePassword, changeDetails, changeProfilePhoto, fetchNotifications } = require("../controllers/userController");
 
 //This allows adding exension to the file name
 const storage = multer.diskStorage({
@@ -33,5 +33,6 @@ const upload = multer({ storage, fileFilter });
 router.patch("/password", authMiddleware, changePassword);
 router.patch("/details", authMiddleware, changeDetails);
 router.patch("/photo", authMiddleware, upload.single('photo'), changeProfilePhoto);
+router.get("/notifications", authMiddleware, fetchNotifications);
 
 module.exports = router;

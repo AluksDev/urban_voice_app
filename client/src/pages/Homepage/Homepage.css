@@ -2,7 +2,7 @@ main {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  min-height: 80vh;
+  height: 80vh;
   padding: 2rem 0;
 }
 
@@ -10,13 +10,13 @@ main {
   width: 60%;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   flex-direction: column;
 }
 
 .left-container {
-  flex: 1;
+  height: 100%;
 }
 
 /* Tablet */

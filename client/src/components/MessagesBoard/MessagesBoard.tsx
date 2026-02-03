@@ -31,20 +31,24 @@ const MessagesBoard = () => {
   return (
     <section className="messages-board-container">
       <h3>Board</h3>
-      {announcements.length > 0 ? (
-        announcements.map((announcement) => (
-          <article key={announcement.id}>
-            <div className="message-details-container">
-              <span>{announcement.title}</span>
-              <span>//</span>
-              <span>{new Date(announcement.updated_at).toLocaleString()}</span>
-            </div>
-            <p>{announcement.content}</p>
-          </article>
-        ))
-      ) : (
-        <p>No messages</p>
-      )}
+      <div className="messages-scroll-container">
+        {announcements.length > 0 ? (
+          announcements.map((announcement) => (
+            <article key={announcement.id}>
+              <div className="message-details-container">
+                <span>{announcement.title}</span>
+                <span>//</span>
+                <span>
+                  {new Date(announcement.updated_at).toLocaleString()}
+                </span>
+              </div>
+              <p>{announcement.content}</p>
+            </article>
+          ))
+        ) : (
+          <p>No messages</p>
+        )}
+      </div>
     </section>
   );
 };

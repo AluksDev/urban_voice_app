@@ -2,7 +2,8 @@ import { NavLink } from "react-router-dom";
 import "./Header.css";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNotifications } from "../../context/NotificationsProvider";
 
 type HeaderProps = {
   onOpenModal: () => void;
@@ -18,6 +19,8 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     return match ? decodeURIComponent(match[2]) : "en";
   };
   const [selectedLang, setSelectedLang] = useState(getLangFromCookie());
+  const { notifications, unreadCount, refreshNotifications } =
+    useNotifications();
   const languages = [
     { code: "en", icon: "images/english-language-icon.png", label: "English" },
     { code: "es", icon: "images/spain-language-icon.png", label: "Español" },
@@ -35,6 +38,32 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     expires.setFullYear(expires.getFullYear() + 1);
     document.cookie = `lang=${lang};expires=${expires.toUTCString()};path=/`;
   };
+
+  const showNotificationsBox = () => {
+    document.querySelector(".notifications-box")?.classList.toggle("show");
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case "report":
+        return "/images/notification-report-icon.svg";
+      case "announcement":
+        return "/images/notification-announcement-icon.svg";
+      default:
+        return "/images/notification-announcement-icon.svg";
+    }
+  };
+
+  useEffect(() => {
+    if (auth.user) {
+      refreshNotifications();
+    }
+  }, [auth.user]);
+
+  useEffect(() => {
+    console.log("Notifications: ", notifications);
+    console.log("Notifications unread: ", unreadCount);
+  }, [notifications, unreadCount]);
   return (
     <header>
       <div className="header-first-line-container">
@@ -94,6 +123,37 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
               )}
             </div>
             <div className="header-options-container">
+              <span
+                className="notifications-container"
+                onClick={showNotificationsBox}
+              >
+                <span className="notification-counter">
+                  {unreadCount > 0 && unreadCount}
+                </span>
+                <img src="images/notification-icon.svg" alt="" />
+                <div className="notifications-box">
+                  <div className="notifications-box-header">
+                    <span>Notifications</span>
+                    <span>Mark all as read</span>
+                  </div>
+                  <div className="notifications-box-content">
+                    {notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="single-notification"
+                      >
+                        <span>
+                          <img
+                            src={getNotificationIcon(notification.type)}
+                            alt=""
+                          />
+                        </span>
+                        <span>{notification.message}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </span>
               <span className="night-mode-container">
                 <img src="images/night-mode-icon.png" alt="" />
               </span>
@@ -117,7 +177,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                         >
                           <img src={lang.icon} alt={lang.label} />
                         </span>
-                      )
+                      ),
                   )}
                 </div>
               </span>

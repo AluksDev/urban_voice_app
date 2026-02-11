@@ -137,7 +137,7 @@ exports.fetchNotifications = async (req, res) => {
         })
     }
     const userId = req.user.id;
-    const [notifications] = await req.db.query("SELECT n.*, nu.is_read FROM notifications n LEFT JOIN notification_user nu ON n.id = nu.notification_id Where nu.user_id = ?; ", [userId]);
+    const [notifications] = await req.db.query("SELECT n.* FROM notifications n INNER JOIN notification_user nu ON n.id = nu.notification_id WHERE nu.user_id = ? AND nu.is_read = 0 ORDER BY n.created_at DESC", [userId]);
     if (notifications.length > 0) {
         return res.status(200).json({
             success: true,
@@ -150,3 +150,47 @@ exports.fetchNotifications = async (req, res) => {
         })
     }
 }
+
+exports.readNotification = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: "Not authenticated"
+        });
+    }
+
+    const userId = req.user.id;
+    const notificationId = req.params.id;
+
+    try {
+        const [rows] = await req.db.query(
+            "SELECT is_read FROM notification_user WHERE user_id = ? AND notification_id = ?",
+            [userId, notificationId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Notification not found"
+            });
+        }
+
+        if (rows[0].is_read === 0) {
+            await req.db.query(
+                "UPDATE notification_user SET is_read = 1 WHERE user_id = ? AND notification_id = ?",
+                [userId, notificationId]
+            );
+        }
+
+        return res.json({
+            success: true,
+            code: "Notification marked as read"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            code: "Unable to mark notification as read"
+        });
+    }
+};

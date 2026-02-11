@@ -19,7 +19,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     return match ? decodeURIComponent(match[2]) : "en";
   };
   const [selectedLang, setSelectedLang] = useState(getLangFromCookie());
-  const { notifications, unreadCount, refreshNotifications } =
+  const { notifications, unreadCount, refreshNotifications, markAsRead } =
     useNotifications();
   const languages = [
     { code: "en", icon: "images/english-language-icon.png", label: "English" },
@@ -60,10 +60,6 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     }
   }, [auth.user]);
 
-  useEffect(() => {
-    console.log("Notifications: ", notifications);
-    console.log("Notifications unread: ", unreadCount);
-  }, [notifications, unreadCount]);
   return (
     <header>
       <div className="header-first-line-container">
@@ -127,20 +123,32 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                 className="notifications-container"
                 onClick={showNotificationsBox}
               >
-                <span className="notification-counter">
+                <span
+                  className={`notification-counter ${unreadCount > 0 ? "active" : ""}`}
+                >
                   {unreadCount > 0 && unreadCount}
                 </span>
                 <img src="images/notification-icon.svg" alt="" />
-                <div className="notifications-box">
+                <div
+                  className="notifications-box"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="notifications-box-header">
-                    <span>Notifications</span>
-                    <span>Mark all as read</span>
+                    {unreadCount > 0 ? (
+                      <>
+                        <span>Notifications</span>
+                        <span>Mark all as read</span>
+                      </>
+                    ) : (
+                      <span>No notifications</span>
+                    )}
                   </div>
                   <div className="notifications-box-content">
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
                         className="single-notification"
+                        onClick={() => markAsRead(notification.id)}
                       >
                         <span>
                           <img
@@ -154,9 +162,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                   </div>
                 </div>
               </span>
-              <span className="night-mode-container">
-                <img src="images/night-mode-icon.png" alt="" />
-              </span>
+
               <span
                 className="language-select-container"
                 onClick={() => {

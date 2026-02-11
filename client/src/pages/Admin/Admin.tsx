@@ -149,7 +149,7 @@ const Admin = () => {
   };
 
   const changeReportStatus = async (reportStatus: string) => {
-    const body = await apiRequest(`admin/reports/${selectedReport?.id}`, {
+    await apiRequest(`admin/reports/${selectedReport?.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { apiRequest } from "../api";
 
@@ -8,14 +8,13 @@ type Notification = {
   reference_id: number;
   message: string;
   createdAt: Date;
-  is_read: number;
 };
 
 type NotificationsContextType = {
   notifications: Notification[];
   unreadCount: number;
   refreshNotifications: () => Promise<void>;
-  markAsRead: (id: string) => void;
+  markAsRead: (id: number) => void;
 };
 
 export const NotificationsContext = createContext<
@@ -31,10 +30,19 @@ export const NotificationsProvider = ({
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
-  function markAsRead() {
-    return;
-  }
 
+  async function markAsRead(id: number) {
+    try {
+      const response = await apiRequest(`user/notifications/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+      console.log(response.message);
+      refreshNotifications();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   async function refreshNotifications() {
     if (!user) return;
     try {
@@ -43,11 +51,7 @@ export const NotificationsProvider = ({
         credentials: "include",
       });
       setNotifications(data.notifications);
-      setUnreadCount(
-        data.notifications.filter(
-          (notification: Notification) => notification.is_read === 0,
-        ).length,
-      );
+      setUnreadCount(data.notifications.length);
     } catch (error) {
       console.error(error);
     }

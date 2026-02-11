@@ -168,6 +168,10 @@ header {
 }
 
 .notification-counter {
+  display: none;
+}
+
+.notification-counter.active {
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;

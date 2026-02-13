@@ -29,7 +29,7 @@ const Stats = ({ refresh }: StatsProps) => {
   const [reportsClosed, setReportsClosed] = useState<number>(0);
   const [reportsData, setReportsData] = useState<Report[]>([]);
 
-  const getReportsCount = async () => {
+  async function getReportsCount() {
     try {
       const res = await fetch(`${apiUrl}/stats/reports`);
       if (!res.ok) {
@@ -57,7 +57,7 @@ const Stats = ({ refresh }: StatsProps) => {
       console.error(e);
       // optionally display a toast or alert with the error
     }
-  };
+  }
 
   useEffect(() => {
     getReportsCount();

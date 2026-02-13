@@ -78,7 +78,7 @@ const Admin = () => {
 
   const auth = useAuth();
 
-  const changeView = (event: React.MouseEvent<HTMLSpanElement>) => {
+  function changeView(event: React.MouseEvent<HTMLSpanElement>) {
     setIsAnnouncements(false);
     setIsReports(false);
     setIsUsers(false);
@@ -100,18 +100,18 @@ const Admin = () => {
         break;
     }
     event.currentTarget.classList.add("active");
-  };
+  }
 
-  const fetchReports = async () => {
+  async function fetchReports() {
     const body = await apiRequest("admin/reports", {
       method: "GET",
       credentials: "include",
     });
     setReports(body.reports);
     setFilteredReports(body.reports);
-  };
+  }
 
-  const fetchUsers = async () => {
+  async function fetchUsers() {
     const body = await apiRequest("admin/users", {
       method: "GET",
       credentials: "include",
@@ -119,18 +119,18 @@ const Admin = () => {
     setUsers(body.users);
     setFilteredUsers(body.users);
     sortUsers("az");
-  };
+  }
 
-  const fetchAnnouncements = async () => {
+  async function fetchAnnouncements() {
     const body = await apiRequest("admin/announcements", {
       method: "GET",
       credentials: "include",
     });
     setAnnouncements(body.announcements);
     setFilteredAnnouncements(body.announcements);
-  };
+  }
 
-  const filterReports = (status: string) => {
+  function filterReports(status: string) {
     if (status !== "all") {
       if (status === "likes") {
         setFilteredReports(
@@ -146,9 +146,9 @@ const Admin = () => {
     } else {
       setFilteredReports(reports);
     }
-  };
+  }
 
-  const changeReportStatus = async (reportStatus: string) => {
+  async function changeReportStatus(reportStatus: string) {
     await apiRequest(`admin/reports/${selectedReport?.id}`, {
       method: "PATCH",
       headers: {
@@ -163,9 +163,9 @@ const Admin = () => {
     setSelectedReport(null);
     setShowReportDetails(false);
     fetchReports();
-  };
+  }
 
-  const filterAnnouncements = (type: string) => {
+  function filterAnnouncements(type: string) {
     if (type == "draft") {
       setFilteredAnnouncements(
         announcements?.filter(
@@ -191,9 +191,9 @@ const Admin = () => {
     } else {
       setFilteredAnnouncements(announcements);
     }
-  };
+  }
 
-  const sortUsers = (sortBy: string) => {
+  function sortUsers(sortBy: string) {
     setFilteredUsers((prevUsers) => {
       if (!prevUsers) return null;
 
@@ -215,9 +215,9 @@ const Admin = () => {
       });
       return usersCopy;
     });
-  };
+  }
 
-  const filterUsers = () => {
+  function filterUsers() {
     if (searchUserStatus == "") {
       const filteredUsers = users?.filter((user) => {
         const fullName = `${user.name} ${user.surname}`.toLowerCase();
@@ -256,7 +256,7 @@ const Admin = () => {
           break;
       }
     }
-  };
+  }
 
   useEffect(() => {
     fetchReports();

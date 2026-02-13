@@ -23,7 +23,7 @@ const AnnouncementDetails = ({
   closeAnnouncementDetailsWindow,
   onAnnouncementStatusChanged,
 }: AnnouncementDetailsProps) => {
-  const changeAnnouncementStatus = async (action: string) => {
+  async function changeAnnouncementStatus(action: string) {
     try {
       const data = await apiRequest(
         `admin/announcements/${announcement?.id}/${action}`,
@@ -37,7 +37,7 @@ const AnnouncementDetails = ({
     } catch (e) {
       console.error("Error changing announcement status:", e);
     }
-  };
+  }
 
   return (
     <div

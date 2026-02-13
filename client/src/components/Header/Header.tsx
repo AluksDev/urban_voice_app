@@ -14,10 +14,10 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const auth = useAuth();
   const { t, i18n } = useTranslation();
-  const getLangFromCookie = () => {
+  function getLangFromCookie() {
     const match = document.cookie.match(/(^|;)\s*lang=([^;]+)/);
     return match ? decodeURIComponent(match[2]) : "en";
-  };
+  }
   const [selectedLang, setSelectedLang] = useState(getLangFromCookie());
   const { notifications, unreadCount, refreshNotifications, markAsRead } =
     useNotifications();
@@ -27,23 +27,23 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     { code: "it", icon: "images/italy-language-icon.png", label: "Italiano" },
   ];
 
-  const showLanguagesBox = () => {
+  function showLanguagesBox() {
     document.querySelector(".languages-box")?.classList.toggle("show");
-  };
+  }
 
-  const changeLanguage = async (lang: string) => {
+  async function changeLanguage(lang: string) {
     i18n.changeLanguage(lang);
     setSelectedLang(lang);
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 1);
     document.cookie = `lang=${lang};expires=${expires.toUTCString()};path=/`;
-  };
+  }
 
-  const showNotificationsBox = () => {
+  function showNotificationsBox() {
     document.querySelector(".notifications-box")?.classList.toggle("show");
-  };
+  }
 
-  const getNotificationIcon = (type: string) => {
+  function getNotificationIcon(type: string) {
     switch (type) {
       case "report":
         return "/images/notification-report-icon.svg";
@@ -52,7 +52,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
       default:
         return "/images/notification-announcement-icon.svg";
     }
-  };
+  }
 
   useEffect(() => {
     if (auth.user) {

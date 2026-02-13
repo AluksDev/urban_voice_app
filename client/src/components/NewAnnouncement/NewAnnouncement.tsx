@@ -19,7 +19,7 @@ const NewAnnouncement = ({
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
 
-  const handleNewAnnouncement = async (action: string) => {
+  async function handleNewAnnouncement(action: string) {
     const publish = action === "publish" ? true : false;
 
     const trimmedTitle = title.trim();
@@ -48,7 +48,7 @@ const NewAnnouncement = ({
     } catch (e) {
       console.error("Error creating new announcement:", e);
     }
-  };
+  }
 
   useEffect(() => {
     if (showToaster) {

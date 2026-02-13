@@ -36,7 +36,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
 
   const isMobile = width < 768;
 
-  const fetchReports = async () => {
+  async function fetchReports() {
     try {
       const res = await fetch(`${apiUrl}/reports/user`, {
         credentials: "include",
@@ -61,9 +61,9 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
     } catch (e) {
       console.error("Error in fetching reports", e);
     }
-  };
+  }
 
-  const handleSearch = async (sortField?: string) => {
+  async function handleSearch(sortField?: string) {
     const trimmedTitle = searchTitle.trim().toLowerCase();
     try {
       const query = new URLSearchParams({
@@ -83,18 +83,18 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
-  const openSortList = () => {
+  function openSortList() {
     document.getElementById("sortList")?.classList.toggle("show");
     document.getElementById("sortContainer")?.classList.toggle("active");
-  };
+  }
 
-  const handleSortClick = (field: string) => {
+  function handleSortClick(field: string) {
     handleSearch(field);
-  };
+  }
 
-  const handleDeleteReport = async (reportId: number) => {
+  async function handleDeleteReport(reportId: number) {
     try {
       const res = await fetch(`${apiUrl}/reports/delete/${reportId}`, {
         credentials: "include",
@@ -113,7 +113,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
     } catch (e) {
       console.error("Error deleting report", e);
     }
-  };
+  }
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
@@ -242,7 +242,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
                       <p>
                         {t("myReports.tableHeaders.dateSubmitted")}:{" "}
                         {new Date(report.created_at).toLocaleDateString(
-                          "en-GB"
+                          "en-GB",
                         )}
                       </p>
                     </div>
@@ -284,7 +284,7 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
                         </td>
                         <td>
                           {new Date(report.created_at).toLocaleDateString(
-                            "en-GB"
+                            "en-GB",
                           )}
                         </td>
                         <td className="myreports-actions-container">

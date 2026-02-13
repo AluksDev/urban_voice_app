@@ -28,7 +28,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [rightClass, setRightClass] = useState<boolean>(false);
   const auth = useAuth();
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
 
     const trimmedName = signupName.trim();
@@ -95,9 +95,9 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       setToasterMessage(backendMsg);
       setToasterType("error");
     }
-  };
+  }
 
-  const handleLogin = async (e: React.FormEvent) => {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     const trimmedEmail = loginEmail.trim();
     const trimmedPassword = loginPassword.trim();
@@ -132,9 +132,11 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       setToasterMessage(backendMsg);
       setToasterType("error");
     }
-  };
+  }
 
-  const handleClassClick = () => setRightClass(!rightClass);
+  function handleClassClick() {
+    setRightClass(!rightClass);
+  }
 
   useEffect(() => {
     if (!toasterMessage) return;

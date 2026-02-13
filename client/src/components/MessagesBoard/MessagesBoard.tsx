@@ -15,14 +15,14 @@ interface Announcement {
 
 const MessagesBoard = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const fetchMessages = async () => {
+  async function fetchMessages() {
     try {
       const data = await apiRequest("announcements/", { method: "GET" });
       setAnnouncements(data.announcements);
     } catch (e) {
       console.error("Failed to fetch announcements:", e);
     }
-  };
+  }
 
   useEffect(() => {
     fetchMessages();

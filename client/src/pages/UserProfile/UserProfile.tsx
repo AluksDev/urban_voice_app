@@ -20,10 +20,10 @@ const UserProfile = ({
   const { t } = useTranslation();
 
   const [nameValue, setNameValue] = useState<string | undefined>(
-    auth.user?.name
+    auth.user?.name,
   );
   const [surnameValue, setSurnameValue] = useState<string | undefined>(
-    auth.user?.surname
+    auth.user?.surname,
   );
   const [oldPswValue, setOldPswValue] = useState<string>("");
   const [newPswValue, setNewPswValue] = useState<string>("");
@@ -35,7 +35,7 @@ const UserProfile = ({
   const newPasswordRef = useRef<HTMLInputElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
-  const changeView = (event: React.MouseEvent<HTMLSpanElement>) => {
+  function changeView(event: React.MouseEvent<HTMLSpanElement>) {
     spansRef.current?.forEach((element) => {
       element.classList.remove("active");
     });
@@ -55,12 +55,12 @@ const UserProfile = ({
         onLogOut();
         break;
     }
-  };
+  }
 
-  const handleShowPassword = (
+  function handleShowPassword(
     event: React.MouseEvent<HTMLImageElement>,
-    inputRef: React.RefObject<HTMLInputElement | null>
-  ) => {
+    inputRef: React.RefObject<HTMLInputElement | null>,
+  ) {
     const img = event.currentTarget;
     const input = inputRef.current;
     if (!input) return;
@@ -73,9 +73,9 @@ const UserProfile = ({
       : "/images/hide-password-icon.png";
 
     input.type = showing ? "text" : "password";
-  };
+  }
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
+  async function handlePasswordChange(e: React.FormEvent) {
     e.preventDefault();
     const trimmedOldPsw = oldPswValue.trim() || "";
     const trimmedNewPsw = newPswValue.trim() || "";
@@ -99,7 +99,7 @@ const UserProfile = ({
       if (!res.ok || !data.success) {
         onPasswordChange(
           data.message || t("userProfile.passwordUpdateError"),
-          "error"
+          "error",
         );
         setOldPswValue("");
         setNewPswValue("");
@@ -112,9 +112,9 @@ const UserProfile = ({
     } catch (e) {
       console.error("Error in changing password", e);
     }
-  };
+  }
 
-  const handleUserDetailsChange = async (e: React.FormEvent) => {
+  async function handleUserDetailsChange(e: React.FormEvent) {
     e.preventDefault();
     const trimmedName = nameValue?.trim() || "";
     const trimmedSurname = surnameValue?.trim() || "";
@@ -151,14 +151,14 @@ const UserProfile = ({
     } catch (e) {
       console.error("Error in changing user details", e);
     }
-  };
+  }
 
-  const handlePhotoClick = () => {
+  function handlePhotoClick() {
     if (photoInputRef.current) {
       photoInputRef.current.click();
     }
-  };
-  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  }
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -184,7 +184,7 @@ const UserProfile = ({
     } catch (e) {
       console.error("Error in changing photo", e);
     }
-  };
+  }
   useEffect(() => {
     spansRef.current = document.querySelectorAll(".selection-span");
   }, []);

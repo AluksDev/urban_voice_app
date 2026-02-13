@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
 
   // Login updates all auth state
-  const login = (userData: User) => {
+  function login(userData: User) {
     if (userData?.status === "suspended") {
       setToasterMessage("Your account has been suspended.");
       setToasterType("error");
@@ -49,10 +49,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(userData);
     setIsLoggedIn(true);
     setJustLoggedOut(false);
-  };
+  }
 
   // Logout clears all auth state
-  const logout = async () => {
+  async function logout() {
     try {
       const res = await fetch(`${apiUrl}/auth/logout`, {
         method: "POST",
@@ -71,13 +71,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (e) {
       console.error("logout error:", e);
     }
-  };
+  }
 
-  const updateUser = (newUserData: Partial<User>) => {
+  function updateUser(newUserData: Partial<User>) {
     setUser((prevUser) =>
       prevUser ? { ...prevUser, ...newUserData } : prevUser,
     );
-  };
+  }
 
   useEffect(() => {
     let cancelled = false;

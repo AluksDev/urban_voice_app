@@ -31,15 +31,15 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
-  const handleFileRefClick = (type: string) => {
+  function handleFileRefClick(type: string) {
     if (type === "camera") {
       if (cameraInputRef.current) cameraInputRef.current.click();
       return;
     }
     if (fileInputRef.current) fileInputRef.current.click();
-  };
+  }
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0] ?? null;
 
     if (!selectedFile) return;
@@ -49,13 +49,13 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
       setToasterType("error");
       setToasterMessage(t("newReport.selectImageError"));
     }
-  };
+  }
 
-  const getCoordsFromAddress = async () => {
+  async function getCoordsFromAddress() {
     const addressToSend = reportAddress.trim();
     try {
       const res = await fetch(
-        `${apiUrl}/api/address?q=${encodeURIComponent(addressToSend)}`
+        `${apiUrl}/api/address?q=${encodeURIComponent(addressToSend)}`,
       );
       if (!res.ok) throw new Error("Request failed");
       const data = await res.json();
@@ -64,9 +64,9 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
     } catch (e) {
       console.error("Error in getting coords from address", e);
     }
-  };
+  }
 
-  const addReport = async (e: React.FormEvent) => {
+  async function addReport(e: React.FormEvent) {
     e.preventDefault();
     if (
       reportTitle === "" ||
@@ -112,7 +112,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
       setToasterType("error");
       setToasterMessage(t("newReport.messages.REPORT_ERROR"));
     }
-  };
+  }
 
   useEffect(() => {
     if (!toasterMessage) return;
@@ -131,7 +131,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
     navigator.geolocation.getCurrentPosition(
       (pos) => setMapCoordinates([pos.coords.latitude, pos.coords.longitude]),
       () => setMapCoordinates(GRANADA_CENTER),
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
   }, []);
 

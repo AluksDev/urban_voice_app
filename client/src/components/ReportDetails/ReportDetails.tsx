@@ -69,7 +69,7 @@ const ReportDetails = ({
     { key: "parks", label: t("reportDetails.categories.parks") },
   ];
 
-  const getReportLocation = async () => {
+  async function getReportLocation() {
     try {
       const res = await fetch(`${apiUrl}/locations/${report?.location_id}`, {
         credentials: "include",
@@ -82,26 +82,26 @@ const ReportDetails = ({
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
-  const handleImageZoom = (type: string) => {
+  function handleImageZoom(type: string) {
     if (!imageContainerRef.current) return;
     if (type === "out") {
       imageContainerRef.current.classList.remove("zoomed");
     } else {
       imageContainerRef.current.classList.add("zoomed");
     }
-  };
+  }
 
-  const handlePhotoButtonClick = (type: string) => {
+  function handlePhotoButtonClick(type: string) {
     if (type == "camera") {
       if (cameraRefInput.current) cameraRefInput.current.click();
       return;
     }
     if (deviceRefInput.current) deviceRefInput.current.click();
-  };
+  }
 
-  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+  function handlePhotoChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target?.files?.[0] ?? null;
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -110,9 +110,9 @@ const ReportDetails = ({
       return;
     }
     setNewPhoto(file);
-  };
+  }
 
-  const handleDetailsChange = async (e: React.FormEvent<HTMLFormElement>) => {
+  async function handleDetailsChange(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!newTitle.trim()) {
@@ -170,12 +170,12 @@ const ReportDetails = ({
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
-  const handleLikeReport = async (
+  async function handleLikeReport(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     reportId: number | undefined,
-  ) => {
+  ) {
     e.preventDefault();
     try {
       const data = await apiRequest(`reports/${reportId}/like`, {
@@ -190,9 +190,9 @@ const ReportDetails = ({
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
-  const checkReportLike = async () => {
+  async function checkReportLike() {
     try {
       const data = await apiRequest(`reports/${report?.id}/like`, {
         method: "GET",
@@ -204,7 +204,7 @@ const ReportDetails = ({
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
   useEffect(() => {
     if (!report) return;

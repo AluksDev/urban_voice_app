@@ -29,7 +29,7 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const auth = useAuth();
 
-  const handleExapand = () => {
+  function handleExapand() {
     document
       .querySelector(".recent-reports-expandable")
       ?.classList.toggle("show");
@@ -46,9 +46,9 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
     } else {
       container.style.borderRadius = "20px";
     }
-  };
+  }
 
-  const fetchLatestReports = async () => {
+  async function fetchLatestReports() {
     const limit = 5;
     try {
       const res = await fetch(`${apiUrl}/stats/reports/latest?limit=${limit}`);
@@ -63,7 +63,7 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
   useEffect(() => {
     fetchLatestReports();

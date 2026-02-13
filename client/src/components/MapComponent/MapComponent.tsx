@@ -72,8 +72,10 @@ const MapComponent = ({
   const [isMobile, setIsMobile] = useState(false);
   const [showReportDetails, setShowReportDetails] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  function checkMobile() {
+    setIsMobile(window.innerWidth < 768);
+  }
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -117,7 +119,7 @@ const MapComponent = ({
     return null;
   }
 
-  const loadLocations = async () => {
+  async function loadLocations() {
     const res = await fetch(`${apiUrl}/locations`, { credentials: "include" });
     if (!res.ok) throw new Error("Error in response");
     const data = await res.json();
@@ -144,7 +146,7 @@ const MapComponent = ({
     });
 
     setLocations(Object.values(locationMap));
-  };
+  }
 
   useEffect(() => {
     loadLocations();
@@ -156,7 +158,7 @@ const MapComponent = ({
     if (!isPinDraggable) return;
     if (!mapContainer) return;
 
-    const handleDrop = (e: DragEvent) => {
+    function handleDrop(e: DragEvent) {
       e.preventDefault();
       if (!mapRef.current) return;
 
@@ -167,7 +169,7 @@ const MapComponent = ({
       const latlng = mapRef.current.containerPointToLatLng([x, y]);
       setDroppedMarker([latlng.lat, latlng.lng]);
       if (onMarkerChange) onMarkerChange([latlng.lat, latlng.lng]);
-    };
+    }
 
     const handleDragOver = (e: DragEvent) => e.preventDefault();
 
@@ -184,14 +186,14 @@ const MapComponent = ({
     const [currentReportIndex, setCurrentReportIndex] = React.useState(0);
     const currentReport = reports[currentReportIndex];
 
-    const handlePopUpClick = async () => {
+    async function handlePopUpClick() {
       const data = await apiRequest(`reports/${currentReport.id}`, {
         method: "GET",
         credentials: "include",
       });
       setSelectedReport(data.report);
       setShowReportDetails(true);
-    };
+    }
 
     return (
       <div onClick={handlePopUpClick}>

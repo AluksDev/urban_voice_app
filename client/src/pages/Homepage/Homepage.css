@@ -28,15 +28,16 @@ main {
   main {
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    height: 100%;
   }
   .left-container {
-    width: 100%;
-    margin: 1rem;
+    margin: 0;
+    width: 80%;
+    height: 300px;
   }
 
   .right-container {
-    width: 100%;
+    width: 80%;
   }
 }
 

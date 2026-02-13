@@ -368,6 +368,11 @@ header {
     padding: 0;
     margin-right: 2rem;
   }
+  .notifications-box.show {
+    right: auto;
+    left: 50%;
+    transform: translateX(-45%);
+  }
 }
 
 /* Small mobile */

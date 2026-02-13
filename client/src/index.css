@@ -39,6 +39,12 @@ textarea {
   body {
     height: auto;
   }
+  #root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 /* Small mobile */

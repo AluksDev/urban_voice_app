@@ -113,6 +113,9 @@ article::before {
   .messages-board-container {
     margin: 0;
   }
+  .messages-scroll-container {
+    height: 75%;
+  }
 }
 
 /* Small mobile */

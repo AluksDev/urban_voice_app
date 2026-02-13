@@ -244,16 +244,15 @@
     font-size: 0.9rem;
   }
   .sort-container {
- 
-  margin-right: 1.5rem;
-}
-
+    margin-right: 1.5rem;
+  }
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
   .searchbar-container {
     margin: 1rem;
+    margin-top: 3rem;
   }
   .my-reports-container {
     margin: 1rem;

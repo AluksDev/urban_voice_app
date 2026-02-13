@@ -245,10 +245,12 @@
   .new-report-background {
     position: absolute;
     height: 100%;
+    display: block;
   }
   .new-report-container {
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
+    padding: 0.5rem;
   }
   .inner-new-report-container {
     padding: 1rem 0.5rem;
@@ -266,7 +268,7 @@
     width: 100%;
   }
   .close-icon-container {
-    left: 90%;
+    left: 85%;
     top: 2%;
   }
   .new-report-camera-button {

@@ -3,7 +3,8 @@ import "./Stats.css";
 import PieChartComponent from "../PieChartComponent/PieChartComponent";
 import SlotCounter from "react-slot-counter";
 import { useTranslation } from "react-i18next";
-import { apiRequest, apiUrl } from "../../api";
+import { apiRequest } from "../../api";
+import Skeleton_Stats from "./Skeleton_stats";
 
 interface StatsProps {
   refresh: number;
@@ -28,9 +29,11 @@ const Stats = ({ refresh }: StatsProps) => {
   const [reportsApproved, setReportsApproved] = useState<number>(0);
   const [reportsClosed, setReportsClosed] = useState<number>(0);
   const [reportsData, setReportsData] = useState<Report[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   async function getReportsCount() {
     try {
+      setIsLoading(true);
       const data = await apiRequest(`stats/reports`, {
         method: "GET",
       });
@@ -50,6 +53,8 @@ const Stats = ({ refresh }: StatsProps) => {
       setReportsClosed(closed);
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -58,38 +63,47 @@ const Stats = ({ refresh }: StatsProps) => {
   }, [refresh]);
 
   return (
-    <section className="stats-container">
-      <h3>{t("stats.title")}</h3>
-      <div className="stats-box">
-        <div>
-          <div className="numeric-stat">
-            <SlotCounter
-              value={reportsCount}
-              animateUnchanged={false}
-              duration={2}
+    <>
+      {isLoading ? (
+        <Skeleton_Stats />
+      ) : (
+        <section className="stats-container">
+          <h3>{t("stats.title")}</h3>
+          <div className="stats-box">
+            <div>
+              <div className="numeric-stat">
+                <SlotCounter
+                  value={reportsCount}
+                  animateUnchanged={false}
+                  duration={2}
+                />
+                <p>{t("stats.labels.total")}</p>
+              </div>
+              <div className="numeric-stat">
+                <SlotCounter
+                  value={reportsClosed}
+                  animateUnchanged={false}
+                  duration={2}
+                />
+                <p>{t("stats.labels.closed")}</p>
+              </div>
+              <div className="numeric-stat">
+                <SlotCounter
+                  value={reportsApproved}
+                  animateUnchanged={false}
+                  duration={2}
+                />
+                <p>{t("stats.labels.approved")}</p>
+              </div>
+            </div>
+            <PieChartComponent
+              reportsData={reportsData}
+              isAnimationActive={true}
             />
-            <p>{t("stats.labels.total")}</p>
           </div>
-          <div className="numeric-stat">
-            <SlotCounter
-              value={reportsClosed}
-              animateUnchanged={false}
-              duration={2}
-            />
-            <p>{t("stats.labels.closed")}</p>
-          </div>
-          <div className="numeric-stat">
-            <SlotCounter
-              value={reportsApproved}
-              animateUnchanged={false}
-              duration={2}
-            />
-            <p>{t("stats.labels.approved")}</p>
-          </div>
-        </div>
-        <PieChartComponent reportsData={reportsData} isAnimationActive={true} />
-      </div>
-    </section>
+        </section>
+      )}
+    </>
   );
 };
 

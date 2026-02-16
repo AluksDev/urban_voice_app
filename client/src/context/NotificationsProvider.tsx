@@ -37,7 +37,6 @@ export const NotificationsProvider = ({
         method: "PATCH",
         credentials: "include",
       });
-      console.log(response.message);
       refreshNotifications();
     } catch (error) {
       console.error(error);
@@ -52,6 +51,7 @@ export const NotificationsProvider = ({
       });
       setNotifications(data.notifications);
       setUnreadCount(data.notifications.length);
+      console.log(data.notifications);
     } catch (error) {
       console.error(error);
     }

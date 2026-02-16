@@ -1,0 +1,94 @@
+/* High-intensity shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+  border-radius: 8px;
+}
+
+.skeleton-stats-wrapper {
+  pointer-events: none;
+}
+
+/* Header placeholder */
+.skeleton-h3-box {
+  width: 150px;
+  height: 1.8rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.skeleton-numeric-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Number and Label placeholders */
+.skeleton-number {
+  width: 60px;
+  height: 2.5rem; /* Matches your 2.5rem font-size */
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-label {
+  width: 100px;
+  height: 1rem;
+}
+
+/* Pie Chart placeholder */
+.skeleton-chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.skeleton-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  /* Making the circle shimmer slightly differently for depth */
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 2.5s infinite ease-in-out;
+}
+
+/* Mobile Responsiveness (matching your original breakpoints) */
+@media (max-width: 768px) {
+  .skeleton-numeric-column {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+  }
+
+  .skeleton-number {
+    height: 1.5rem;
+    width: 40px;
+  }
+
+  .skeleton-circle {
+    width: 150px;
+    height: 150px;
+  }
+}

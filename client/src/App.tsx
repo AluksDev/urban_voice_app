@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import Homepage from "./pages/Homepage/Homepage";
@@ -14,7 +14,9 @@ import { useTranslation } from "react-i18next";
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminProtectedRoute from "./components/ProtectedRoutes/AdminProtectedRoutes";
-import Admin from "./pages/Admin/Admin";
+const Admin = React.lazy(() => import("./pages/Admin/Admin"));
+import NotFound from "./pages/NotFound/NotFound";
+import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 
 function App() {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -27,6 +29,10 @@ function App() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  function openReportDetails(id: number) {
+    navigate(`/reports/${id}`);
+  }
 
   useEffect(() => {
     const match = document.cookie.match(/(^|;)\s*lang=([^;]+)/);
@@ -100,6 +106,7 @@ function App() {
             <UserLayout
               openNewReport={() => setShowNewReport(true)}
               onOpenModal={() => setShowModal(true)}
+              openReportDetails={openReportDetails}
             />
           }
         >
@@ -113,7 +120,7 @@ function App() {
                 onAuthRequired={() => {
                   setToasterType("error");
                   setToasterMessage(
-                    "You must be logged in to access this page"
+                    "You must be logged in to access this page",
                   );
                   setShowToaster(true);
                 }}
@@ -121,7 +128,7 @@ function App() {
             }
           >
             <Route
-              path="/reports"
+              path="/reports/:id?"
               element={
                 <MyReports
                   onReportDelete={(message) => {
@@ -162,11 +169,18 @@ function App() {
         {/* Fallback route */}
         <Route element={<AdminProtectedRoute />}>
           <Route element={<AdminLayout />}>
-            <Route path="/admin" element={<Admin />} />
+            <Route
+              path="/admin"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Admin />
+                </Suspense>
+              }
+            />
           </Route>
         </Route>
 
-        <Route path="*" element={<div>Not found</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

@@ -1,0 +1,97 @@
+.spinner-wrapper {
+  --spinner-color: hsla(216, 75%, 43%, 0.8);
+  --spinner-glow: rgba(255, 255, 255, 0.4);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Full screen overlay mode */
+.spinner-wrapper.full-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 46, 82, 0.4); /* Matches your theme */
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+
+/* Sizes */
+.small {
+  transform: scale(0.5);
+}
+.medium {
+  transform: scale(1);
+}
+.large {
+  transform: scale(1.5);
+}
+
+.spinner-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  position: relative;
+  border: 3px solid rgba(255, 255, 255, 0.1); /* Subtle track */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* The actual spinning part */
+.spinner-ring::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--spinner-glow); /* Glowing edge */
+  border-right-color: var(--spinner-glow);
+  animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+/* The glass core */
+.spinner-core {
+  width: 40px;
+  height: 40px;
+  background: var(--spinner-color);
+  border-radius: 50%;
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+/* The shimmer moving across the spinner */
+.spinner-glass-shimmer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 60%
+  );
+  animation: shimmer-rotate 2s infinite linear;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

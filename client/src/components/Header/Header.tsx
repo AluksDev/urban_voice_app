@@ -8,9 +8,14 @@ import { useNotifications } from "../../context/NotificationsProvider";
 type HeaderProps = {
   onOpenModal: () => void;
   openNewReport: () => void;
+  openReportDetails: (id: number) => void;
 };
 
-const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
+const Header = ({
+  onOpenModal,
+  openNewReport,
+  openReportDetails,
+}: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const auth = useAuth();
   const { t, i18n } = useTranslation();
@@ -54,6 +59,38 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
     }
   }
 
+  function handleNotificationClick(
+    id: number,
+    type: string,
+    reference_id: number,
+  ) {
+    switch (type) {
+      case "announcement":
+        markAsRead(id);
+        break;
+      case "report":
+        openReportDetails(reference_id);
+        markAsRead(id);
+
+        break;
+      default:
+        markAsRead(id);
+        break;
+    }
+    setTimeout(() => {
+      showNotificationsBox();
+    }, 100);
+  }
+
+  function handleReadAllNotifications() {
+    notifications.forEach((notification) => {
+      markAsRead(notification.id);
+    });
+    setTimeout(() => {
+      showNotificationsBox();
+    }, 100);
+  }
+
   useEffect(() => {
     if (auth.user) {
       refreshNotifications();
@@ -70,7 +107,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <div className="logo-image-container">
-              <img src="images/logo.png" alt="Logo" />
+              <img src="/images/logo.png" alt="Logo" />
             </div>
           </NavLink>
         </div>
@@ -128,7 +165,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                 >
                   {unreadCount > 0 && unreadCount}
                 </span>
-                <img src="images/notification-icon.svg" alt="" />
+                <img src="/images/notification-icon.svg" alt="" />
                 <div
                   className="notifications-box"
                   onClick={(e) => e.stopPropagation()}
@@ -137,7 +174,9 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                     {unreadCount > 0 ? (
                       <>
                         <span>Notifications</span>
-                        <span>Mark all as read</span>
+                        <span onClick={handleReadAllNotifications}>
+                          Mark all as read
+                        </span>
                       </>
                     ) : (
                       <span>No notifications</span>
@@ -148,7 +187,13 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                       <div
                         key={notification.id}
                         className="single-notification"
-                        onClick={() => markAsRead(notification.id)}
+                        onClick={() =>
+                          handleNotificationClick(
+                            notification.id,
+                            notification.type,
+                            notification.reference_id,
+                          )
+                        }
                       >
                         <span>
                           <img
@@ -170,7 +215,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                 }}
               >
                 <img
-                  src={languages.find((l) => l.code === selectedLang)?.icon}
+                  src={`/${languages.find((l) => l.code === selectedLang)?.icon}`}
                   alt="Language flag"
                 />
                 <div className="languages-box">
@@ -181,7 +226,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
                           key={lang.code}
                           onClick={() => changeLanguage(lang.code)}
                         >
-                          <img src={lang.icon} alt={lang.label} />
+                          <img src={`/${lang.icon}`} alt={lang.label} />
                         </span>
                       ),
                   )}
@@ -195,7 +240,7 @@ const Header = ({ onOpenModal, openNewReport }: HeaderProps) => {
           className="hamburger-container"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
         >
-          <img src="images/hamburger-menu.svg" alt="Menu" />
+          <img src="/images/hamburger-menu.svg" alt="Menu" />
         </div>
       </div>
       <div className="header-second-line-container">

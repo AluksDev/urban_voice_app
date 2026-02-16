@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
+import AuthLoading from "../AuthLoading/AuthLoading";
 
 type ProtectedRoutesPrompt = {
   children?: ReactNode; // optional, if you want to support direct children too
@@ -31,7 +32,7 @@ const ProtectedRoutes = ({
   }, [auth.initializing, auth.isLoggedIn, onAuthRequired]);
 
   if (auth.initializing) {
-    return <div style={{ padding: 20 }}>Checking authentication…</div>;
+    return <AuthLoading />;
   }
 
   if (!auth.isLoggedIn) {

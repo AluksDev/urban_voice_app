@@ -4,6 +4,7 @@ import Toaster from "../Toaster/Toaster";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { apiRequest } from "../../api";
+import ButtonsSpinner from "../ButtonsSpinner/ButtonsSpinner";
 
 type AuthModalProps = {
   onLogInSuccessful: (
@@ -26,6 +27,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
   const [loginEmail, setLoginEmail] = useState<string>("");
   const [loginPassword, setLoginPassword] = useState<string>("");
   const [rightClass, setRightClass] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const auth = useAuth();
 
   async function handleSignUp(e: React.FormEvent) {
@@ -73,6 +75,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       email: trimmedEmail,
       password: trimmedPassword,
     };
+    setIsFetching(true);
     try {
       const body = await apiRequest("auth/signup", {
         method: "POST",
@@ -94,6 +97,8 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       const backendMsg = t(`authModal.backend.${err.message}`);
       setToasterMessage(backendMsg);
       setToasterType("error");
+    } finally {
+      setIsFetching(false);
     }
   }
 
@@ -115,6 +120,7 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
     }
 
     const loginData = { email: trimmedEmail, password: trimmedPassword };
+    setIsFetching(true);
     try {
       const body = await apiRequest("auth/login", {
         method: "POST",
@@ -131,6 +137,8 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
       const backendMsg = t(`authModal.backend.${err.message}`);
       setToasterMessage(backendMsg);
       setToasterType("error");
+    } finally {
+      setIsFetching(false);
     }
   }
 
@@ -236,8 +244,12 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               minLength={8}
               required
             />
-            <button type="submit">
-              {t("authModal.login.button", "Log In")}
+            <button type="submit" disabled={isFetching}>
+              {isFetching ? (
+                <ButtonsSpinner />
+              ) : (
+                t("authModal.login.button", "Log In")
+              )}
             </button>
           </form>
         </div>
@@ -293,8 +305,12 @@ const AuthModal = ({ onLogInSuccessful, closeModal }: AuthModalProps) => {
               minLength={8}
               required
             />
-            <button type="submit">
-              {t("authModal.signup.button", "Sign Up")}
+            <button type="submit" disabled={isFetching}>
+              {isFetching ? (
+                <ButtonsSpinner />
+              ) : (
+                t("authModal.signup.button", "Sign Up")
+              )}
             </button>
           </form>
         </div>

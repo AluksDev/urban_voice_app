@@ -1,0 +1,76 @@
+/* Base Shimmer Logic */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-fast {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.shimmer-slow {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite linear;
+}
+
+.skeleton-reports-wrapper {
+  cursor: default; /* Disable pointer while loading */
+  overflow: hidden;
+}
+
+/* Title Placeholder (Matching your h3) */
+.skeleton-h3 {
+  width: 180px;
+  height: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+/* Row Placeholders */
+.skeleton-content-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.skeleton-report-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.8rem;
+}
+
+.skeleton-bar-long {
+  width: 90%;
+  height: 0.9rem;
+  border-radius: 4px;
+}
+
+.skeleton-bar-med {
+  width: 40%;
+  height: 0.7rem;
+  border-radius: 4px;
+}
+
+/* Removing the arrow icon for the skeleton state */
+.skeleton-reports-wrapper h3::after {
+  display: none;
+}

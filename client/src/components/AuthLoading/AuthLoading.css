@@ -1,0 +1,117 @@
+.auth-loading-viewport {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0a2e52;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-glass-card {
+  background: hsla(216, 75%, 43%, 0.2);
+  backdrop-filter: blur(20px);
+  padding: 3rem;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  width: 320px;
+  z-index: 5;
+}
+
+/* The Scanner Icon Area */
+.auth-scanner-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.auth-ring-inner {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: spin-reverse 2s linear infinite;
+}
+
+.auth-text {
+  color: white;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+}
+
+/* Status Bar Logic */
+.auth-status-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.auth-progress-fill {
+  width: 40%;
+  height: 100%;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px white;
+  animation: progress-slide 2s ease-in-out infinite;
+}
+
+.auth-subtext {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-family: "Roboto", sans-serif;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+    width: 20%;
+  }
+  50% {
+    width: 50%;
+  }
+  100% {
+    transform: translateX(300%);
+    width: 20%;
+  }
+}

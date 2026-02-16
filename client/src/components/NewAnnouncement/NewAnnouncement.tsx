@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./NewAnnouncement.css";
-import { apiUrl } from "../../api";
 import Toaster from "../Toaster/Toaster";
 import { apiRequest } from "../../api";
 

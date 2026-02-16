@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import "./NewReport.css";
 import Toaster from "../Toaster/Toaster";
 import MapComponent from "../MapComponent/MapComponent";
-import { apiRequest, apiUrl } from "../../api";
+import { apiRequest } from "../../api";
+import ButtonsSpinner from "../ButtonsSpinner/ButtonsSpinner";
 
 type NewReportProps = {
   closeModal: () => void;
@@ -30,6 +31,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   function handleFileRefClick(type: string) {
     if (type === "camera") {
@@ -88,7 +90,7 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
 
     formData.append("lat", String(mapCoordinates[0]));
     formData.append("lon", String(mapCoordinates[1]));
-
+    setIsFetching(true);
     try {
       const data = await apiRequest("reports/new", {
         method: "POST",
@@ -100,6 +102,8 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
       console.error("Error in adding report", e);
       setToasterType("error");
       setToasterMessage(t("newReport.messages.REPORT_ERROR"));
+    } finally {
+      setIsFetching(false);
     }
   }
 
@@ -148,9 +152,12 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
             <h2>{t("newReport.title")}</h2>
             <h3>{t("newReport.subtitle")}</h3>
           </div>
-          <div className="close-icon-container" onClick={closeModal}>
-            <img src="/images/close-icon.svg" alt={t("newReport.closeAlt")} />
-          </div>
+          {!isFetching && (
+            <div className="close-icon-container" onClick={closeModal}>
+              <img src="/images/close-icon.svg" alt={t("newReport.closeAlt")} />
+            </div>
+          )}
+
           <div className="inner-new-report-container">
             <form onSubmit={addReport}>
               <div className="left-side">
@@ -291,10 +298,16 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
                 </div>
 
                 <div className="actions">
-                  <button type="button" onClick={closeModal}>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    disabled={isFetching}
+                  >
                     {t("newReport.cancel")}
                   </button>
-                  <button type="submit">{t("newReport.submit")}</button>
+                  <button type="submit" disabled={isFetching}>
+                    {isFetching ? <ButtonsSpinner /> : t("newReport.submit")}
+                  </button>
                 </div>
               </div>
             </form>

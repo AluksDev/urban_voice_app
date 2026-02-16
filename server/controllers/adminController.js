@@ -67,7 +67,7 @@ exports.updateStatus = async (req, res) => {
         // 3️⃣ Create notification
         const [notification] = await connection.query(
             "INSERT INTO notifications (type, reference_id, message, created_at) VALUES (?, ?, ?, NOW())",
-            ['report', reportId, 'Your report status has been updated!']
+            ['report', reportId, `Report #${reportId} status has changed to ${status}!`]
         );
 
         const notificationId = notification.insertId;

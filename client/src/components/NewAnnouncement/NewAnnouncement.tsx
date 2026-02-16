@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./NewAnnouncement.css";
 import { apiUrl } from "../../api";
 import Toaster from "../Toaster/Toaster";
+import { apiRequest } from "../../api";
 
 interface NewAnnouncementProps {
   closeNewAnnouncementWindow: () => void;
@@ -31,7 +32,7 @@ const NewAnnouncement = ({
       return;
     }
     try {
-      const res = await fetch(`${apiUrl}/admin/announcements`, {
+      const data = await apiRequest("admin/announcements", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,10 +40,6 @@ const NewAnnouncement = ({
         credentials: "include",
         body: JSON.stringify({ title, content, publish }),
       });
-      const body = await res.json();
-      if (!body.success) {
-        throw new Error("Error in response: " + body.code);
-      }
       onSuccessfulAnnouncement("Announcement created successfully");
       closeNewAnnouncementWindow();
     } catch (e) {

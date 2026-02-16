@@ -1,4 +1,6 @@
 const validator = require('validator');
+const fs = require("fs");
+const path = require("path");
 
 const CATEGORY_CODES = [
     "road",
@@ -149,39 +151,211 @@ exports.deleteReports = async (req, res) => {
 
 exports.changeReportDetails = async (req, res) => {
     const userId = req.user.id;
+
     if (!userId) {
         return res.status(401).json({ success: false, code: "NOT_AUTH" });
     }
-    const reportId = req.body.reportId;
+
+    const { reportId, title, category, description, lat, lon } = req.body;
+
     if (!reportId) {
         return res.status(400).json({ success: false, code: "MISSING_REPORT_ID" });
     }
-    const { newTitle, newCategory, newDescription } = req.body;
-    const trimmedNewTitle = validator.trim(newTitle || "");
-    const trimmedNewCategory = validator.trim(newCategory || "");
-    const trimmedNewDescription = validator.trim(newDescription || "");
-
-    if (!validator.isLength(trimmedNewTitle, { min: 1, max: 2000 }) ||
-        !validator.isLength(trimmedNewCategory, { min: 1, max: 2000 }) ||
-        !validator.isLength(trimmedNewDescription, { min: 1, max: 2000 })) {
-        return res.status(400).json({ success: false, code: "INVALID_INPUTS" });
-    }
-    if (!CATEGORY_CODES.includes(trimmedNewCategory)) {
-        return res.status(400).json({ success: false, code: "INVALID_CATEGORY" });
-    }
-    let [rows] = await req.db.query("SELECT * FROM reports WHERE  id = ?", [reportId]);
-    if (rows.length === 0) {
-        return res.status(400).json({ success: false, code: "NO_USER_REPORTS" });
-    }
-    let [updateResult] = await req.db.query(
-        "UPDATE reports SET title = ?, category = ?, description = ?, updated_at = NOW() WHERE id = ? AND user_id = ?",
-        [trimmedNewTitle, trimmedNewCategory, trimmedNewDescription, reportId, userId]
+    // Check report ownership and get old photo
+    let [reportRows] = await req.db.query(
+        `SELECT photo_url FROM reports WHERE id = ? AND user_id = ?`,
+        [reportId, userId]
     );
-    if (updateResult.affectedRows !== 1) {
-        return res.status(500).json({ success: false, code: "DB_ERROR" });
+
+    if (reportRows.length === 0) {
+        return res.status(403).json({ success: false, code: "NOT_OWNER" });
     }
-    return res.status(200).json({ success: true, code: "REPORT_UPDATED" });
-}
+
+    const oldPhotoUrl = reportRows[0].photo_url;
+
+    const photoUrl = req.file
+        ? `/uploads/reports/${req.file.filename}`
+        : null;
+
+    try {
+
+        // Trim
+        const trimmedTitle = validator.trim(title || "");
+        const trimmedCategory = validator.trim(category || "");
+        const trimmedDescription = validator.trim(description || "");
+        const trimmedLat = validator.trim(lat || "");
+        const trimmedLon = validator.trim(lon || "");
+
+        // Validate text
+        if (
+            !validator.isLength(trimmedTitle, { min: 1, max: 2000 }) ||
+            !validator.isLength(trimmedCategory, { min: 1, max: 2000 }) ||
+            !validator.isLength(trimmedDescription, { min: 1, max: 2000 })
+        ) {
+            return res.status(400).json({ success: false, code: "INVALID_INPUTS" });
+        }
+
+        if (!CATEGORY_CODES.includes(trimmedCategory)) {
+            return res.status(400).json({ success: false, code: "INVALID_CATEGORY" });
+        }
+
+        // Validate coordinates
+        if (
+            !validator.isDecimal(trimmedLat) ||
+            !validator.isDecimal(trimmedLon)
+        ) {
+            return res.status(400).json({ success: false, code: "INVALID_COORDINATES" });
+        }
+
+        const floatLat = parseFloat(trimmedLat);
+        const floatLon = parseFloat(trimmedLon);
+
+        if (
+            floatLat < -90 || floatLat > 90 ||
+            floatLon < -180 || floatLon > 180
+        ) {
+            return res.status(400).json({ success: false, code: "INVALID_COORDINATES" });
+        }
+
+        // Round same as newReport
+        const roundedLat = Number(floatLat.toFixed(5));
+        const roundedLon = Number(floatLon.toFixed(5));
+        const delta = 0.00001;
+
+        // Find or create location
+        let [locationRows] = await req.db.query(
+            `SELECT * FROM locations 
+             WHERE latitude BETWEEN ? AND ? 
+             AND longitude BETWEEN ? AND ?`,
+            [
+                roundedLat - delta,
+                roundedLat + delta,
+                roundedLon - delta,
+                roundedLon + delta
+            ]
+        );
+
+        let locationId;
+
+        if (locationRows.length > 0) {
+
+            locationId = locationRows[0].id;
+
+        } else {
+
+            let [locationResult] = await req.db.query(
+                `INSERT INTO locations (latitude, longitude, created_at)
+                 VALUES (?, ?, NOW())`,
+                [roundedLat, roundedLon]
+            );
+
+            if (locationResult.affectedRows !== 1) {
+                return res.status(500).json({ success: false, code: "DB_ERROR" });
+            }
+
+            locationId = locationResult.insertId;
+        }
+
+        // Check report ownership
+        let [reportRows] = await req.db.query(
+            `SELECT * FROM reports WHERE id = ? AND user_id = ?`,
+            [reportId, userId]
+        );
+
+        if (reportRows.length === 0) {
+            return res.status(403).json({ success: false, code: "NOT_OWNER" });
+        }
+
+        // Build dynamic update query
+        let query;
+        let params;
+
+        if (photoUrl) {
+
+            // DELETE old file if exists
+            if (oldPhotoUrl) {
+
+                const oldPath = path.join(
+                    __dirname,
+                    "..",
+                    oldPhotoUrl // already contains "/uploads/reports/..."
+                );
+
+                fs.unlink(oldPath, (err) => {
+                    if (err) {
+                        console.error("Failed to delete old image:", err.message);
+                    } else {
+                        console.log("Old image deleted:", oldPath);
+                    }
+                });
+            }
+
+            query = `
+        UPDATE reports
+        SET
+            title = ?,
+            category = ?,
+            description = ?,
+            location_id = ?,
+            photo_url = ?,
+            updated_at = NOW()
+        WHERE id = ? AND user_id = ?
+    `;
+
+            params = [
+                trimmedTitle,
+                trimmedCategory,
+                trimmedDescription,
+                locationId,
+                photoUrl,
+                reportId,
+                userId
+            ];
+
+        } else {
+
+            query = `
+                UPDATE reports
+                SET
+                    title = ?,
+                    category = ?,
+                    description = ?,
+                    location_id = ?,
+                    updated_at = NOW()
+                WHERE id = ? AND user_id = ?
+            `;
+
+            params = [
+                trimmedTitle,
+                trimmedCategory,
+                trimmedDescription,
+                locationId,
+                reportId,
+                userId
+            ];
+        }
+
+        const [updateResult] = await req.db.query(query, params);
+
+        if (updateResult.affectedRows !== 1) {
+            return res.status(500).json({ success: false, code: "DB_ERROR" });
+        }
+
+        return res.status(200).json({
+            success: true,
+            code: "REPORT_UPDATED"
+        });
+
+    } catch (err) {
+
+        console.error("Error updating report:", err);
+
+        return res.status(500).json({
+            success: false,
+            code: "REPORT_UPDATE_ERROR"
+        });
+    }
+};
 
 exports.likeReport = async (req, res) => {
     if (!req.user) return res.status(401).json({ success: false, code: "NOT_AUTH" });

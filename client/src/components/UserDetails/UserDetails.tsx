@@ -51,7 +51,7 @@ const UserDetails = ({
   const [toasterType, setToasterType] = useState<string>("success");
   const [toasterLeaving, setToasterLeaving] = useState<boolean>(false);
 
-  const handleChangeUserStatus = async () => {
+  async function handleChangeUserStatus() {
     try {
       const data = await apiRequest(`admin/users/${user?.id}/status`, {
         method: "PATCH",
@@ -66,8 +66,8 @@ const UserDetails = ({
     } catch (error) {
       console.error("Error updating user status:", error);
     }
-  };
-  const fetchUserReports = async () => {
+  }
+  async function fetchUserReports() {
     try {
       const data = await apiRequest(`admin/users/${user?.id}/reports`, {
         method: "GET",
@@ -77,8 +77,8 @@ const UserDetails = ({
     } catch (error) {
       console.error("Error fetching user reports:", error);
     }
-  };
-  const changeReportStatus = async (reportStatus: string) => {
+  }
+  async function changeReportStatus(reportStatus: string) {
     const body = await apiRequest(`admin/reports/${selectedUserReport?.id}`, {
       method: "PATCH",
       headers: {
@@ -93,7 +93,7 @@ const UserDetails = ({
     setSelectedUserReport(null);
     setShowReportDetails(false);
     fetchUserReports();
-  };
+  }
   useEffect(() => {
     fetchUserReports();
   }, []);

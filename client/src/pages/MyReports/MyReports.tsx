@@ -3,7 +3,7 @@ import "./MyReports.css";
 import { capitalize } from "../../utils";
 import ReportDetails from "../../components/ReportDetails/ReportDetails";
 import { useTranslation } from "react-i18next";
-import { apiUrl } from "../../api";
+import { apiRequest, apiUrl } from "../../api";
 
 interface Report {
   id: number;
@@ -38,25 +38,10 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
 
   async function fetchReports() {
     try {
-      const res = await fetch(`${apiUrl}/reports/user`, {
-        credentials: "include",
+      const data = await apiRequest(`reports/user`, {
         method: "GET",
+        credentials: "include",
       });
-
-      const data = await res.json(); // parse JSON first
-
-      if (!res.ok) {
-        // handle specific backend codes
-        if (data.code === "NO_USER_REPORTS") {
-          setReports([]); // Clear the list
-          return;
-        } else if (data.code === "USER_NOT_FOUND") {
-          console.error("User not found");
-          return;
-        } else {
-          throw new Error(data.code || "Unknown error");
-        }
-      }
       setReports(data.reports || []);
     } catch (e) {
       console.error("Error in fetching reports", e);
@@ -73,12 +58,10 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
         date: searchDate,
       });
       if (sortField) query.append("sort", sortField);
-      const res = await fetch(`${apiUrl}/reports/search?${query.toString()}`, {
+      const data = await apiRequest(`reports/search?${query.toString()}`, {
+        method: "GET",
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Error in response");
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
       setReports(data.reports);
     } catch (e) {
       console.error(e);
@@ -96,18 +79,10 @@ const MyReports = ({ refresh, onReportDelete }: MyReportsProps) => {
 
   async function handleDeleteReport(reportId: number) {
     try {
-      const res = await fetch(`${apiUrl}/reports/delete/${reportId}`, {
+      const data = await apiRequest(`reports/delete/${reportId}`, {
         credentials: "include",
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Error in response");
-
-      const data = await res.json();
-      if (!data.success) {
-        onReportDelete(t(`myReports.messages.${data.code}`));
-        throw new Error(t(`myReports.messages.${data.code}`));
-      }
-
       onReportDelete(t(`myReports.messages.${data.code}`)); // REPORT_DELETED
       fetchReports();
     } catch (e) {

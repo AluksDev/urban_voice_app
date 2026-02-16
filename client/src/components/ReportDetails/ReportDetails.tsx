@@ -3,7 +3,6 @@ import MapComponent from "../MapComponent/MapComponent";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import Toaster from "../Toaster/Toaster";
 import { useTranslation } from "react-i18next";
-import { apiUrl } from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import { apiRequest } from "../../api";
 
@@ -71,12 +70,10 @@ const ReportDetails = ({
 
   async function getReportLocation() {
     try {
-      const res = await fetch(`${apiUrl}/locations/${report?.location_id}`, {
+      const data = await apiRequest(`locations/${report?.location_id}`, {
+        method: "GET",
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Error in response");
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
       setLocationCoordinates([data.latitude, data.longitude]);
       setNewCoords([data.latitude, data.longitude]);
     } catch (e) {
@@ -138,6 +135,7 @@ const ReportDetails = ({
     const trimmedCategory = newCategory.trim();
 
     const formData = new FormData();
+    formData.append("reportId", String(report?.id));
     formData.append("title", trimmedTitle);
     formData.append("category", trimmedCategory);
     formData.append("description", trimmedDescription);
@@ -150,20 +148,11 @@ const ReportDetails = ({
     }
 
     try {
-      const res = await fetch(`${apiUrl}/reports/edit`, {
+      const data = await apiRequest("reports/edit", {
         method: "PATCH",
         credentials: "include",
         body: formData,
       });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        setToasterType("error");
-        setToasterMessage(t(`reportDetails.messages.${data.code}`));
-        setToasterLeaving(true);
-        return;
-      }
 
       setToasterType("success");
       setToasterMessage(t(`reportDetails.messages.${data.code}`));
@@ -323,8 +312,9 @@ const ReportDetails = ({
                     onClick={() => handleImageZoom("in")}
                   />
                 </div>
-                {isPending ||
-                  (!isAdmin && report?.user_id === auth.user?.id && (
+                {isPending &&
+                  !isAdmin &&
+                  Number(report?.user_id) === Number(auth.user?.id) && (
                     <>
                       <button
                         type="button"
@@ -332,6 +322,7 @@ const ReportDetails = ({
                       >
                         Select New Image
                       </button>
+
                       <button
                         className="report-details-camera-button"
                         type="button"
@@ -340,7 +331,7 @@ const ReportDetails = ({
                         Take New Photo
                       </button>
                     </>
-                  ))}
+                  )}
                 <input
                   type="file"
                   ref={cameraRefInput}

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { apiUrl } from "../api";
+import { apiRequest, apiUrl } from "../api";
 import Toaster from "../components/Toaster/Toaster";
 
 // Define the shape of your user
@@ -54,17 +54,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Logout clears all auth state
   async function logout() {
     try {
-      const res = await fetch(`${apiUrl}/auth/logout`, {
+      const data = await apiRequest("auth/logout", {
         method: "POST",
         credentials: "include",
       });
-      if (!res.ok) {
-        throw new Error("Logout failed");
-      }
-      const body = await res.json();
-      if (!body.success) {
-        throw new Error(body.message);
-      }
+
       setUser(null);
       setIsLoggedIn(false);
       setJustLoggedOut(true);

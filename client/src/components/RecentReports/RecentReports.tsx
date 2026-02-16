@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { apiUrl } from "../../api";
 import ReportDetails from "../ReportDetails/ReportDetails";
 import { useAuth } from "../../context/AuthContext";
+import { apiRequest } from "../../api";
 
 interface RecentReportsProps {
   refresh: number;
@@ -51,14 +52,9 @@ const RecentReports = ({ refresh }: RecentReportsProps) => {
   async function fetchLatestReports() {
     const limit = 5;
     try {
-      const res = await fetch(`${apiUrl}/stats/reports/latest?limit=${limit}`);
-      if (!res.ok) {
-        throw new Error(t("recentReports.errors.fetchFailed"));
-      }
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(t("recentReports.errors.fetchFailed"));
-      }
+      const data = await apiRequest(`stats/reports/latest?limit=${limit}`, {
+        method: "GET",
+      });
       setLatestReports(data.reports);
     } catch (e) {
       console.error(e);

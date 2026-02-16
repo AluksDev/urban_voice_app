@@ -3,7 +3,7 @@ import "./Stats.css";
 import PieChartComponent from "../PieChartComponent/PieChartComponent";
 import SlotCounter from "react-slot-counter";
 import { useTranslation } from "react-i18next";
-import { apiUrl } from "../../api";
+import { apiRequest, apiUrl } from "../../api";
 
 interface StatsProps {
   refresh: number;
@@ -31,14 +31,9 @@ const Stats = ({ refresh }: StatsProps) => {
 
   async function getReportsCount() {
     try {
-      const res = await fetch(`${apiUrl}/stats/reports`);
-      if (!res.ok) {
-        throw new Error(t("stats.errors.fetchFailed"));
-      }
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(t("stats.errors.fetchFailed"));
-      }
+      const data = await apiRequest(`stats/reports`, {
+        method: "GET",
+      });
 
       setReportsData(data.reports);
       setReportsCount(data.reports.length);
@@ -55,7 +50,6 @@ const Stats = ({ refresh }: StatsProps) => {
       setReportsClosed(closed);
     } catch (e) {
       console.error(e);
-      // optionally display a toast or alert with the error
     }
   }
 

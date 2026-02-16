@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import "./NewReport.css";
 import Toaster from "../Toaster/Toaster";
 import MapComponent from "../MapComponent/MapComponent";
-import { apiUrl } from "../../api";
+import { apiRequest, apiUrl } from "../../api";
 
 type NewReportProps = {
   closeModal: () => void;
@@ -54,12 +54,10 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
   async function getCoordsFromAddress() {
     const addressToSend = reportAddress.trim();
     try {
-      const res = await fetch(
-        `${apiUrl}/api/address?q=${encodeURIComponent(addressToSend)}`,
+      const data = await apiRequest(
+        `api/address?q=${encodeURIComponent(addressToSend)}`,
+        { method: "GET" },
       );
-      if (!res.ok) throw new Error("Request failed");
-      const data = await res.json();
-      if (!data.success) throw new Error("Error in fetching data");
       setPossibleAddresses(data.locations);
     } catch (e) {
       console.error("Error in getting coords from address", e);
@@ -92,21 +90,12 @@ const NewReport = ({ closeModal, onSuccessfulReport }: NewReportProps) => {
     formData.append("lon", String(mapCoordinates[1]));
 
     try {
-      const res = await fetch(`${apiUrl}/reports/new`, {
-        credentials: "include",
+      const data = await apiRequest("reports/new", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
-      if (!res.ok) throw new Error("Error in response");
-
-      const data = await res.json();
-
-      if (data.success === false) {
-        setToasterMessage(t(`newReport.messages.${data.code}`));
-        setToasterType("error");
-      } else {
-        onSuccessfulReport(t(`newReport.messages.${data.code}`));
-      }
+      onSuccessfulReport(t(`newReport.messages.${data.code}`));
     } catch (e) {
       console.error("Error in adding report", e);
       setToasterType("error");

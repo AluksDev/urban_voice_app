@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./UserProfile.css";
-import { apiUrl } from "../../api";
+import { apiRequest } from "../../api";
 
 interface UserProfileProps {
   onLogOut: () => void;
@@ -84,7 +84,7 @@ const UserProfile = ({
       return;
     }
     try {
-      const res = await fetch(`${apiUrl}/user/password`, {
+      const data = await apiRequest(`user/password`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -95,16 +95,6 @@ const UserProfile = ({
           newPassword: trimmedNewPsw,
         }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        onPasswordChange(
-          data.message || t("userProfile.passwordUpdateError"),
-          "error",
-        );
-        setOldPswValue("");
-        setNewPswValue("");
-        throw new Error(t("userProfile.passwordUpdateError"));
-      }
 
       onPasswordChange(data.message, "success");
       setOldPswValue("");
@@ -128,7 +118,7 @@ const UserProfile = ({
       return;
     }
     try {
-      const res = await fetch(`${apiUrl}/user/details`, {
+      const data = await apiRequest(`user/details`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -139,10 +129,7 @@ const UserProfile = ({
           surname: trimmedSurname,
         }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || t("userProfile.userUpdateError"));
-      }
+
       updateUser({
         name: trimmedName,
         surname: trimmedSurname,
@@ -169,16 +156,12 @@ const UserProfile = ({
     const formData = new FormData();
     formData.append("photo", file);
     try {
-      const res = await fetch(`${apiUrl}/user/photo`, {
+      const data = await apiRequest(`user/photo`, {
         method: "PATCH",
         credentials: "include",
         body: formData,
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        onUserChange(t("userProfile.messages.PHOTO_UPDATE_ERROR"), "error");
-        throw new Error(t("userProfile.messages.PHOTO_UPDATE_ERROR"));
-      }
+
       updateUser({ photo_url: data.photo_url });
       onUserChange(t("userProfile.messages.PHOTO_UPDATE_SUCCESS"), "success");
     } catch (e) {

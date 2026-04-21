@@ -240,6 +240,17 @@
 .report-details-camera-button {
   display: none;
 }
+.like-button {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.like-button.unlike {
+  background-color: rgb(214, 47, 47) !important;
+}
+.like-button.unlike:hover {
+  background-color: red !important;
+}
 
 /* Tablet */
 @media (max-width: 992px) {

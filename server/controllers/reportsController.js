@@ -280,14 +280,15 @@ exports.changeReportDetails = async (req, res) => {
                     "..",
                     oldPhotoUrl // already contains "/uploads/reports/..."
                 );
-
-                fs.unlink(oldPath, (err) => {
-                    if (err) {
-                        console.error("Failed to delete old image:", err.message);
-                    } else {
-                        console.log("Old image deleted:", oldPath);
-                    }
-                });
+                if (!oldPath.includes("no-image-report.png")) {
+                    fs.unlink(oldPath, (err) => {
+                        if (err) {
+                            console.error("Failed to delete old image:", err.message);
+                        } else {
+                            console.log("Old image deleted:", oldPath);
+                        }
+                    });
+                }
             }
 
             query = `

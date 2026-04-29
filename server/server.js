@@ -6,18 +6,14 @@ const cookieParser = require('cookie-parser');
 const path = require("path");
 
 const app = express();
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",")
+    : [];
 
 app.use(
     cors({
         origin: (origin, callback) => {
             if (!origin) return callback(null, true);
-
-            const allowedOrigins = [
-                "http://localhost:5173",
-                "http://192.168.56.1:5173",
-                "http://172.22.111.62:5173",
-                "http://192.168.1.33:5173",
-            ];
 
             if (allowedOrigins.includes(origin)) {
                 callback(null, true);

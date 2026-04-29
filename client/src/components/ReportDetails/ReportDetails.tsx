@@ -43,7 +43,7 @@ const ReportDetails = ({
   const [newDescription, setNewDescription] = useState<string>(
     report?.description || "",
   );
-  const [newStatus, setNewStatus] = useState<string>(report?.status || "");
+  const [newStatus] = useState<string>(report?.status || "");
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
   const [toasterMessage, setToasterMessage] = useState<string>("");
   const [toasterType, setToasterType] = useState<string>("success");

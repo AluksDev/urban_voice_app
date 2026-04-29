@@ -486,7 +486,8 @@ DB_PASSWORD=your_password
 DB_NAME=urban_voice_app
 DB_PORT=3306
 JWT_SECRET=your_jwt_secret_key_here
-PORT=5000
+PORT=3001
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:4173
 ```
 
 ### 8.2 Installation
@@ -526,11 +527,11 @@ node seeds/seedLocations.js
 **Terminal 1 - Backend:**
 ```bash
 cd server
-npx nodemon server.js
+npm nodemon server.js
 # or
 npm start
 ```
-Runs on: `http://localhost:5000`
+Runs on: `http://localhost:3001`
 
 **Terminal 2 - Frontend:**
 ```bash
@@ -550,8 +551,6 @@ npm run build
 
 # Server configuration
 # Update CORS origins in server.js for production domains
-# Set NODE_ENV=production
-# Serve static files from client/dist
 ```
 
 ---

@@ -79,7 +79,7 @@ const UserDetails = ({
     }
   }
   async function changeReportStatus(reportStatus: string) {
-    const body = await apiRequest(`admin/reports/${selectedUserReport?.id}`, {
+    await apiRequest(`admin/reports/${selectedUserReport?.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

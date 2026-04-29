@@ -33,7 +33,7 @@ export const NotificationsProvider = ({
 
   async function markAsRead(id: number) {
     try {
-      const response = await apiRequest(`user/notifications/${id}`, {
+      await apiRequest(`user/notifications/${id}`, {
         method: "PATCH",
         credentials: "include",
       });

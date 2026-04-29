@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Logout clears all auth state
   async function logout() {
     try {
-      const data = await apiRequest("auth/logout", {
+      await apiRequest("auth/logout", {
         method: "POST",
         credentials: "include",
       });

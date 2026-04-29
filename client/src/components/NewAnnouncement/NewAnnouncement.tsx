@@ -31,7 +31,7 @@ const NewAnnouncement = ({
       return;
     }
     try {
-      const data = await apiRequest("admin/announcements", {
+      await apiRequest("admin/announcements", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

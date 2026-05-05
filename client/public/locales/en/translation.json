@@ -216,7 +216,10 @@
       "INVALID_CATEGORY": "Invalid category",
       "NO_USER_REPORTS": "Report not found",
       "DB_ERROR": "Database error",
-      "REPORT_UPDATED": "Report updated successfully"
+      "REPORT_UPDATED": "Report updated successfully",
+      "LIKE_ADDED": "Like added",
+      "LIKE_REMOVED": "Like removed",
+      "TEST": "testtt"
     }
   }
 }

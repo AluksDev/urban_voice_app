@@ -216,7 +216,8 @@
       "INVALID_CATEGORY": "Categoría inválida",
       "NO_USER_REPORTS": "Informe no encontrado",
       "DB_ERROR": "Error en la base de datos",
-      "REPORT_UPDATED": "Informe actualizado correctamente"
+      "REPORT_UPDATED": "Informe actualizado correctamente",
+      "LIKE_ADDED": "Like añadido"
     }
   }
 }

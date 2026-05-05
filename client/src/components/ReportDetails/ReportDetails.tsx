@@ -172,8 +172,8 @@ const ReportDetails = ({
         credentials: "include",
       });
       if (data) {
-        setToasterMessage(data.code);
-        setToasterType("success");
+        // setToasterType("success");
+        // setToasterMessage(t(`reportDetails.messages.${data.code}`));
         setIsLike(data.code === "LIKE_ADDED" ? true : false);
       }
     } catch (e) {
@@ -248,17 +248,48 @@ const ReportDetails = ({
         >
           <img src="/images/close-icon.svg" alt="close icon" />
         </div>
-
         <form
           className="editable-details-container"
           onSubmit={handleDetailsChange}
         >
-          <div>
+          <div>    
             <h3>
               {report?.user_id === auth.user?.id ? "Edit" : ""} Report #
               {report?.id}
             </h3>
             {isAdmin && <h4>Submitted by user ID: {report?.user_id}</h4>}
+            {isLike && <h5 className="liked-msg"><svg
+                      width="2em"
+                      height="2em"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <path
+                          d="M8.35 17.5H5.5C4.94772 17.5 4.5 17.0523 4.5 16.5V11.5C4.5 10.9477 4.94772 10.5 5.5 10.5H8.35C8.43284 10.5 8.5 10.5672 8.5 10.65V17.35C8.5 17.4328 8.43284 17.5 8.35 17.5Z"
+                          stroke="#ffffff"
+                          strokeLinecap="round"
+                        ></path>{" "}
+                        <path
+                          d="M8.5 11.5L10.3944 7.71115C10.4639 7.57229 10.5 7.41918 10.5 7.26393V5.5C10.5 4.94772 10.9477 4.5 11.5 4.5V4.5C12.6046 4.5 13.5 5.39543 13.5 6.5V10.5"
+                          stroke="#ffffff"
+                          strokeLinecap="round"
+                        ></path>{" "}
+                        <path
+                          d="M11.5 10.5H17.4972C18.1637 10.5 18.6437 11.1397 18.4573 11.7796L16.7098 17.7796C16.5855 18.2065 16.1943 18.5 15.7497 18.5H11.9142C11.649 18.5 11.3946 18.3946 11.2071 18.2071L10.7929 17.7929C10.6054 17.6054 10.351 17.5 10.0858 17.5H8.5"
+                          stroke="#ffffff"
+                          strokeLinecap="round"
+                        ></path>{" "}
+                      </g>
+                    </svg>Liked</h5>}
           </div>
           <div>
             <div className="report-details-left">

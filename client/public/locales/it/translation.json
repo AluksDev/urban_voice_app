@@ -218,7 +218,8 @@
       "INVALID_CATEGORY": "Categoria non valida",
       "NO_USER_REPORTS": "Rapporto non trovato",
       "DB_ERROR": "Errore del database",
-      "REPORT_UPDATED": "Rapporto aggiornato correttamente"
+      "REPORT_UPDATED": "Rapporto aggiornato correttamente",
+      "LIKE_ADDED": "Like aggiunto"
     }
   }
 }

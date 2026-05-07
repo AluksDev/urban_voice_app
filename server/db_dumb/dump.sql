@@ -19,6 +19,9 @@
 -- Table structure for table `announcements`
 --
 
+CREATE DATABASE urban_voice_app;
+USE urban_voice_app;
+
 DROP TABLE IF EXISTS `announcements`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

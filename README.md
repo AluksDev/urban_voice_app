@@ -38,19 +38,17 @@ cd ..
 
 Create a MySQL database for the project:
 
+cd server
+cd db_dump
 ```bash
-mysql -u root -p
-```
-
-```sql
-CREATE DATABASE urban_voice_app;
-USE urban_voice_app;
+mysql -u root -p < dump.sql
 ```
 
 Run the seed scripts to populate initial data:
 
 ```bash
-cd server
+cd ..
+cd seeds
 node seeds/seedUsers.js
 node seeds/seedReports.js
 node seeds/seedLocations.js

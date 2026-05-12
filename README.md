@@ -49,9 +49,7 @@ Run the seed scripts to populate initial data:
 ```bash
 cd ..
 cd seeds
-node seeds/seedUsers.js
-node seeds/seedReports.js
-node seeds/seedLocations.js
+node seed.js
 cd ..
 ```
 
@@ -63,7 +61,7 @@ Create a `.env` file in the `server` directory with your database configuration:
 # server/.env
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=your_password
+DB_PASS=your_password
 DB_NAME=urban_voice_app
 DB_PORT=3306
 JWT_SECRET=your_jwt_secret_key_here

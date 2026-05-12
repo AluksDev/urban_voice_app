@@ -36,11 +36,11 @@ cd ..
 
 ### 2. Database Setup
 
-Create a MySQL database for the project:
-
+# Create a MySQL database for the project:
+```bash
 cd server
 cd db_dump
-```bash
+
 mysql -u root -p < dump.sql
 ```
 

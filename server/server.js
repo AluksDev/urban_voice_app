@@ -65,6 +65,15 @@ app.use("/admin", adminRoutes);
 const announcementRoutes = require("./routes/announcements");
 app.use("/announcements", announcementRoutes);
 
+if (process.env.NODE_ENV === "production") {
+    const clientPath = path.join(__dirname, "../client/dist");
+
+    app.use(express.static(clientPath));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(clientPath, "index.html"));
+    });
+}
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
     console.log("Server running on port 3001");

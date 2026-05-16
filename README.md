@@ -2,6 +2,11 @@
 
 A full-stack web application for urban community reporting and announcements. Report incidents, view maps, and stay connected with your community in real-time.
 
+![Urban Voice App](./docs/urban_voice_video.gif)
+![Urban Voice App](./docs/img1.png)
+![Urban Voice App](./docs/img2.png)
+![Urban Voice App](./docs/img3.png)
+
 ## Tech Stack
 
 - **Frontend**: React 19, TypeScript, Vite, React Router, Leaflet Maps, Recharts

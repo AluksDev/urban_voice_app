@@ -6,24 +6,14 @@ const cookieParser = require('cookie-parser');
 const path = require("path");
 
 const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",")
-    : [];
-
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin) return callback(null, true);
-
-            if (allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
-        credentials: true,
-    })
-);
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(null, false);
+    },
+    credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieParser());

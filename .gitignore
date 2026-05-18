@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+server/uploads/users/*
+server/uploads/reports/*
+
+!server/uploads/users/
+!server/uploads/reports/
+
+!server/uploads/users/default_user.jpg
+!server/uploads/reports/no-image-report.png
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
